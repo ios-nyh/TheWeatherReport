@@ -7,9 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreLocation/CoreLocation.h>
+
+@class HomeViewController,Reachability;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+
+@property (strong, nonatomic) HomeViewController *home;
+
+@property (strong, nonatomic) Reachability *hostReach;
+
+@property (strong, nonatomic) CLLocationManager *locationManager;
 
 @end

@@ -40,6 +40,17 @@
     [super dealloc];
 }
 
+//设置竖屏方向
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -94,6 +105,8 @@
     [_selectCityBtn addTarget:self action:@selector(selectCity) forControlEvents:UIControlEventTouchUpInside];
     _selectCityBtn.showsTouchWhenHighlighted = YES;
     [navigation addSubview:_selectCityBtn];
+    
+    [navigation release];
     
     //取消选择城市按钮
     _pressCityBtn = [UIButton buttonWithType:UIButtonTypeCustom];

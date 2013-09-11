@@ -19,6 +19,7 @@
 @property (retain,nonatomic) AVCaptureStillImageOutput *captureOutput;  //捕获输出
 @property (retain,nonatomic) UIImage *image;                            //图片
 @property (assign,nonatomic) AVCaptureVideoPreviewLayer *preview;       //预览视图
+//@property (assign,nonatomic) UIImageOrientation g_orientation;          //图片方向
 @property (assign,nonatomic) id<AVHelperDelegate> delegate;
 
 
@@ -28,6 +29,8 @@
 - (void)setDelegate:(id<AVHelperDelegate>) _delegate;
 - (void)CaptureStillImage;                                               //获取静止的图片
 - (void)embedPreviewInView:(UIView *)aView;                              //插入预览视图到主视图中
+
+//- (void)changePreviewOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
 
 @end

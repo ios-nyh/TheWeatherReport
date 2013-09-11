@@ -74,6 +74,20 @@
     return self;
 }
 
+//方向设置
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait;
+}
+
 #pragma mark - 系统方法
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -89,10 +103,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.view setBackgroundColor:[UIColor blackColor]];
     
     //开始定位服务
     [self startUpdates];
+    
     //获取城市信息
     NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
     NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -102,14 +116,16 @@
     //拍摄视图
     UIView *liveView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT - 20)];
     self.liveView = liveView;
+    [self.view addSubview:liveView];
     [liveView release];
-    [self.view addSubview:self.liveView];
     
     //预览视图
     UIImageView *preview = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT - 20)];
+//    preview.contentMode = UIViewContentModeScaleAspectFit; //自适应图片宽高比例
     self.preview = preview;
+    [self.view addSubview:preview];
     [preview release];
-    [self.view addSubview:self.preview];
+    
     
     //初始化天气信息label
     [self setBackgroundView:self.view];
@@ -135,14 +151,9 @@
     [_infoBtn setFrame:CGRectMake(WIDTH - 65, HEIGHT - 65, 50, 38)];
     [_infoBtn addTarget:self action:@selector(showInfo:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
-    
-    //    NSLog(@"今天%@",[self getweek]);
-    
 }
 
-/**
- 获得今天为星期几
- */
+// 获得今天为星期几 
 - (NSString *)getweek
 {
     NSCalendar *calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSChineseCalendar] autorelease];
@@ -187,7 +198,7 @@
 }
 
 #pragma mark - 开启定位服务
-
+//需要优化 ？？？？
 - (void)startUpdates
 {
     if (_locationManager == nil) {
@@ -201,11 +212,9 @@
     
     //开启状态栏动画
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
-    
 }
 
 #pragma mark - CLLocationManagerDelegate method
-
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *location = [locations lastObject];
@@ -226,13 +235,12 @@
             self.address = address;
             NSLog(@"%@",self.address);
             
-            //开始解析
+            //开始JSON解析
             [self JSONStartParse:[self.cityDic objectForKey:self.address]];
         }
     }];
     
     [geocoder release];
-    
 }
 
 //获取摄像图片
@@ -244,7 +252,7 @@
         
         self.preview.image = [self.cameraHelper image];
         
-        NSLog(@"getImage %f,%f",self.preview.image.size.height,self.preview.image.size.width);
+        NSLog(@"getImage height %f, width %f",self.preview.image.size.height,self.preview.image.size.width);
         
         
         [_cameraBtn setHidden:YES];
@@ -256,11 +264,11 @@
         [_cancelBtn addTarget:self action:@selector(cancelPhotos:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_cancelBtn];
         
-        //提示，是否保存图片
-        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"是否保存图片" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存", nil];
-        
-        [alertView show];
-        [alertView release];
+//        //提示，是否保存图片
+//        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"是否保存图片" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存", nil];
+//        
+//        [alertView show];
+//        [alertView release];
     }
     
     [self stopAnimating];
@@ -270,12 +278,19 @@
 - (UIImage *)captureView: (UIView *)theView
 {
     //    CGRect rect = theView.frame;
+    
     CGRect rect = CGRectMake(0, 0, WIDTH, HEIGHT - 20);
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     [theView.layer renderInContext:context];
     UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+    
+    //另一种方法：全屏截图
+//    UIGraphicsBeginImageContext(CGSizeMake(WIDTH,HEIGHT - 20));
+//    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//    UIImage*img = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
     
     return img;
 }
@@ -340,7 +355,6 @@
     [_cameraBtn setHidden:NO];
     
     [self.preview setHidden:YES];
-    
 }
 
 //详细天气情况选择
@@ -366,11 +380,7 @@
 
 - (void)changeValues:(NSString *)sender
 {
-    NSLog(@"=================%@",sender);
-    
     _cityid = [[NSString stringWithFormat:@"%@",sender] retain];
-    
-    NSLog(@" ++++++++_cityid++++++++ %@",_cityid);
     
     [self JSONStartParse:sender];
 }
@@ -482,15 +492,12 @@
     
     
     // 向上擦碰，轻扫
-    
     UISwipeGestureRecognizer *oneFingerSwipeUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(oneFingerSwipeUp:)] autorelease];
     [oneFingerSwipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [view addGestureRecognizer:oneFingerSwipeUp];
-    
 }
 
 #pragma mark - 轻扫手势响应方法
-
 - (void)oneFingerSwipeUp:(UISwipeGestureRecognizer *)recognizer
 {
     CGPoint point = [recognizer locationInView:[self view]];
@@ -525,8 +532,6 @@
         NSLog(@"空");
         [self JSONStartParse:[self.cityDic objectForKey:self.address]];
     }
-    
-    
 }
 
 #pragma mark - 解析
@@ -554,7 +559,9 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     //    NSError *error;
+    
     NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableContainers error:nil];
+    
     //    if (error) {
     //
     //        NSLog(@" parse error %@",error);
@@ -562,6 +569,7 @@
     //    } else {
     
     //        NSLog(@"解析结果%@",dic);
+    
     
     _subDic = [[dic objectForKey:@"weatherinfo"] retain];
     _temp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
@@ -593,6 +601,7 @@
     //        _date3.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
     
     //    }
+    
     
     //关闭状态栏动画
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];

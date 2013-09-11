@@ -13,19 +13,19 @@
 {
     UILabel *_cityLabel;
     
-    UILabel *_temp;//当日最佳温度
-    UILabel *_weather;//当日天气情况
-    UILabel *_content;//天气内容
-    UILabel *_date;//日期
+    UILabel *_temp;            // 当日最佳温度
+    UILabel *_weather;         // 当日天气情况
+    UILabel *_content;         // 天气内容
+    UILabel *_date;            // 日期
     
-    UIImageView *_imgView1;
+    UIImageView *_imgView1;    // 天气图标
     UIImageView *_imgView2;
     
     
-    UILabel *_weather2;//温度范围
-    UILabel *_date2;
+    UILabel *_weather2;        //温度范围
+    UILabel *_date2;           //日期
     
-    UILabel *_weather3;//温度范围
+    UILabel *_weather3;
     UILabel *_date3;
     
     UIView *_view1;
@@ -39,13 +39,12 @@
     UIActivityIndicatorView *_activityView;
     
     
-    UIButton *_cameraBtn;//拍照
-    UIButton *_cancelBtn;//取消拍照
+    UIButton *_cameraBtn;     //拍照
+    UIButton *_cancelBtn;     //取消拍照
     UIButton *_infoBtn;
     
     
     NSString *_cityid;
-
 
 }
 
@@ -55,8 +54,8 @@
 
 @property (retain, nonatomic) CLLocationManager *locationManager;
 
-@property (retain, nonatomic) UIView *liveView;//摄像视图
-@property (retain, nonatomic) UIImageView *preview;//预览视图
+@property (retain, nonatomic) UIView *liveView;                      //摄像视图
+@property (retain, nonatomic) UIImageView *preview;                  //预览视图
 
 
 @end

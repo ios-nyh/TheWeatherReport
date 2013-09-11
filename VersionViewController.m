@@ -22,6 +22,17 @@
     }
     return self;
 }
+//
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
 
 - (void)viewDidLoad
 {

@@ -36,8 +36,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     //设置图像分辨率
-
-    
     [self.session setSessionPreset:AVCaptureSessionPresetPhoto]; //AVCaptureSessionPresetPhoto iphone4
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,7 +51,7 @@
 #endif
     
     
-	NSError *error;
+	NSError *error = nil;
 	AVCaptureDeviceInput *captureInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:&error];
 	if (!captureInput)
 	{
@@ -69,7 +67,6 @@
     self.captureOutput = captureOutput;
     [captureOutput release];
     
-
     NSDictionary *outputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:AVVideoCodecJPEG,AVVideoCodecKey,nil];
     [self.captureOutput setOutputSettings:outputSettings];
     
@@ -117,18 +114,43 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //设置取景
-    self.preview = [AVCaptureVideoPreviewLayer layerWithSession:self.session];
-    self.preview.frame = aView.bounds;
-//    CGRect layerRect = aView.layer.bounds;
-    self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill;//AVLayerVideoGravityResize iphone4
+    self.preview = [[[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session]autorelease];
+    self.preview.frame = aView.bounds;    
     
-//    [self.preview setPosition:CGPointMake(CGRectGetMidX(layerRect), CGRectGetMidY(layerRect))];
-//    aView.layer.masksToBounds = YES;
+    self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill; // AVLayerVideoGravityResize iphone4
+    
     [aView.layer addSublayer:self.preview];
     
+       
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 }
+
+
+//- (void)changePreviewOrientation:(UIInterfaceOrientation)interfaceOrientation
+//{
+//    if (!self.preview) {
+//        return;
+//    }
+//    [CATransaction begin];
+//    if (interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+//        self.g_orientation = UIImageOrientationUp;
+//        self.preview.connection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+//        
+//    }else if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft){
+//        self.g_orientation = UIImageOrientationDown;
+//        self.preview.connection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+//        
+//    }else if (interfaceOrientation == UIDeviceOrientationPortrait){
+//        self.g_orientation = UIImageOrientationRight;
+//        self.preview.connection.videoOrientation = AVCaptureVideoOrientationPortrait;
+//        
+//    }else if (interfaceOrientation == UIDeviceOrientationPortraitUpsideDown){
+//        self.g_orientation = UIImageOrientationLeft;
+//        self.preview.connection.videoOrientation = AVCaptureVideoOrientationPortraitUpsideDown;
+//    }
+//    [CATransaction commit];
+//}
 
 
 -(void)giveImg2Delegate
@@ -169,31 +191,30 @@
              
              NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
              UIImage *t_image = [UIImage imageWithData:imageData];
-             UIImage *image = [[UIImage alloc]initWithCGImage:t_image.CGImage scale:1.5 orientation:UIImageOrientationRight];//orientation：图像方向
+             UIImage *image = [[UIImage alloc]initWithCGImage:t_image.CGImage scale:1.5f orientation:UIImageOrientationRight];//orientation：图像方向 UIImageOrientationRight
              self.image = image;
              [image release];
              
              [self giveImg2Delegate];
-
          }
      }];
 }
 
 #pragma mark - Class Interface
 
-- (void) startRunning
+- (void)startRunning
 {
 	[[self session] startRunning];
 }
 
-- (void) stopRunning
+- (void)stopRunning
 {
 	[[self session] stopRunning];
 }
 
 -(void)CaptureStillImage
 {
-    [self  Captureimage];
+    [self Captureimage];
 }
 
 

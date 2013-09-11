@@ -45,14 +45,10 @@
         [locManager setDistanceFilter:10.0f];
         self.locationManager = locManager;
         [locManager release];
-        
     }
 
-    
     return YES;
 }
-
-
 
 //处理连接改变后的情况,对连接改变做出响应的处理动作
 - (void)updateInterfaceWithReachability:(Reachability *)curReach
@@ -82,7 +78,6 @@
     [self updateInterfaceWithReachability: curReach];
 }
 
-
 //开始监听网络状态
 -(void)startNotificationNetwork
 {
@@ -107,7 +102,6 @@
     
     [self.hostReach startNotifier];
 }
-
 
 
 - (void)applicationWillResignActive:(UIApplication *)application

@@ -45,12 +45,16 @@
     
     
     NSString *_cityid;
+    UILabel *_curLocation;;      //当前位置
+    
+    BOOL result;
 
 }
 
 @property (retain, nonatomic) NSMutableData *mData;
 @property (retain, nonatomic) NSDictionary *cityDic;
-@property (retain, nonatomic) NSString *address;
+@property (copy, nonatomic) NSString *address;
+@property (copy, nonatomic) NSString *location;
 
 @property (retain, nonatomic) CLLocationManager *locationManager;
 

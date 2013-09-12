@@ -7,7 +7,7 @@
 //
 
 #import "VersionViewController.h"
-#import "AppDelegate.h"
+
 @interface VersionViewController ()
 
 @end
@@ -33,44 +33,52 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    //导航视图
-    UIView *navigation = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, 44)];
-    [navigation setBackgroundColor:[UIColor grayColor]];
-    [self.view addSubview:navigation];
+    UIImage *iconImg = [UIImage imageNamed:@"Icon.png"];
+
+    UIImageView *iconImgView = [[UIImageView alloc]initWithFrame:CGRectMake(60, 40, iconImg.size.width, iconImg.size.height)];
+    iconImgView.image = iconImg;
+    [self.view addSubview:iconImgView];
     
-    //返回按钮
-    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backBtn setFrame:CGRectMake(0, 0, 80, 44)];
-    [backBtn setTitle:@"返回" forState:UIControlStateNormal];
-    backBtn.showsTouchWhenHighlighted = YES;
-    [backBtn addTarget:self action:@selector(backVC) forControlEvents:UIControlEventTouchUpInside];
-    [navigation addSubview:backBtn];
+    [iconImgView release];
     
-    [navigation release];
+    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 40, 100, 40)];
+    title.text = @"天气相机";
+    title.font = [UIFont systemFontOfSize:24.0f];
+    [self.view addSubview:title];
+    [title release];
     
-    //关于我们
-    UITextView *txtView = [[UITextView alloc]initWithFrame:CGRectMake(0, 44, WIDTH,HEIGHT - 44)];
-    [txtView setEditable:NO];
-    [self.view addSubview:txtView];
     
-    txtView.text = @"\n v1.0";
-    txtView.textAlignment = NSTextAlignmentCenter;
-    [txtView setFont:[UIFont systemFontOfSize:14.0f]];
-    [txtView release];
+    UILabel *version = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 80, 100, 20)];
+    version.text = @"V1.0 测试版";
+    [self.view addSubview:version];
+    [version release];
+    
+    
+    UIButton *urlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [urlBtn setFrame:CGRectMake(60, 120, 100+iconImg.size.width+40, 20)];
+    [urlBtn setTitle:@"http://www.apple.com" forState:UIControlStateNormal];
+    [urlBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [urlBtn addTarget:self action:@selector(openURLMethod) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:urlBtn];
+    
+    
+    UILabel *aboutWeather = [[UILabel alloc]initWithFrame:CGRectMake(40, 160, 100+iconImg.size.width+100, 20)];
+    aboutWeather.text = @"天气数据由北京市专业气象台提供";
+    [self.view addSubview:aboutWeather];
+    [aboutWeather release];
+
 }
 
-#pragma mark - 按钮响应事件
-- (void)backVC
+
+- (void)openURLMethod
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.apple.com"]];
 }
-
 
 - (void)didReceiveMemoryWarning
 {

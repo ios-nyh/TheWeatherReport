@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		810B470717E1671400E2F12F /* CityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 810B470617E1671400E2F12F /* CityViewController.m */; };
+		810B470917E192A000E2F12F /* NavigationBg.png in Resources */ = {isa = PBXBuildFile; fileRef = 810B470817E192A000E2F12F /* NavigationBg.png */; };
 		81FD160817E039F2004B714A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160717E039F2004B714A /* UIKit.framework */; };
 		81FD160A17E039F2004B714A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160917E039F2004B714A /* Foundation.framework */; };
 		81FD160C17E039F2004B714A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160B17E039F2004B714A /* CoreGraphics.framework */; };
@@ -67,6 +69,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		810B470517E1671400E2F12F /* CityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CityViewController.h; sourceTree = "<group>"; };
+		810B470617E1671400E2F12F /* CityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CityViewController.m; sourceTree = "<group>"; };
+		810B470817E192A000E2F12F /* NavigationBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NavigationBg.png; sourceTree = "<group>"; };
 		81FD160417E039F2004B714A /* TheWeatherReport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheWeatherReport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		81FD160717E039F2004B714A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81FD160917E039F2004B714A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -250,6 +255,7 @@
 				81FD166E17E03BDC004B714A /* cancel.png */,
 				81FD166F17E03BDC004B714A /* Dock_Btn_2_Activated.png */,
 				81FD167017E03BDC004B714A /* Dock_Btn_2.png */,
+				810B470817E192A000E2F12F /* NavigationBg.png */,
 			);
 			name = Imgs;
 			sourceTree = "<group>";
@@ -302,6 +308,8 @@
 				81FD167617E03C45004B714A /* HomeViewController.h */,
 				81FD167717E03C45004B714A /* HomeViewController.m */,
 				81FD167817E03C45004B714A /* HomeViewController.xib */,
+				810B470517E1671400E2F12F /* CityViewController.h */,
+				810B470617E1671400E2F12F /* CityViewController.m */,
 			);
 			name = VC;
 			sourceTree = "<group>";
@@ -394,6 +402,7 @@
 				81FD168217E03E29004B714A /* Default@2x.png in Resources */,
 				81FD168317E03E29004B714A /* Icon.png in Resources */,
 				81FD168417E03E29004B714A /* Icon@2x.png in Resources */,
+				810B470917E192A000E2F12F /* NavigationBg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +423,7 @@
 				81FD169417E040C9004B714A /* LocationViewController.m in Sources */,
 				81FD169517E040C9004B714A /* ShowInfoViewController.m in Sources */,
 				81FD169617E040C9004B714A /* VersionViewController.m in Sources */,
+				810B470717E1671400E2F12F /* CityViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,30 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol ShowInfoViewControllerDelegate;
 
 @interface ShowInfoViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
-{
-    UIButton *_selectCityBtn;
-    UIButton *_pressCityBtn;
-}
+
+
 
 @property (retain,nonatomic) UITableView *tableView;
-@property (retain,nonatomic) NSArray *cityArray;
-@property (retain,nonatomic) NSDictionary *cityDic;
-@property (retain,nonatomic) UILabel *cityLabel;
 
-@property (assign,nonatomic) id <ShowInfoViewControllerDelegate> delegate;
-
-@end
+@property (retain,nonatomic) NSArray *array;
 
 
-@protocol ShowInfoViewControllerDelegate <NSObject>
 
-@optional
 
-- (void)changeValues:(NSString *)sender;
 
 @end
+
 
 

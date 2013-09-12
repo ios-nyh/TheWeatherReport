@@ -117,7 +117,7 @@
     self.preview = [[[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session]autorelease];
     self.preview.frame = aView.bounds;    
     
-    self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill; // AVLayerVideoGravityResize iphone4
+    self.preview.videoGravity = AVLayerVideoGravityResize; // AVLayerVideoGravityResize iphone4
     
     [aView.layer addSublayer:self.preview];
     

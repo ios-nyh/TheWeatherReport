@@ -28,7 +28,10 @@
     // Override point for customization after application launch.
     
     self.home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
-    self.window.rootViewController = self.home;
+    UINavigationController *na = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];
+   
+    self.window.rootViewController = na;
+    
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];

@@ -7,13 +7,14 @@
 //
 
 #import "HomeViewController.h"
+
 #import <QuartzCore/QuartzCore.h>
 #import "CameraImageHelper.h"
 #import "LocationViewController.h"
 #import "ShowInfoViewController.h"
 
 
-@interface HomeViewController ()<AVHelperDelegate,ShowInfoViewControllerDelegate>
+@interface HomeViewController ()<AVHelperDelegate>
 
 @property (retain,nonatomic) CameraImageHelper *cameraHelper;
 
@@ -57,10 +58,14 @@
     [_cameraHelper release];
     
     [_cityid release];
+    [_curLocation release];
     
     
     [_cityDic release];
     [_locationManager release];
+    
+    [_address release];
+    [_location release];
     
     [super dealloc];
 }
@@ -83,10 +88,7 @@
 {
     return UIInterfaceOrientationMaskPortrait;
 }
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
-{
-    return UIInterfaceOrientationPortrait;
-}
+
 
 #pragma mark - 系统方法
 - (void)viewWillDisappear:(BOOL)animated
@@ -96,6 +98,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    [self.navigationController setNavigationBarHidden:YES];
     //开始实时取景
     [self.cameraHelper startRunning];
 }
@@ -103,6 +106,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    //当前背景颜色
+    [self.view setBackgroundColor:[UIColor blackColor]];
     
     //开始定位服务
     [self startUpdates];
@@ -149,53 +155,10 @@
     //信息按钮
     _infoBtn = [UIButton buttonWithType:UIButtonTypeInfoLight];
     [_infoBtn setFrame:CGRectMake(WIDTH - 65, HEIGHT - 65, 50, 38)];
-    [_infoBtn addTarget:self action:@selector(showInfo:) forControlEvents:UIControlEventTouchUpInside];
+    [_infoBtn addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
 }
 
-// 获得今天为星期几 
-- (NSString *)getweek
-{
-    NSCalendar *calendar = [[[NSCalendar alloc] initWithCalendarIdentifier:NSChineseCalendar] autorelease];
-    NSDateComponents *comps = [[[NSDateComponents alloc] init] autorelease];
-    NSInteger unitFlags = NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit | NSWeekdayCalendarUnit |
-    NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit;
-    
-    comps = [calendar components:unitFlags fromDate:[NSDate date]];
-    NSInteger week = [comps weekday] - 1;
-    NSString *weekDays = nil;
-    
-    if (week == 1) {
-        
-        weekDays = @"星期一";
-        
-    } else if (week == 2) {
-        
-        weekDays = @"星期二";
-        
-    } else if (week == 3) {
-        
-        weekDays = @"星期三";
-        
-    } else if (week == 4) {
-        
-        weekDays = @"星期四";
-        
-    } else if (week == 5) {
-        
-        weekDays = @"星期五";
-        
-    } else if (week == 6) {
-        
-        weekDays = @"星期六";
-        
-    } else if (week == 7) {
-        
-        weekDays = @"星期天";
-    }
-    
-    return weekDays;
-}
 
 #pragma mark - 开启定位服务
 //需要优化 ？？？？
@@ -214,7 +177,9 @@
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
 }
 
+
 #pragma mark - CLLocationManagerDelegate method
+
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
     CLLocation *location = [locations lastObject];
@@ -232,18 +197,23 @@
             
             NSLog(@"address dic %@",placemark.addressDictionary);
             NSString *address = [placemark.addressDictionary objectForKey:@"State"];
+            self.location = [[placemark.addressDictionary objectForKey:@"FormattedAddressLines"] lastObject];
             self.address = address;
-            NSLog(@"%@",self.address);
+            _curLocation.text = self.location;
+            NSLog(@"%@",self.location);
             
             //开始JSON解析
             [self JSONStartParse:[self.cityDic objectForKey:self.address]];
+            
+            [_locationManager stopUpdatingLocation];
         }
     }];
     
     [geocoder release];
 }
 
-//获取摄像图片
+#pragma mark - 获取摄像图片
+
 - (void)getImage
 {
     [self.preview setHidden:NO];
@@ -274,7 +244,8 @@
     [self stopAnimating];
 }
 
-//对于特定UIView的截屏
+#pragma mark - 对于特定UIView的截屏
+
 - (UIImage *)captureView: (UIView *)theView
 {
     //    CGRect rect = theView.frame;
@@ -295,7 +266,9 @@
     return img;
 }
 
+
 #pragma mark - UIAlertViewDelegate
+
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     switch (buttonIndex) {
@@ -323,6 +296,7 @@
 }
 
 #pragma mark - 按钮点击事件
+
 //拍照
 - (void)snapPressed:(id)sender {
     
@@ -335,17 +309,21 @@
 }
 
 //显示信息
-- (void)showInfo:(id)sender
+- (void)showInfo
 {
     ShowInfoViewController *info = [[ShowInfoViewController alloc]init];
-    info.delegate = self;
     
+    UINavigationController *na = [[UINavigationController alloc]initWithRootViewController:info];
+    
+    [na.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"] forBarMetrics:UIBarMetricsDefault];
     info.providesPresentationContextTransitionStyle = YES;
-    [self presentViewController:info animated:NO completion:nil];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"showInfo" object:nil userInfo:_subDic];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCity:) name:@"selectedCityNotification" object:nil];
+    
+    [self presentViewController:na animated:YES completion:nil];
     
     [info release];
+    [na release];
 }
 
 //取消拍照
@@ -357,33 +335,38 @@
     [self.preview setHidden:YES];
 }
 
-//详细天气情况选择
-- (void)selectDays:(UIButton *)sender
+//
+- (void)selectCity:(NSNotification *)noti
 {
-    NSLog(@"UIButton %d",sender.tag);
-    LocationViewController *location = [[LocationViewController alloc]init];
-    [self presentViewController:location animated:YES completion:nil];
-    location.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+    NSString *cityName = [noti.userInfo objectForKey:@"cityName"];
     
-    if (_subDic) {
-        
-        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:_subDic,[NSString stringWithFormat:@"%d",sender.tag],nil];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"showInfo" object:nil userInfo:dic];
-    }
+    _cityid = [self.cityDic objectForKey:cityName];
     
-    [location release];
+    NSLog(@"%@",_cityid);
+    
+    //重新解析新数据
+    [self JSONStartParse:_cityid];
+
 }
 
 
-#pragma mark - ShowInfoViewControllerDelegate
-
-- (void)changeValues:(NSString *)sender
-{
-    _cityid = [[NSString stringWithFormat:@"%@",sender] retain];
-    
-    [self JSONStartParse:sender];
-}
+////详细天气情况选择
+//- (void)selectDays:(UIButton *)sender
+//{
+//    NSLog(@"UIButton %d",sender.tag);
+//    LocationViewController *location = [[LocationViewController alloc]init];
+//    [self presentViewController:location animated:YES completion:nil];
+//    location.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//    
+//    if (_subDic) {
+//        
+//        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:_subDic,[NSString stringWithFormat:@"%d",sender.tag],nil];
+//        
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"showInfo" object:nil userInfo:dic];
+//    }
+//    
+//    [location release];
+//}
 
 
 #pragma mark - 定义天气信息UI
@@ -436,11 +419,11 @@
     _cityLabel.textColor = [UIColor whiteColor];
     [view addSubview:_cityLabel];
     
-    UIButton *tapBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
-    tapBtn1.tag = 1;
-    [tapBtn1 setFrame:CGRectMake(160, 20, WIDTH - 160, 120)];
-    [tapBtn1 addTarget:self action:@selector(selectDays:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:tapBtn1];
+//    UIButton *tapBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
+//    tapBtn1.tag = 1;
+//    [tapBtn1 setFrame:CGRectMake(160, 20, WIDTH - 160, 120)];
+//    [tapBtn1 addTarget:self action:@selector(selectDays:) forControlEvents:UIControlEventTouchUpInside];
+//    [view addSubview:tapBtn1];
     
     /**
      第二天天气状况
@@ -460,11 +443,11 @@
     _date2.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_date2];
     
-    UIButton *tapBtn2 = [UIButton buttonWithType:UIButtonTypeCustom];
-    tapBtn2.tag = 2;
-    [tapBtn2 setFrame:CGRectMake(160, 200, WIDTH - 160, 40)];
-    [tapBtn2 addTarget:self action:@selector(selectDays:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:tapBtn2];
+//    UIButton *tapBtn2 = [UIButton buttonWithType:UIButtonTypeCustom];
+//    tapBtn2.tag = 2;
+//    [tapBtn2 setFrame:CGRectMake(160, 200, WIDTH - 160, 40)];
+//    [tapBtn2 addTarget:self action:@selector(selectDays:) forControlEvents:UIControlEventTouchUpInside];
+//    [view addSubview:tapBtn2];
     
     /**
      第三天天气状况
@@ -484,17 +467,26 @@
     _date3.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_date3];
     
-    UIButton *tapBtn3 = [UIButton buttonWithType:UIButtonTypeCustom];
-    tapBtn3.tag = 3;
-    [tapBtn3 setFrame:CGRectMake(160, 260, WIDTH - 160, 120)];
-    [tapBtn3 addTarget:self action:@selector(selectDays:) forControlEvents:UIControlEventTouchUpInside];
-    [view addSubview:tapBtn3];
+//    UIButton *tapBtn3 = [UIButton buttonWithType:UIButtonTypeCustom];
+//    tapBtn3.tag = 3;
+//    [tapBtn3 setFrame:CGRectMake(160, 260, WIDTH - 160, 120)];
+//    [tapBtn3 addTarget:self action:@selector(selectDays:) forControlEvents:UIControlEventTouchUpInside];
+//    [view addSubview:tapBtn3];
     
+
     
     // 向上擦碰，轻扫
     UISwipeGestureRecognizer *oneFingerSwipeUp = [[[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(oneFingerSwipeUp:)] autorelease];
     [oneFingerSwipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
     [view addGestureRecognizer:oneFingerSwipeUp];
+    
+    //当前位置
+    _curLocation = [[UILabel alloc]initWithFrame:CGRectMake(65, HEIGHT - 60, WIDTH - 70 - 50, 40)];
+    _curLocation.numberOfLines = 0;
+    _curLocation.backgroundColor = [UIColor clearColor];
+    _curLocation.textColor = [UIColor whiteColor];
+    [view addSubview:_curLocation];
+    
 }
 
 #pragma mark - 轻扫手势响应方法

@@ -39,16 +39,6 @@
     [super dealloc];
 
 }
-//
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
-}
 
 
 - (void)viewWillAppear:(BOOL)animated

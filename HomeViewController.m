@@ -36,10 +36,12 @@
     
     
     [_weather2 release];
+    [_content release];
     [_date2 release];
     
     
     [_weather3 release];
+    [_content3 release];
     [_date3 release];
     
     
@@ -77,16 +79,6 @@
         // Custom initialization
     }
     return self;
-}
-
-//方向设置
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait;
 }
 
 
@@ -218,7 +210,7 @@
 {
     [self.preview setHidden:NO];
     
-    if ([self.cameraHelper image]) {
+    if ([self.cameraHelper image] != nil) {
         
         self.preview.image = [self.cameraHelper image];
         
@@ -234,11 +226,11 @@
         [_cancelBtn addTarget:self action:@selector(cancelPhotos:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:_cancelBtn];
         
-//        //提示，是否保存图片
-//        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"是否保存图片" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存", nil];
-//        
-//        [alertView show];
-//        [alertView release];
+        //提示，是否保存图片
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"是否保存图片" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存", nil];
+        
+        [alertView show];
+        [alertView release];
     }
     
     [self stopAnimating];
@@ -301,7 +293,8 @@
 - (void)snapPressed:(id)sender {
     
     [self.cameraHelper CaptureStillImage];
-    [self performSelector:@selector(getImage) withObject:nil afterDelay:0.4];
+    
+    [self performSelector:@selector(getImage) withObject:nil afterDelay:0.2];
     
     //开启指示视图
     [self activityIndicatorView];
@@ -428,16 +421,21 @@
     /**
      第二天天气状况
      */
-    //温度
     
+    //天气描述
+    _content2 = [[UILabel alloc]initWithFrame:CGRectMake(160, 200, 100, 20)];
+    _content2.backgroundColor = [UIColor clearColor];
+    _content2.textColor = [UIColor whiteColor];
+    [view addSubview:_content2];
+
     //温度范围
-    _weather2 = [[UILabel alloc]initWithFrame:CGRectMake(160, 200, 100, 20)];
+    _weather2 = [[UILabel alloc]initWithFrame:CGRectMake(160, 220, 100, 20)];
     _weather2.backgroundColor = [UIColor clearColor];
     _weather2.textColor = [UIColor whiteColor];
     [view addSubview:_weather2];
     
     //日期
-    _date2 = [[UILabel alloc]initWithFrame:CGRectMake(160, 220, 140, 20)];
+    _date2 = [[UILabel alloc]initWithFrame:CGRectMake(160, 240, 140, 20)];
     _date2.backgroundColor = [UIColor clearColor];
     _date2.textColor = [UIColor whiteColor];
     _date2.font = [UIFont systemFontOfSize:14.0f];
@@ -452,16 +450,22 @@
     /**
      第三天天气状况
      */
-    //温度
+    
+    //天气描述
+    _content3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 300, 100, 20)];
+    _content3.backgroundColor = [UIColor clearColor];
+    _content3.textColor = [UIColor whiteColor];
+    [view addSubview:_content3];
+
     
     //温度范围
-    _weather3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 260, 100, 20)];
+    _weather3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 320, 100, 20)];
     _weather3.backgroundColor = [UIColor clearColor];
     _weather3.textColor = [UIColor whiteColor];
     [view addSubview:_weather3];
     
     //日期
-    _date3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 280, 140, 20)];
+    _date3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 340, 140, 20)];
     _date3.backgroundColor = [UIColor clearColor];
     _date3.textColor = [UIColor whiteColor];
     _date3.font = [UIFont systemFontOfSize:14.0f];
@@ -485,6 +489,7 @@
     _curLocation.numberOfLines = 0;
     _curLocation.backgroundColor = [UIColor clearColor];
     _curLocation.textColor = [UIColor whiteColor];
+    _curLocation.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_curLocation];
     
 }
@@ -506,10 +511,12 @@
     _cityLabel.text = @"";
     
     
+    _content2.text = @"";
     _date2.text = @"";
     _weather2.text = @"";
     
     
+    _content3.text = @"";
     _date3.text = @"";
     _weather3.text = @"";
     
@@ -566,7 +573,7 @@
     _subDic = [[dic objectForKey:@"weatherinfo"] retain];
     _temp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
     _weather.text = [_subDic objectForKey:@"weather1"];
-    _content.text = [NSString stringWithFormat:@"%@\n%@%@",[_subDic objectForKey:@"temp1"],[_subDic objectForKey:@"wind1"],[_subDic objectForKey:@"fl1"]];
+    _content.text = [NSString stringWithFormat:@"%@\n%@",[_subDic objectForKey:@"temp1"],[_subDic objectForKey:@"wind1"]];
     _date.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
     
     NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
@@ -582,12 +589,13 @@
     
     _cityLabel.text = [_subDic objectForKey:@"city"];
     
-    
+    _content2.text = [_subDic objectForKey:@"weather2"];
     _weather2.text = [_subDic objectForKey:@"temp2"];
     _date2.text = @"明天";
     //        _date2.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
     
     
+    _content3.text = [_subDic objectForKey:@"weather3"];
     _weather3.text = [_subDic objectForKey:@"temp3"];
     _date3.text = @"后天";
     //        _date3.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
@@ -598,7 +606,9 @@
     //关闭状态栏动画
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
 }
+
 #pragma mark - NSURLConnectionDelegate method
+
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"download fail %@",error);
@@ -606,6 +616,7 @@
 
 
 #pragma mark - 指示视图方法
+
 - (void)activityIndicatorView
 {
     //展示风火轮和文字

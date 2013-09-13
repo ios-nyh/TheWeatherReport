@@ -9,6 +9,14 @@
 /* Begin PBXBuildFile section */
 		810B470717E1671400E2F12F /* CityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 810B470617E1671400E2F12F /* CityViewController.m */; };
 		810B470917E192A000E2F12F /* NavigationBg.png in Resources */ = {isa = PBXBuildFile; fileRef = 810B470817E192A000E2F12F /* NavigationBg.png */; };
+		819A2AE917E2B19000254595 /* NaviBack.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AE717E2B19000254595 /* NaviBack.png */; };
+		819A2AEA17E2B19000254595 /* NaviBack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AE817E2B19000254595 /* NaviBack@2x.png */; };
+		819A2AEF17E2B6AB00254595 /* CancelBack.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AED17E2B6AB00254595 /* CancelBack.png */; };
+		819A2AF017E2B6AB00254595 /* CancelBack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AEE17E2B6AB00254595 /* CancelBack@2x.png */; };
+		819A2AF217E2B80800254595 /* add.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AF117E2B80800254595 /* add.png */; };
+		819A2AF517E2BD5500254595 /* ChineseToPinyin.m in Sources */ = {isa = PBXBuildFile; fileRef = 819A2AF417E2BD5500254595 /* ChineseToPinyin.m */; };
+		819A2AF717E2C7C300254595 /* hxhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AF617E2C7C300254595 /* hxhd.png */; };
+		819A2AF917E2DC2D00254595 /* hxhdClear.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AF817E2DC2D00254595 /* hxhdClear.png */; };
 		81FD160817E039F2004B714A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160717E039F2004B714A /* UIKit.framework */; };
 		81FD160A17E039F2004B714A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160917E039F2004B714A /* Foundation.framework */; };
 		81FD160C17E039F2004B714A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160B17E039F2004B714A /* CoreGraphics.framework */; };
@@ -72,6 +80,16 @@
 		810B470517E1671400E2F12F /* CityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CityViewController.h; sourceTree = "<group>"; };
 		810B470617E1671400E2F12F /* CityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CityViewController.m; sourceTree = "<group>"; };
 		810B470817E192A000E2F12F /* NavigationBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NavigationBg.png; sourceTree = "<group>"; };
+		819A2AE717E2B19000254595 /* NaviBack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NaviBack.png; sourceTree = "<group>"; };
+		819A2AE817E2B19000254595 /* NaviBack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "NaviBack@2x.png"; sourceTree = "<group>"; };
+		819A2AED17E2B6AB00254595 /* CancelBack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CancelBack.png; sourceTree = "<group>"; };
+		819A2AEE17E2B6AB00254595 /* CancelBack@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CancelBack@2x.png"; sourceTree = "<group>"; };
+		819A2AF117E2B80800254595 /* add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = add.png; sourceTree = "<group>"; };
+		819A2AF317E2BD5500254595 /* ChineseToPinyin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChineseToPinyin.h; sourceTree = "<group>"; };
+		819A2AF417E2BD5500254595 /* ChineseToPinyin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChineseToPinyin.m; sourceTree = "<group>"; };
+		819A2AF617E2C7C300254595 /* hxhd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hxhd.png; sourceTree = "<group>"; };
+		819A2AF817E2DC2D00254595 /* hxhdClear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hxhdClear.png; sourceTree = "<group>"; };
+		819A2AFA17E3121E00254595 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		81FD160417E039F2004B714A /* TheWeatherReport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheWeatherReport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		81FD160717E039F2004B714A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81FD160917E039F2004B714A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -234,6 +252,8 @@
 				81FD162517E03A3D004B714A /* CityInfo.plist */,
 				81FD168517E03EFF004B714A /* CameraImageHelper.h */,
 				81FD168617E03EFF004B714A /* CameraImageHelper.m */,
+				819A2AF317E2BD5500254595 /* ChineseToPinyin.h */,
+				819A2AF417E2BD5500254595 /* ChineseToPinyin.m */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -256,6 +276,13 @@
 				81FD166F17E03BDC004B714A /* Dock_Btn_2_Activated.png */,
 				81FD167017E03BDC004B714A /* Dock_Btn_2.png */,
 				810B470817E192A000E2F12F /* NavigationBg.png */,
+				819A2AE717E2B19000254595 /* NaviBack.png */,
+				819A2AE817E2B19000254595 /* NaviBack@2x.png */,
+				819A2AED17E2B6AB00254595 /* CancelBack.png */,
+				819A2AEE17E2B6AB00254595 /* CancelBack@2x.png */,
+				819A2AF117E2B80800254595 /* add.png */,
+				819A2AF617E2C7C300254595 /* hxhd.png */,
+				819A2AF817E2DC2D00254595 /* hxhdClear.png */,
 			);
 			name = Imgs;
 			sourceTree = "<group>";
@@ -299,12 +326,12 @@
 				81FD168917E040C9004B714A /* AboutViewController.m */,
 				81FD168A17E040C9004B714A /* DisclaimerViewController.h */,
 				81FD168B17E040C9004B714A /* DisclaimerViewController.m */,
+				81FD169017E040C9004B714A /* VersionViewController.h */,
+				81FD169117E040C9004B714A /* VersionViewController.m */,
 				81FD168C17E040C9004B714A /* LocationViewController.h */,
 				81FD168D17E040C9004B714A /* LocationViewController.m */,
 				81FD168E17E040C9004B714A /* ShowInfoViewController.h */,
 				81FD168F17E040C9004B714A /* ShowInfoViewController.m */,
-				81FD169017E040C9004B714A /* VersionViewController.h */,
-				81FD169117E040C9004B714A /* VersionViewController.m */,
 				81FD167617E03C45004B714A /* HomeViewController.h */,
 				81FD167717E03C45004B714A /* HomeViewController.m */,
 				81FD167817E03C45004B714A /* HomeViewController.xib */,
@@ -349,6 +376,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				"zh-Hans",
 			);
 			mainGroup = 81FD15FB17E039F2004B714A;
 			productRefGroup = 81FD160517E039F2004B714A /* Products */;
@@ -403,6 +431,13 @@
 				81FD168317E03E29004B714A /* Icon.png in Resources */,
 				81FD168417E03E29004B714A /* Icon@2x.png in Resources */,
 				810B470917E192A000E2F12F /* NavigationBg.png in Resources */,
+				819A2AE917E2B19000254595 /* NaviBack.png in Resources */,
+				819A2AEA17E2B19000254595 /* NaviBack@2x.png in Resources */,
+				819A2AEF17E2B6AB00254595 /* CancelBack.png in Resources */,
+				819A2AF017E2B6AB00254595 /* CancelBack@2x.png in Resources */,
+				819A2AF217E2B80800254595 /* add.png in Resources */,
+				819A2AF717E2C7C300254595 /* hxhd.png in Resources */,
+				819A2AF917E2DC2D00254595 /* hxhdClear.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,6 +459,7 @@
 				81FD169517E040C9004B714A /* ShowInfoViewController.m in Sources */,
 				81FD169617E040C9004B714A /* VersionViewController.m in Sources */,
 				810B470717E1671400E2F12F /* CityViewController.m in Sources */,
+				819A2AF517E2BD5500254595 /* ChineseToPinyin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,6 +470,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				81FD161117E039F2004B714A /* en */,
+				819A2AFA17E3121E00254595 /* zh-Hans */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

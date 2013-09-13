@@ -23,9 +23,11 @@
     
     
     UILabel *_weather2;        //温度范围
+    UILabel *_content2;
     UILabel *_date2;           //日期
     
     UILabel *_weather3;
+    UILabel *_content3;
     UILabel *_date3;
     
     UIView *_view1;

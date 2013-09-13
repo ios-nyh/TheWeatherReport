@@ -59,7 +59,12 @@
 		return;
 	}
     
-    [self.session addInput:captureInput];
+    if ([self.session canAddInput:captureInput]) {
+        
+         [self.session addInput:captureInput];
+        
+    }
+   
     
     
     //3.创建、配置输出
@@ -115,6 +120,7 @@
 
     //设置取景
     self.preview = [[[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session]autorelease];
+    
     self.preview.frame = aView.bounds;    
     
     self.preview.videoGravity = AVLayerVideoGravityResize; // AVLayerVideoGravityResize iphone4

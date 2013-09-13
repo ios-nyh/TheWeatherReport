@@ -13,9 +13,11 @@
 
 
 
-@property (retain,nonatomic) NSArray *cityArray;
+@property (retain,nonatomic) NSMutableArray *cityArray;
 @property (retain,nonatomic) NSDictionary *cityDic;
 
+@property (retain,nonatomic) NSMutableOrderedSet *cityKeys;
+@property (retain,nonatomic) NSMutableDictionary *cityList;
 
 @end
 

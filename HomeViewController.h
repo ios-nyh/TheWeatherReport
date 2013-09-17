@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate>
+@interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 {
-    UILabel *_cityLabel;
+    UILabel *_cityLabel;       //当前城市
     
     UILabel *_temp;            // 当日最佳温度
     UILabel *_weather;         // 当日天气情况
@@ -19,41 +19,35 @@
     UILabel *_date;            // 日期
     
     UIImageView *_imgView1;    // 天气图标
-    UIImageView *_imgView2;
+    UIImageView *_imgView2;    
     
     
     UILabel *_weather2;        //温度范围
-    UILabel *_content2;
+    UILabel *_content2;        //天气内容
     UILabel *_date2;           //日期
     
     UILabel *_weather3;
     UILabel *_content3;
     UILabel *_date3;
     
-    UIView *_view1;
-    UIView *_view2;
-    UIView *_view3;
-    
-    NSDictionary *_subDic;
-    
-    
-    UIView *_loading;
-    UIActivityIndicatorView *_activityView;
-    
+        
+    NSDictionary *_subDic;    //装载天气内容
     
     UIButton *_cameraBtn;     //拍照
     UIButton *_cancelBtn;     //取消拍照
-    UIButton *_infoBtn;
+    UIButton *_infoBtn;       //详细信息
+    UIButton *_refreshBtn;    //刷新按钮
     
     
-    NSString *_cityid;
-    UILabel *_curLocation;;      //当前位置
+    NSString *_cityid;        //城市编号
+    UILabel *_curLocation;;   //当前位置
     
-    BOOL result;
-
+    UIView *_loading;
+    UIActivityIndicatorView *_activityView;
 }
 
-@property (retain, nonatomic) NSMutableData *mData;
+
+@property (retain, nonatomic) NSMutableData *mData;                 
 @property (retain, nonatomic) NSDictionary *cityDic;
 @property (copy, nonatomic) NSString *address;
 @property (copy, nonatomic) NSString *location;
@@ -62,6 +56,8 @@
 
 @property (retain, nonatomic) UIView *liveView;                      //摄像视图
 @property (retain, nonatomic) UIImageView *preview;                  //预览视图
+
+@property (retain,nonatomic) UIImagePickerController *imagePicker;   
 
 
 @end

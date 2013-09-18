@@ -44,7 +44,7 @@
     [_content3 release];
     [_date3 release];
     
-    
+    //指示视图
     [_loading release];
     [_activityView release];
     
@@ -131,7 +131,6 @@
     self.preview = preview;
     [self.view addSubview:preview];
     [preview release];
-    
     
     //初始化天气信息label
     [self setBackgroundView:self.view];
@@ -310,28 +309,34 @@
 //刷新按钮响应方法
 - (void)refreshControlMethod
 {
-    _temp.text = @"";
-    _weather.text = @"";
-    _content.text = @"";
-    _date.text = @"";
-    _imgView1.image = [UIImage imageNamed:@""];
-    _imgView2.image = [UIImage imageNamed:@""];
+    [_refreshBtn setHidden:YES];
     
+    [self activityIndicatorView];
+    [self startAnimating];
+
     
-    _cityLabel.text = @"";
+//    _temp.text = @"";
+//    _weather.text = @"";
+//    _content.text = @"";
+//    _date.text = @"";
+//    _imgView1.image = [UIImage imageNamed:@""];
+//    _imgView2.image = [UIImage imageNamed:@""];
+//    
+//    
+//    _cityLabel.text = @"";
+//    
+//    
+//    _content2.text = @"";
+//    _date2.text = @"";
+//    _weather2.text = @"";
+//    
+//    
+//    _content3.text = @"";
+//    _date3.text = @"";
+//    _weather3.text = @"";
     
-    
-    _content2.text = @"";
-    _date2.text = @"";
-    _weather2.text = @"";
-    
-    
-    _content3.text = @"";
-    _date3.text = @"";
-    _weather3.text = @"";
-    
-    //清空当前位置信息
-    _curLocation.text = @"";
+//    //清空当前位置信息
+//    _curLocation.text = @"";
     
 
     if (_cityid) {
@@ -404,6 +409,8 @@
     [_cameraBtn setHidden:NO];
     
     [self.preview setHidden:YES];
+    
+    _curLocation.text = @"";
 }
 
 //城市选择的通知响应方法
@@ -715,54 +722,98 @@
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    //    NSError *error;
+    if (self.mData) {
+        
+        NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableContainers error:nil];
+        
+        //    NSError *error;
+        
+        
+        //    if (error) {
+        //
+        //        NSLog(@" parse error %@",error);
+        //
+        //    } else {
+        
+        //        NSLog(@"解析结果%@",dic);
+        
+        if (dic) {
+            
+            _temp.text = @"";
+            _weather.text = @"";
+            _content.text = @"";
+            _date.text = @"";
+            _imgView1.image = [UIImage imageNamed:@""];
+            _imgView2.image = [UIImage imageNamed:@""];
+        
+            
+            _cityLabel.text = @"";
+            
+            
+            _content2.text = @"";
+            _date2.text = @"";
+            _weather2.text = @"";
+                
+                
+            _content3.text = @"";
+            _date3.text = @"";
+            _weather3.text = @"";
+            
+            //清空当前位置信息
+            _curLocation.text = @"";
+
+        } 
+        
+        _subDic = [[dic objectForKey:@"weatherinfo"] retain];
+        _temp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
+        _weather.text = [_subDic objectForKey:@"weather1"];
+        _content.text = [NSString stringWithFormat:@"%@\n%@",[_subDic objectForKey:@"temp1"],[_subDic objectForKey:@"wind1"]];
+        _date.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        
+        NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
+        NSString *strImg2 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img2"]];
+        NSURL *urlImg1 = [NSURL URLWithString:strImg1];
+        NSURL *urlImg2 = [NSURL URLWithString:strImg2];
+        NSData *data1 = [NSData dataWithContentsOfURL:urlImg1];
+        NSData *data2 = [NSData dataWithContentsOfURL:urlImg2];
+        UIImage *imgPic1 = [[[UIImage alloc] initWithData:data1] autorelease];
+        UIImage *imgPic2 = [[[UIImage alloc] initWithData:data2] autorelease];
+        [_imgView1 setImage: imgPic1];
+        [_imgView2 setImage: imgPic2];
+        
+        _cityLabel.text = [_subDic objectForKey:@"city"];
+        
+        _content2.text = [_subDic objectForKey:@"weather2"];
+        _weather2.text = [_subDic objectForKey:@"temp2"];
+        _date2.text = @"明天";
+        //        _date2.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        
+        
+        _content3.text = [_subDic objectForKey:@"weather3"];
+        _weather3.text = [_subDic objectForKey:@"temp3"];
+        _date3.text = @"后天";
+        //        _date3.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        
+        //    }
+        
+        //停止右上角滚动轮
+        [self stopAnimating];
+        [_refreshBtn setHidden:NO];
+        
+        //关闭状态栏动画
+        [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
+
+    }  else {
+        
+        _date2.text = @"";
+        _date3.text = @"";
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"加载失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     
-    NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableContainers error:nil];
+        [alert show];
+        [alert release];
+    }
     
-    //    if (error) {
-    //
-    //        NSLog(@" parse error %@",error);
-    //
-    //    } else {
-    
-    //        NSLog(@"解析结果%@",dic);
-    
-    
-    _subDic = [[dic objectForKey:@"weatherinfo"] retain];
-    _temp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
-    _weather.text = [_subDic objectForKey:@"weather1"];
-    _content.text = [NSString stringWithFormat:@"%@\n%@",[_subDic objectForKey:@"temp1"],[_subDic objectForKey:@"wind1"]];
-    _date.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
-    
-    NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
-    NSString *strImg2 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img2"]];
-    NSURL *urlImg1 = [NSURL URLWithString:strImg1];
-    NSURL *urlImg2 = [NSURL URLWithString:strImg2];
-    NSData *data1 = [NSData dataWithContentsOfURL:urlImg1];
-    NSData *data2 = [NSData dataWithContentsOfURL:urlImg2];
-    UIImage *imgPic1 = [[[UIImage alloc] initWithData:data1] autorelease];
-    UIImage *imgPic2 = [[[UIImage alloc] initWithData:data2] autorelease];
-    [_imgView1 setImage: imgPic1];
-    [_imgView2 setImage: imgPic2];
-    
-    _cityLabel.text = [_subDic objectForKey:@"city"];
-    
-    _content2.text = [_subDic objectForKey:@"weather2"];
-    _weather2.text = [_subDic objectForKey:@"temp2"];
-    _date2.text = @"明天";
-    //        _date2.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
-    
-    
-    _content3.text = [_subDic objectForKey:@"weather3"];
-    _weather3.text = [_subDic objectForKey:@"temp3"];
-    _date3.text = @"后天";
-    //        _date3.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
-    
-    //    }
-    
-    
-    //关闭状态栏动画
-    [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
 }
 
 #pragma mark - NSURLConnectionDelegate method
@@ -777,9 +828,12 @@
 - (void)activityIndicatorView
 {
     //展示风火轮和文字
-    _loading = [[UIView alloc] initWithFrame:CGRectMake(110, 120, 100, 100)];
-    _loading.backgroundColor = [UIColor blackColor];
-    _loading.layer.cornerRadius = 20;
+    _loading = [[UIView alloc] initWithFrame:CGRectMake(WIDTH - 50, 0, 20, 20)];
+    
+    
+//    _loading.backgroundColor = [UIColor blackColor];
+//    _loading.layer.cornerRadius = 20;
+    
     
     //    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(0, 75, 100, 20)];
     //    [label setBackgroundColor:[UIColor clearColor]];
@@ -791,7 +845,7 @@
     
     //设置进度轮
     _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    [_activityView setCenter:CGPointMake(50, 50)];//指定进度轮中心点
+    [_activityView setCenter:CGPointMake(20, 20)];//指定进度轮中心点
     [_loading addSubview:_activityView];
     
     [self.view addSubview:_loading];

@@ -36,7 +36,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     //设置图像分辨率
-    [self.session setSessionPreset:AVCaptureSessionPresetPhoto]; //AVCaptureSessionPresetPhoto iphone4
+    [self.session setSessionPreset:AVCaptureSessionPresetPhoto];
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -123,7 +123,7 @@
     
     self.preview.frame = aView.bounds;
     
-    self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill; // AVLayerVideoGravityResize iphone4
+    self.preview.videoGravity = AVLayerVideoGravityResizeAspectFill;
     
     [aView.layer addSublayer:self.preview];
     

@@ -58,7 +58,7 @@
     
     //地址  用户位置：40.053126 ---- 116.300133
     UILabel *address = [[UILabel alloc]initWithFrame:CGRectMake(8, HEIGHT - 20 - 44 - 105, WIDTH - 5, 40)];
-    address.text = @"商家地址：北京-海淀区-上地十街-1号院-4号楼-1715室";
+    address.text = @"公司地址：北京-海淀区-上地十街-1号院-4号楼-1715室";
     address.textColor = [UIColor blueColor];
     address.numberOfLines = 0;
     [self.view addSubview:address];

@@ -62,7 +62,7 @@
     
     UIButton *urlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [urlBtn setFrame:CGRectMake(60, 120, 100+iconImg.size.width+40, 20)];
-    [urlBtn setTitle:@"http://www.apple.com" forState:UIControlStateNormal];
+    [urlBtn setTitle:@"http://www.elego.cn" forState:UIControlStateNormal];
     [urlBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [urlBtn addTarget:self action:@selector(openURLMethod) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:urlBtn];
@@ -73,9 +73,11 @@
     [self.view addSubview:aboutWeather];
     [aboutWeather release];
     
-    UILabel *rights = [[UILabel alloc]initWithFrame:CGRectMake(0, HEIGHT - 20 - 44 - 40 - 20, WIDTH, 40)];
-    rights.text = @"版权所有  翻版必究";
-    rights.font = [UIFont systemFontOfSize:24.0f];
+    
+    UILabel *rights = [[UILabel alloc]initWithFrame:CGRectMake(0, HEIGHT - 20 - 44 - 140 - 20, WIDTH, 140)];
+    rights.text = @"Copyright © 2004 - 2013 HXHD Corporation, All Rights Reserved \n\n 华信互动公司 版权所有";
+    rights.numberOfLines = 0;
+    rights.font = [UIFont systemFontOfSize:20.0f];
     rights.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:rights];
     [rights release];
@@ -85,7 +87,7 @@
 
 - (void)openURLMethod
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.apple.com"]];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.elego.cn"]];
 }
 
 //自定义返回按钮

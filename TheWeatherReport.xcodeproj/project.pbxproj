@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8104C36A17E94DFE00A54475 /* CompanyLocationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8104C36917E94DFE00A54475 /* CompanyLocationViewController.m */; };
+		8104C36C17E9511600A54475 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8104C36B17E9511600A54475 /* MapKit.framework */; };
+		8104C36F17E952A500A54475 /* CustomAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 8104C36E17E952A500A54475 /* CustomAnnotation.m */; };
 		810B470717E1671400E2F12F /* CityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 810B470617E1671400E2F12F /* CityViewController.m */; };
 		810B470917E192A000E2F12F /* NavigationBg.png in Resources */ = {isa = PBXBuildFile; fileRef = 810B470817E192A000E2F12F /* NavigationBg.png */; };
 		812169E217E6D658005988CB /* info.png in Resources */ = {isa = PBXBuildFile; fileRef = 812169E017E6D657005988CB /* info.png */; };
@@ -81,6 +84,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8104C36817E94DFE00A54475 /* CompanyLocationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompanyLocationViewController.h; sourceTree = "<group>"; };
+		8104C36917E94DFE00A54475 /* CompanyLocationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompanyLocationViewController.m; sourceTree = "<group>"; };
+		8104C36B17E9511600A54475 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		8104C36D17E952A500A54475 /* CustomAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomAnnotation.h; sourceTree = "<group>"; };
+		8104C36E17E952A500A54475 /* CustomAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomAnnotation.m; sourceTree = "<group>"; };
 		810B470517E1671400E2F12F /* CityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CityViewController.h; sourceTree = "<group>"; };
 		810B470617E1671400E2F12F /* CityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CityViewController.m; sourceTree = "<group>"; };
 		810B470817E192A000E2F12F /* NavigationBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NavigationBg.png; sourceTree = "<group>"; };
@@ -174,6 +182,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8104C36C17E9511600A54475 /* MapKit.framework in Frameworks */,
 				81FD163817E03B6F004B714A /* QuartzCore.framework in Frameworks */,
 				81FD163617E03B5E004B714A /* CoreLocation.framework in Frameworks */,
 				81FD163417E03B56004B714A /* AVFoundation.framework in Frameworks */,
@@ -213,6 +222,7 @@
 		81FD160617E039F2004B714A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8104C36B17E9511600A54475 /* MapKit.framework */,
 				81FD163717E03B6F004B714A /* QuartzCore.framework */,
 				81FD163517E03B5E004B714A /* CoreLocation.framework */,
 				81FD163317E03B56004B714A /* AVFoundation.framework */,
@@ -262,6 +272,8 @@
 				81FD168617E03EFF004B714A /* CameraImageHelper.m */,
 				819A2AF317E2BD5500254595 /* ChineseToPinyin.h */,
 				819A2AF417E2BD5500254595 /* ChineseToPinyin.m */,
+				8104C36D17E952A500A54475 /* CustomAnnotation.h */,
+				8104C36E17E952A500A54475 /* CustomAnnotation.m */,
 			);
 			name = Other;
 			sourceTree = "<group>";
@@ -349,6 +361,8 @@
 				81FD167817E03C45004B714A /* HomeViewController.xib */,
 				810B470517E1671400E2F12F /* CityViewController.h */,
 				810B470617E1671400E2F12F /* CityViewController.m */,
+				8104C36817E94DFE00A54475 /* CompanyLocationViewController.h */,
+				8104C36917E94DFE00A54475 /* CompanyLocationViewController.m */,
 			);
 			name = VC;
 			sourceTree = "<group>";
@@ -476,6 +490,8 @@
 				81FD169617E040C9004B714A /* VersionViewController.m in Sources */,
 				810B470717E1671400E2F12F /* CityViewController.m in Sources */,
 				819A2AF517E2BD5500254595 /* ChineseToPinyin.m in Sources */,
+				8104C36A17E94DFE00A54475 /* CompanyLocationViewController.m in Sources */,
+				8104C36F17E952A500A54475 /* CustomAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>B31F16FE-DDAB-4E13-84F4-C4D2AB436880</string>
+	<key>IDESourceControlProjectName</key>
+	<string>TheWeatherReport</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>93CAF4D8-4D1F-435D-A8A9-5BD4B51A983B</key>
+		<string>https://github.com/ios-nyh/TheWeatherReport.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>TheWeatherReport.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>93CAF4D8-4D1F-435D-A8A9-5BD4B51A983B</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/ios-nyh/TheWeatherReport.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>93CAF4D8-4D1F-435D-A8A9-5BD4B51A983B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>93CAF4D8-4D1F-435D-A8A9-5BD4B51A983B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>TheWeatherReport</string>
+		</dict>
+	</array>
+</dict>
+</plist>

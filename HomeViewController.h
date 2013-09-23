@@ -42,8 +42,8 @@
     NSString *_cityid;        //城市编号
     UILabel *_curLocation;;   //当前位置
     
-    UIView *_loading;
     UIActivityIndicatorView *_activityView;
+    UIView *_loading;
 }
 
 
@@ -57,7 +57,8 @@
 @property (retain, nonatomic) UIView *liveView;                      //摄像视图
 @property (retain, nonatomic) UIImageView *preview;                  //预览视图
 
-@property (retain,nonatomic) UIImagePickerController *imagePicker;   
+@property (retain,nonatomic) UIImagePickerController *imagePicker;
+
 
 
 @end

@@ -93,6 +93,13 @@
 }
 
 
+//#pragma mark - 隐藏状态栏
+//- (BOOL)prefersStatusBarHidden
+//{
+//    return YES;
+//}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -145,7 +152,7 @@
     
     //刷新按钮
     _refreshBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_refreshBtn setFrame:CGRectMake(WIDTH - 50, 20, 50, 38)];
+    [_refreshBtn setFrame:CGRectMake(WIDTH - 50, 40, 50, 38)];
     [_refreshBtn setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
     [_refreshBtn setImage:[UIImage imageNamed:@"refresh_pressed.png"] forState:UIControlStateHighlighted];
     [_refreshBtn addTarget:self action:@selector(refreshControlMethod) forControlEvents:UIControlEventTouchUpInside];
@@ -222,88 +229,108 @@
     [geocoder release];
 }
 
-//#pragma mark - 获取摄像图片
-//
-//- (void)getImage
-//{
-//    [self.preview setHidden:NO];
-//    
-//    if ([self.cameraHelper image] != nil) {
-//        
-//        self.preview.image = [self.cameraHelper image];
-//        
-//        NSLog(@"getImage height %f, width %f",self.preview.image.size.height,self.preview.image.size.width);
-//        
-//        
-//        [_cameraBtn setHidden:YES];
-//        
-//        _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//        [_cancelBtn setFrame:CGRectMake(15, HEIGHT - 65, 50, 38)];
-//        [_cancelBtn setImage:[UIImage imageNamed:@"cancel.png"] forState:UIControlStateNormal];
-//        [_cancelBtn setImage:[UIImage imageNamed:@"cancel_pressed.png"] forState:UIControlStateHighlighted];
-//        [_cancelBtn addTarget:self action:@selector(cancelPhotos:) forControlEvents:UIControlEventTouchUpInside];
-//        [self.view addSubview:_cancelBtn];
-//        
-//        //提示，是否保存图片
-//        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"是否保存图片" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存", nil];
-//        
-//        [alertView show];
-//        [alertView release];
-//    }
-//    
-//    [self stopAnimating];
-//}
-//
-//#pragma mark - 对于特定UIView的截屏
-//
-//- (UIImage *)captureView: (UIView *)theView
-//{
-//    //    CGRect rect = theView.frame;
-//    
-//    CGRect rect = CGRectMake(0, 0, WIDTH, HEIGHT - 20);
-//    UIGraphicsBeginImageContext(rect.size);
-//    CGContextRef context = UIGraphicsGetCurrentContext();
-//    [theView.layer renderInContext:context];
-//    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+#pragma mark - 获取摄像图片
+
+- (void)getImage
+{
+    [self.preview setHidden:NO];
+    
+    if ([self.cameraHelper image] != nil) {
+        
+        self.preview.image = [self.cameraHelper image];
+        
+        NSLog(@"getImage height %f, width %f",self.preview.image.size.height,self.preview.image.size.width);
+        
+        
+        [_cameraBtn setHidden:YES];
+        
+        _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_cancelBtn setFrame:CGRectMake(15, HEIGHT - 45, 50, 38)];
+        [_cancelBtn setImage:[UIImage imageNamed:@"cancel.png"] forState:UIControlStateNormal];
+        [_cancelBtn setImage:[UIImage imageNamed:@"cancel_pressed.png"] forState:UIControlStateHighlighted];
+        [_cancelBtn addTarget:self action:@selector(cancelPhotos:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:_cancelBtn];
+        
+        //提示，是否保存图片
+        UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"是否保存图片" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存", nil];
+        
+        [alertView show];
+        [alertView release];
+    }
+    
+    [self stopAnimating];
+}
+
+#pragma mark - 对于特定UIView的截屏
+
+- (UIImage *)captureView: (UIView *)theView
+{
+    //    CGRect rect = theView.frame;
+    
+    CGRect rect = CGRectMake(0, 0, WIDTH, HEIGHT - 20);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [theView.layer renderInContext:context];
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    //另一种方法：全屏截图
+//    UIGraphicsBeginImageContext(CGSizeMake(WIDTH,HEIGHT - 20));
+//    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//    UIImage*img = UIGraphicsGetImageFromCurrentImageContext();
 //    UIGraphicsEndImageContext();
-//    
-//    //另一种方法：全屏截图
-////    UIGraphicsBeginImageContext(CGSizeMake(WIDTH,HEIGHT - 20));
-////    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-////    UIImage*img = UIGraphicsGetImageFromCurrentImageContext();
-////    UIGraphicsEndImageContext();
-//    
-//    return img;
-//}
+    
+    return img;
+}
 
 
-//#pragma mark - UIAlertViewDelegate
-//
-//- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-//{
-//    switch (buttonIndex) {
-//        case 0:
-//            NSLog(@"取消保存");
-//            break;
-//            
-//        case 1:
-//        {
-//            [_cancelBtn setHidden:YES];
-//            [_infoBtn setHidden:YES];
-//            
-//            UIImage *img = [self captureView:self.view];
-//            UIImageWriteToSavedPhotosAlbum(img, nil, nil, nil);
-//            
-//            [_cancelBtn setHidden:NO];
-//            [_infoBtn setHidden:NO];
-//            
-//        }
-//            break;
-//            
-//        default:
-//            break;
-//    }
-//}
+#pragma mark - UIAlertViewDelegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    switch (buttonIndex) {
+            
+        case 0:
+            NSLog(@"取消保存");
+            break;
+            
+        case 1:
+        {
+            [_cancelBtn setHidden:YES];
+            [_infoBtn setHidden:YES];
+            
+            UIImage *img = [self captureView:self.view];
+            UIImageWriteToSavedPhotosAlbum(img,self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
+            
+            [_cancelBtn setHidden:NO];
+            [_infoBtn setHidden:NO];
+            
+        }
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"存储照片成功"
+
+                                                    message:@"您已将照片存储于图片库中，打开照片程序即可查看。"
+
+                                                   delegate:nil
+
+                                          cancelButtonTitle:@"OK"
+
+                                          otherButtonTitles:nil];
+
+    [alert show];
+
+    [alert release];
+
+}
+
 
 #pragma mark - 按钮点击事件
 //刷新按钮响应方法
@@ -311,7 +338,7 @@
 {
     [_refreshBtn setHidden:YES];
     
-    [self activityIndicatorView];
+    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, 40, 20, 20)];
     [self startAnimating];
 
     
@@ -349,42 +376,44 @@
     }
 }
 
-//点击调用系统相机
+#pragma mark - 点击调用相机
 - (void)snapPressed:(id)sender
 {
     
-//    [self.cameraHelper CaptureStillImage];
-//    
-//    [self performSelector:@selector(getImage) withObject:nil afterDelay:0.2];
-//    
-//    //开启指示视图
-//    [self activityIndicatorView];
-//    [self startAnimating];
+    [self.cameraHelper CaptureStillImage];
+    
+    [self performSelector:@selector(getImage) withObject:nil afterDelay:0.2];
+    
+    //开启指示视图
+    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH/2, HEIGHT/2, 20, 20)];
+    [self startAnimating];
     
     
-    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-        
-        UIImagePickerController *imagePicker = [[UIImagePickerController alloc]init];
-        
-        [imagePicker setDelegate:self];
-        
-        [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
-        
-        imagePicker.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-        
-        self.imagePicker = imagePicker;
-        
-        [self presentViewController:imagePicker animated:YES completion:nil];
-        
-        [imagePicker release];
-
-    } else {
-        
-        NSLog(@"模拟其中无法打开照相机,请在真机中使用");
-    }
+//    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+//        
+//        UIImagePickerController *imagePicker = [[UIImagePickerController alloc]init];
+//        
+//        [imagePicker setDelegate:self];
+//        
+//        [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
+//        
+//        imagePicker.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
+//        
+//        self.imagePicker = imagePicker;
+//        
+//        [self presentViewController:imagePicker animated:YES completion:nil];
+//        
+//        [imagePicker release];
+//
+//    } else {
+//        
+//        NSLog(@"模拟其中无法打开照相机,请在真机中使用");
+//    }
+    
 }
 
-//显示天气相机信息
+
+#pragma mark - 显示天气相机信息
 - (void)showInfo
 {
     ShowInfoViewController *info = [[ShowInfoViewController alloc]init];
@@ -404,7 +433,7 @@
     
 }
 
-//取消拍照
+#pragma mark - 取消拍照
 - (void)cancelPhotos:(UIButton *)sender
 {
     [_cancelBtn setHidden:YES];
@@ -415,7 +444,7 @@
     _curLocation.text = @"";
 }
 
-//城市选择的通知响应方法
+#pragma mark - 城市选择的通知响应方法
 - (void)selectCity:(NSNotification *)noti
 {
     NSString *cityName = [noti.userInfo objectForKey:@"cityName"];
@@ -448,83 +477,84 @@
 //    [location release];
 //}
 
-#pragma mark - UIImagePickerControllerDelegate
-//调用系统相机，点击使用时，调用
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    
-    [self.preview setHidden:NO];
-    [_cameraBtn setHidden:YES];
-    
-    _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_cancelBtn setFrame:CGRectMake(15, HEIGHT - 45, 50, 38)];
-    [_cancelBtn setImage:[UIImage imageNamed:@"cancel.png"] forState:UIControlStateNormal];
-    [_cancelBtn setImage:[UIImage imageNamed:@"cancel_pressed.png"] forState:UIControlStateHighlighted];
-    [_cancelBtn addTarget:self action:@selector(cancelPhotos:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:_cancelBtn];
 
-    
-    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera)
-    {
-        //如果是来自照相机的image，那么先保存
-        UIImage *original_image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-
-        self.preview.image = original_image;
-        
-        
-//        // UIEdgeInsets insets = {top, left, bottom, right};
-//        UIImage *image = [original_image resizableImageWithCapInsets:UIEdgeInsetsMake(15,10,15,10) resizingMode:UIImageResizingModeStretch];
-//        self.preview.image = image;
-
-        
-        [_refreshBtn setHidden:YES];
-        [_cancelBtn setHidden:YES];
-        [_infoBtn setHidden:YES];
-        
-        _curLocation.text = self.location;
-        
-        UIGraphicsBeginImageContext(self.view.bounds.size);
-        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-        UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
-        UIGraphicsEndImageContext();
-        
-        
-        UIImageWriteToSavedPhotosAlbum(viewImage, self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
-        
-        [_refreshBtn setHidden:NO];
-        [_cancelBtn setHidden:NO];
-        [_infoBtn setHidden:NO];
-    }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
-{
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"存储照片成功"
-                          
-                                                    message:@"您已将照片存储于图片库中，打开照片程序即可查看。"
-                          
-                                                   delegate:nil
-                          
-                                          cancelButtonTitle:@"OK"
-                          
-                                          otherButtonTitles:nil];
-    
-    [alert show];
-    
-    [alert release];
-    
-}
-
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-{
-    [self.preview setHidden:YES];
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
-
-}
+//#pragma mark - UIImagePickerControllerDelegate
+////调用系统相机，点击使用时，调用
+//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+//{
+//    
+//    [self.preview setHidden:NO];
+//    [_cameraBtn setHidden:YES];
+//    
+//    _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [_cancelBtn setFrame:CGRectMake(15, HEIGHT - 45, 50, 38)];
+//    [_cancelBtn setImage:[UIImage imageNamed:@"cancel.png"] forState:UIControlStateNormal];
+//    [_cancelBtn setImage:[UIImage imageNamed:@"cancel_pressed.png"] forState:UIControlStateHighlighted];
+//    [_cancelBtn addTarget:self action:@selector(cancelPhotos:) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:_cancelBtn];
+//
+//    
+//    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera)
+//    {
+//        //如果是来自照相机的image，那么先保存
+//        UIImage *original_image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
+//
+//        self.preview.image = original_image;
+//        
+//        
+////        // UIEdgeInsets insets = {top, left, bottom, right};
+////        UIImage *image = [original_image resizableImageWithCapInsets:UIEdgeInsetsMake(15,10,15,10) resizingMode:UIImageResizingModeStretch];
+////        self.preview.image = image;
+//
+//        
+//        [_refreshBtn setHidden:YES];
+//        [_cancelBtn setHidden:YES];
+//        [_infoBtn setHidden:YES];
+//        
+//        _curLocation.text = self.location;
+//        
+//        UIGraphicsBeginImageContext(self.view.bounds.size);
+//        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+//        UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+//        UIGraphicsEndImageContext();
+//        
+//        
+//        UIImageWriteToSavedPhotosAlbum(viewImage, self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
+//        
+//        [_refreshBtn setHidden:NO];
+//        [_cancelBtn setHidden:NO];
+//        [_infoBtn setHidden:NO];
+//    }
+//    
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//}
+//
+//- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
+//{
+//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"存储照片成功"
+//                          
+//                                                    message:@"您已将照片存储于图片库中，打开照片程序即可查看。"
+//                          
+//                                                   delegate:nil
+//                          
+//                                          cancelButtonTitle:@"OK"
+//                          
+//                                          otherButtonTitles:nil];
+//    
+//    [alert show];
+//    
+//    [alert release];
+//    
+//}
+//
+//
+//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+//{
+//    [self.preview setHidden:YES];
+//    
+//    [self dismissViewControllerAnimated:YES completion:nil];
+//
+//}
 
 #pragma mark - 定义天气信息UI
 - (void)setBackgroundView:(UIView *)view
@@ -536,14 +566,19 @@
     _temp = [[UILabel alloc]initWithFrame:CGRectMake(160, 40, 120, 40)];
     _temp.font = [UIFont systemFontOfSize:34.0f];
     _temp.backgroundColor = [UIColor clearColor];
+    
     _temp.textColor = [UIColor whiteColor];
+    _temp.shadowColor = [UIColor grayColor];
+//    _temp.highlightedTextColor = [UIColor whiteColor];
+    
     _temp.textAlignment = NSTextAlignmentCenter;
     [view addSubview:_temp];
     
-    //当日天气情况
+    //当日天气情况描述
     _weather = [[UILabel alloc]initWithFrame:CGRectMake(160, 80, 120, 20)];
     _weather.backgroundColor = [UIColor clearColor];
     _weather.textColor = [UIColor whiteColor];
+    _weather.shadowColor = [UIColor grayColor];
     _weather.textAlignment = NSTextAlignmentCenter;
     [view addSubview:_weather];
     
@@ -551,6 +586,8 @@
     _content = [[UILabel alloc]initWithFrame:CGRectMake(160, 120, 160, 40)];
     _content.backgroundColor = [UIColor clearColor];
     _content.textColor = [UIColor whiteColor];
+    _content.shadowColor = [UIColor grayColor];
+    _content.font = [UIFont systemFontOfSize:14.0f];
     _content.numberOfLines = 0;
     [view addSubview:_content];
     
@@ -558,22 +595,24 @@
     _date = [[UILabel alloc]initWithFrame:CGRectMake(160, 160, 140, 20)];
     _date.backgroundColor = [UIColor clearColor];
     _date.textColor = [UIColor whiteColor];
+    _date.shadowColor = [UIColor grayColor];
     _date.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_date];
     
     //显示天气图片
-    _imgView1 = [[UIImageView alloc]initWithFrame:CGRectMake(20, 40, 40, 40)];
+    _imgView1 = [[UIImageView alloc]initWithFrame:CGRectMake(10, 40, 80, 80)];
     [_imgView1 setBackgroundColor:[UIColor clearColor]];
     [view addSubview:_imgView1];
     
-    _imgView2 = [[UIImageView alloc]initWithFrame:CGRectMake(60, 40, 40, 40)];
+    _imgView2 = [[UIImageView alloc]initWithFrame:CGRectMake(75, 40, 80, 80)];
     [_imgView2 setBackgroundColor:[UIColor clearColor]];
     [view addSubview:_imgView2];
     
     //城市名字
-    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(40, 100, 100, 40)];
+    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(60, 120, 80, 40)];
     [_cityLabel setBackgroundColor:[UIColor clearColor]];
     _cityLabel.textColor = [UIColor whiteColor];
+    _cityLabel.shadowColor = [UIColor grayColor];
     [view addSubview:_cityLabel];
     
 //    UIButton *tapBtn1 = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -590,12 +629,14 @@
     _content2 = [[UILabel alloc]initWithFrame:CGRectMake(160, 220, WIDTH - 160, 20)];
     _content2.backgroundColor = [UIColor clearColor];
     _content2.textColor = [UIColor whiteColor];
+    _content2.shadowColor = [UIColor grayColor];
     [view addSubview:_content2];
 
     //温度范围
     _weather2 = [[UILabel alloc]initWithFrame:CGRectMake(160, 240, 100, 20)];
     _weather2.backgroundColor = [UIColor clearColor];
     _weather2.textColor = [UIColor whiteColor];
+    _weather2.shadowColor = [UIColor grayColor];
     [view addSubview:_weather2];
     
     //日期
@@ -619,6 +660,7 @@
     _content3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 320, WIDTH - 160, 20)];
     _content3.backgroundColor = [UIColor clearColor];
     _content3.textColor = [UIColor whiteColor];
+    _content3.shadowColor = [UIColor grayColor];
     [view addSubview:_content3];
 
     
@@ -626,12 +668,14 @@
     _weather3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 340, 100, 20)];
     _weather3.backgroundColor = [UIColor clearColor];
     _weather3.textColor = [UIColor whiteColor];
+    _weather3.shadowColor = [UIColor grayColor];
     [view addSubview:_weather3];
     
     //日期
     _date3 = [[UILabel alloc]initWithFrame:CGRectMake(160, 360, 140, 20)];
     _date3.backgroundColor = [UIColor clearColor];
     _date3.textColor = [UIColor whiteColor];
+    _date3.shadowColor = [UIColor grayColor];
     _date3.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_date3];
     
@@ -646,6 +690,7 @@
     _curLocation.numberOfLines = 0;
     _curLocation.backgroundColor = [UIColor clearColor];
     _curLocation.textColor = [UIColor whiteColor];
+    _curLocation.shadowColor = [UIColor grayColor];
     _curLocation.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_curLocation];
 
@@ -699,8 +744,7 @@
 //    }
 //}
 
-
-#pragma mark - 解析
+#pragma mark
 #pragma mark - JSON 解析
 - (void)JSONStartParse:(NSString *)cityid
 {
@@ -772,16 +816,27 @@
         _content.text = [NSString stringWithFormat:@"%@\n%@",[_subDic objectForKey:@"temp1"],[_subDic objectForKey:@"wind1"]];
         _date.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
         
-        NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
-        NSString *strImg2 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img2"]];
-        NSURL *urlImg1 = [NSURL URLWithString:strImg1];
-        NSURL *urlImg2 = [NSURL URLWithString:strImg2];
-        NSData *data1 = [NSData dataWithContentsOfURL:urlImg1];
-        NSData *data2 = [NSData dataWithContentsOfURL:urlImg2];
-        UIImage *imgPic1 = [[[UIImage alloc] initWithData:data1] autorelease];
-        UIImage *imgPic2 = [[[UIImage alloc] initWithData:data2] autorelease];
-        [_imgView1 setImage: imgPic1];
-        [_imgView2 setImage: imgPic2];
+        
+        
+        NSLog(@" ------------- %@",[_subDic valueForKey:@"img1"]);
+        NSLog(@" ------------- %@",[_subDic valueForKey:@"img2"]);
+        NSString *str1 = [_subDic valueForKey:@"img1"];
+        NSString *str2 = [_subDic valueForKey:@"img2"];
+        UIImage *img1 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",str1]];
+        UIImage *img2 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",str2]];
+        [_imgView1 setImage: img1];
+        [_imgView2 setImage: img2];
+        
+//        NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
+//        NSString *strImg2 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img2"]];
+//        NSURL *urlImg1 = [NSURL URLWithString:strImg1];
+//        NSURL *urlImg2 = [NSURL URLWithString:strImg2];
+//        NSData *data1 = [NSData dataWithContentsOfURL:urlImg1];
+//        NSData *data2 = [NSData dataWithContentsOfURL:urlImg2];
+//        UIImage *imgPic1 = [[[UIImage alloc] initWithData:data1] autorelease];
+//        UIImage *imgPic2 = [[[UIImage alloc] initWithData:data2] autorelease];
+//        [_imgView1 setImage: imgPic1];
+//        [_imgView2 setImage: imgPic2];
         
         _cityLabel.text = [_subDic objectForKey:@"city"];
         
@@ -827,10 +882,10 @@
 
 
 #pragma mark - 指示视图方法
-- (void)activityIndicatorView
+- (void)activityIndicatorViewWithFrame:(CGRect)frame
 {
     //展示风火轮和文字
-    _loading = [[UIView alloc] initWithFrame:CGRectMake(WIDTH - 50, 20, 20, 20)];
+    _loading = [[UIView alloc] initWithFrame:frame];
     
     
 //    _loading.backgroundColor = [UIColor blackColor];

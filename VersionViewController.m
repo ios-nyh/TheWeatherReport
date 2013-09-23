@@ -28,6 +28,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    [self.view setBackgroundColor:[UIColor whiteColor]];
     
     //重写左边返回按钮
     UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -75,7 +76,7 @@
     
     
     UILabel *rights = [[UILabel alloc]initWithFrame:CGRectMake(0, HEIGHT - 20 - 44 - 140 - 20, WIDTH, 140)];
-    rights.text = @"Copyright © 2004 - 2013 HXHD Corporation, All Rights Reserved \n\n 华信互动公司 版权所有";
+    rights.text = @"Copyright © 2013 HXHD Corporation, All Rights Reserved \n\n 华信互动公司 版权所有";
     rights.numberOfLines = 0;
     rights.font = [UIFont systemFontOfSize:20.0f];
     rights.textAlignment = NSTextAlignmentCenter;

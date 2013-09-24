@@ -25,17 +25,32 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+   
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
+
+    
+//    float version = [[[UIDevice currentDevice] systemVersion] floatValue];
+//    if (version >= 7.0) {
+//        
+//         [[UIApplication sharedApplication] setStatusBarHidden:NO];
+//        
+//    } else {
+//        
+//        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+//    }
+//
     
     self.home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
     UINavigationController *na = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];
-   
     self.window.rootViewController = na;
     
     
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
     
     //开始监听网络
     [self startNotificationNetwork];

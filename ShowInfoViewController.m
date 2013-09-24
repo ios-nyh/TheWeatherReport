@@ -14,6 +14,8 @@
 
 #import "CityViewController.h"
 
+#define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]
+
 @interface ShowInfoViewController ()
 
 @end
@@ -24,6 +26,13 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        
+        if (IOS_VERSION >= 7.0) {
+            
+            self.edgesForExtendedLayout = UIRectEdgeNone;
+        }
+
+        
         // Custom initialization
     }
     return self;

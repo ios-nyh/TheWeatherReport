@@ -13,6 +13,9 @@
 #import "LocationViewController.h"
 #import "ShowInfoViewController.h"
 
+#define VERSON [[[UIDevice currentDevice] systemVersion] floatValue]
+
+#define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]
 
 @interface HomeViewController ()<AVHelperDelegate>
 
@@ -67,6 +70,8 @@
     
     [_imagePicker release];
     
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [super dealloc];
 }
 
@@ -74,7 +79,17 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        
+        if (IOS_VERSION >= 7.0) {
+            
+            self.edgesForExtendedLayout = UIRectEdgeNone;
+            self.extendedLayoutIncludesOpaqueBars = NO;
+            self.modalPresentationCapturesStatusBarAppearance = NO;
+            
+            }
+        
         // Custom initialization
+        
     }
     return self;
 }
@@ -84,6 +99,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setNavigationBarHidden:YES];
+    
     //开始实时取景
     [self.cameraHelper startRunning];
 }
@@ -109,6 +125,7 @@
     
     //开始定位服务
     [self startUpdates];
+
     
     //获取城市信息
     NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
@@ -174,6 +191,13 @@
     [_infoBtn addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
     
+    //增加一个计时器，每隔两小时刷新一次
+    [NSTimer scheduledTimerWithTimeInterval:7200.0f target:self selector:@selector(refreshControlMethod) userInfo:nil repeats:YES];
+    
+    //监听进入前台
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(refreshControlMethod)
+                                                 name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 
@@ -298,12 +322,14 @@
         {
             [_cancelBtn setHidden:YES];
             [_infoBtn setHidden:YES];
+            [_refreshBtn setHidden:YES];
             
             UIImage *img = [self captureView:self.view];
             UIImageWriteToSavedPhotosAlbum(img,self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
             
             [_cancelBtn setHidden:NO];
             [_infoBtn setHidden:NO];
+            [_refreshBtn setHidden:NO];
             
         }
             break;
@@ -332,45 +358,21 @@
 }
 
 
-#pragma mark - 按钮点击事件
-//刷新按钮响应方法
+#pragma mark - 刷新按钮响应方法
 - (void)refreshControlMethod
 {
     [_refreshBtn setHidden:YES];
     
+    //加入指示视图
     [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, 40, 20, 20)];
     [self startAnimating];
-
     
-//    _temp.text = @"";
-//    _weather.text = @"";
-//    _content.text = @"";
-//    _date.text = @"";
-//    _imgView1.image = [UIImage imageNamed:@""];
-//    _imgView2.image = [UIImage imageNamed:@""];
-//    
-//    
-//    _cityLabel.text = @"";
-//    
-//    
-//    _content2.text = @"";
-//    _date2.text = @"";
-//    _weather2.text = @"";
-//    
-//    
-//    _content3.text = @"";
-//    _date3.text = @"";
-//    _weather3.text = @"";
-    
-//    //清空当前位置信息
-//    _curLocation.text = @"";
-    
-
+    //刷新天气数据
     if (_cityid) {
         
         [self JSONStartParse:_cityid];
         
-    } else {
+    } else if (self.address) {
         
         [self JSONStartParse:[self.cityDic objectForKey:self.address]];
     }
@@ -418,18 +420,32 @@
 {
     ShowInfoViewController *info = [[ShowInfoViewController alloc]init];
     
-    UINavigationController *na = [[UINavigationController alloc]initWithRootViewController:info];
+    UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:info];
     
-    [na.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"] forBarMetrics:UIBarMetricsDefault];
+    
+    //---------
+   
+    if (VERSON >= 7.0) {
+        
+         [navi.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"] forBarMetrics:UIBarMetricsDefault];
+        
+    } else {
+        
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        
+        [navi.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"] forBarMetrics:UIBarMetricsDefault];
+    }
+    //---------
+   
     
     info.providesPresentationContextTransitionStyle = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCity:) name:@"selectedCityNotification" object:nil];
     
-    [self presentViewController:na animated:YES completion:nil];
+    [self presentViewController:navi animated:YES completion:nil];
     
     [info release];
-    [na release];
+    [navi release];
     
 }
 

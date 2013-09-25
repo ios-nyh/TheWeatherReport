@@ -44,11 +44,11 @@
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
 
     
-#if 1
-    //监听自动对焦
-    int flags = NSKeyValueObservingOptionNew; 
-    [device addObserver:self forKeyPath:@"adjustingFocus" options:flags context:nil];
-#endif
+//#if 1
+//    //监听自动对焦
+//    int flags = NSKeyValueObservingOptionNew; 
+//    [device addObserver:self forKeyPath:@"adjustingFocus" options:flags context:nil];
+//#endif
     
     
 	NSError *error = nil;
@@ -91,22 +91,22 @@
 }
 
 
-//对焦回调
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    if( [keyPath isEqualToString:@"adjustingFocus"]) {
-        
-        BOOL adjustingFocus = [[change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1]];
-        
-        NSLog(@"Is adjusting focus ? %@", adjustingFocus ? @"YES" : @"NO" );
-        NSLog(@"Change dictionary: %@", change);
-
-        if (_delegate) {
-            
-            [_delegate foucusStatus:adjustingFocus];
-        }
-    }
-}
+////对焦回调
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+//{
+//    if( [keyPath isEqualToString:@"adjustingFocus"]) {
+//        
+//        BOOL adjustingFocus = [[change objectForKey:NSKeyValueChangeNewKey] isEqualToNumber:[NSNumber numberWithInt:1]];
+//        
+//        NSLog(@"Is adjusting focus ? %@", adjustingFocus ? @"YES" : @"NO" );
+//        NSLog(@"Change dictionary: %@", change);
+//
+//        if (_delegate) {
+//            
+//            [_delegate foucusStatus:adjustingFocus];
+//        }
+//    }
+//}
 
 #pragma mark - 插入预览视图到主视图
 - (void)embedPreviewInView:(UIView *)aView
@@ -197,7 +197,7 @@
              
              NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
              UIImage *t_image = [UIImage imageWithData:imageData];
-             UIImage *image = [[UIImage alloc]initWithCGImage:t_image.CGImage scale:1.5f orientation:UIImageOrientationRight];//orientation：图像方向 UIImageOrientationRight
+             UIImage *image = [[UIImage alloc]initWithCGImage:t_image.CGImage scale:1.0f orientation:UIImageOrientationRight];//orientation：图像方向 UIImageOrientationRight
              self.image = image;
              [image release];
              

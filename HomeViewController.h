@@ -34,9 +34,11 @@
     NSDictionary *_subDic;    //装载天气内容
     
     UIButton *_cameraBtn;     //拍照
-    UIButton *_cancelBtn;     //取消拍照
     UIButton *_infoBtn;       //详细信息
     UIButton *_refreshBtn;    //刷新按钮
+    
+ 
+    UILabel *_refreshDate;    //刷新日期
     
     
     NSString *_cityid;        //城市编号

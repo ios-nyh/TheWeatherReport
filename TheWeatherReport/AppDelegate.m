@@ -27,26 +27,22 @@
 {
    
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-
     
-//    float version = [[[UIDevice currentDevice] systemVersion] floatValue];
-//    if (version >= 7.0) {
+//    // ios7和ios6 屏幕适配
+//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
 //        
-//         [[UIApplication sharedApplication] setStatusBarHidden:NO];
+//        [application setStatusBarStyle:UIStatusBarStyleLightContent];
+//        self.window.clipsToBounds =YES;
+//        self.window.frame =  CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height-20);
 //        
-//    } else {
-//        
-//        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+//        self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
 //    }
-//
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     self.home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
     UINavigationController *na = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];
     self.window.rootViewController = na;
-    
-    
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    [[UIApplication sharedApplication]setStatusBarStyle:UIStatusBarStyleLightContent];
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];

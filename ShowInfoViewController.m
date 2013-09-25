@@ -27,13 +27,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         
-        if (IOS_VERSION >= 7.0) {
-            
-            self.edgesForExtendedLayout = UIRectEdgeNone;
-        }
-
-        
-        // Custom initialization
     }
     return self;
 }
@@ -63,14 +56,11 @@
 {
     [super viewDidLoad];
     
-//    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc]initWithTitle:@"返回" style:UIBarButtonItemStyleBordered target:self action:@selector(backVC)];
-//    self.navigationItem.leftBarButtonItem = leftBar;
-//    [leftBar release];
-    
-//    UIBarButtonItem *rightBar = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(selectCity)];
-//    self.navigationItem.rightBarButtonItem = rightBar;
-    
     self.title = @"更多";
+    
+    //设置导航栏背景颜色
+    [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"] forBarMetrics:UIBarMetricsDefault];
+    
     
     //重写左边返回按钮
     UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];

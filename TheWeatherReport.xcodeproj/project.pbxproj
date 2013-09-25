@@ -60,6 +60,7 @@
 		819A2AF717E2C7C300254595 /* hxhd.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AF617E2C7C300254595 /* hxhd.png */; };
 		819A2AF917E2DC2D00254595 /* hxhdClear.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AF817E2DC2D00254595 /* hxhdClear.png */; };
 		81BC00B417F18C43005FAF3F /* NavigationBg_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 81BC00B317F18C43005FAF3F /* NavigationBg_1.png */; };
+		81F7A7C417F2B8030049BBD8 /* CheckNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */; };
 		81FD160817E039F2004B714A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160717E039F2004B714A /* UIKit.framework */; };
 		81FD160A17E039F2004B714A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160917E039F2004B714A /* Foundation.framework */; };
 		81FD160C17E039F2004B714A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160B17E039F2004B714A /* CoreGraphics.framework */; };
@@ -153,6 +154,8 @@
 		819A2AF817E2DC2D00254595 /* hxhdClear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hxhdClear.png; sourceTree = "<group>"; };
 		819A2AFA17E3121E00254595 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		81BC00B317F18C43005FAF3F /* NavigationBg_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = NavigationBg_1.png; sourceTree = "<group>"; };
+		81F7A7C217F2B8030049BBD8 /* CheckNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CheckNetwork.h; sourceTree = "<group>"; };
+		81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CheckNetwork.m; sourceTree = "<group>"; };
 		81FD160417E039F2004B714A /* TheWeatherReport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheWeatherReport.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		81FD160717E039F2004B714A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		81FD160917E039F2004B714A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -303,6 +306,8 @@
 		81FD162717E03B0C004B714A /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
+				81F7A7C217F2B8030049BBD8 /* CheckNetwork.h */,
+				81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */,
 				81FD162817E03B0C004B714A /* Reachability.h */,
 				81FD162917E03B0C004B714A /* Reachability.m */,
 			);
@@ -527,6 +532,7 @@
 				81FD162A17E03B0C004B714A /* Reachability.m in Sources */,
 				81FD167917E03C45004B714A /* HomeViewController.m in Sources */,
 				81FD168717E03EFF004B714A /* CameraImageHelper.m in Sources */,
+				81F7A7C417F2B8030049BBD8 /* CheckNetwork.m in Sources */,
 				81FD169217E040C9004B714A /* AboutViewController.m in Sources */,
 				81FD169317E040C9004B714A /* DisclaimerViewController.m in Sources */,
 				81FD169417E040C9004B714A /* LocationViewController.m in Sources */,

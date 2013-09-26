@@ -14,7 +14,6 @@
 
 #import "CityViewController.h"
 
-#define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]
 
 @interface ShowInfoViewController ()
 
@@ -41,6 +40,7 @@
     [super dealloc];
 }
 
+
 ////设置竖屏方向
 //- (BOOL)shouldAutorotate
 //{
@@ -50,6 +50,7 @@
 //{
 //    return UIInterfaceOrientationMaskPortrait;
 //}
+
 
 
 - (void)viewDidLoad

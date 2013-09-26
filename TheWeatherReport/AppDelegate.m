@@ -38,7 +38,18 @@
 //        self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
 //    }
     
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    // ios7和ios6 屏幕适配
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+        
+        [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+        
+    } else {
+    
+        [[UIApplication sharedApplication]setStatusBarHidden:NO];
+    }
+
+   
     
     self.home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
     UINavigationController *na = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];

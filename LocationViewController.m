@@ -95,8 +95,8 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(showInfo:) name:@"showInfo" object:nil];
 }
 
-#pragma mark-    
-#pragma mark -- 从用户相册获取活动图片
+#pragma mark -    
+#pragma mark - 从用户相册获取活动图片
 
 - (void)pickImageFromAlbum
 {

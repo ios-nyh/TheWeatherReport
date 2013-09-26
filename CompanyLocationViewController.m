@@ -48,18 +48,6 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    
-//    float verson = [[[UIDevice currentDevice] systemVersion] floatValue];
-//    if (verson >= 7.0) {
-//       
-//        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"] forBarMetrics:UIBarMetricsDefault];
-//        
-//    } else {
-//    
-//        [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"] forBarMetrics:UIBarMetricsDefault];
-//    }
-
-    
     //导航栏图片：320x44
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"] forBarMetrics:UIBarMetricsDefault];
     

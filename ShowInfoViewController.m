@@ -62,7 +62,6 @@
     //设置导航栏背景颜色
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"] forBarMetrics:UIBarMetricsDefault];
     
-    
     //重写左边返回按钮
     UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [leftBtn setFrame:CGRectMake(0, 0, 40, 40)];

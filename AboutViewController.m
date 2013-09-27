@@ -9,10 +9,10 @@
 #import "AboutViewController.h"
 #import "CompanyLocationViewController.h"
 
-//判断系统版本
-#define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue] 
-//判断设备版本
-#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
+////判断系统版本
+//#define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue] 
+////判断设备版本
+//#define iPhone5 ([UIScreen instancesRespondToSelector:@selector(currentMode)] ? CGSizeEqualToSize(CGSizeMake(640, 1136), [[UIScreen mainScreen] currentMode].size) : NO)
 
 @interface AboutViewController ()
 {
@@ -66,23 +66,9 @@
     [txtView setFont:[UIFont systemFontOfSize:16.0f]];
     [self.view addSubview:txtView];
     
-    //判断是否是iPhone5
-    if (iPhone5) {
-        
-         txtView.text = @"       北京华信互动数码科技有限公司是一家集Internet网站建设，信息收集传播,宣传企业文化，软件开发为一体的信息技术开发公司。本公司致力于政府、企业、学校的系列解决方案。并承接各种软件、网站项目的制作和维护。同时也提供专业技术员、技术团队或技术顾问外包服务。\n\n\n服务宗旨：求实、创新、奋进 \n\n\n提供服务：网站制作/维护 系统/软件开发 网站优化 网站推广";
-        
-    } else {
-        
-         txtView.text = @"       北京华信互动数码科技有限公司是一家集Internet网站建设，信息收集传播,宣传企业文化，软件开发为一体的信息技术开发公司。本公司致力于政府、企业、学校的系列解决方案。并承接各种软件、网站项目的制作和维护。同时也提供专业技术员、技术团队或技术顾问外包服务。\n\n服务宗旨：求实、创新、奋进 \n\n提供服务：网站制作/维护 系统/软件开发 网站优化 网站推广";
-    }
     
-    [txtView release];
-
-    
-
     //点击拨打电话
     UIButton *telBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [telBtn setFrame:CGRectMake(0, height - 60 - 30, 240, 20)];
     [telBtn setTitle:@"联系电话：010-62669813-0" forState:UIControlStateNormal];
     [telBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [telBtn addTarget:self action:@selector(callTel) forControlEvents:UIControlEventTouchUpInside];
@@ -90,19 +76,41 @@
     
     
     //地址  用户位置：40.053126 ---- 116.300133
-    UILabel *address = [[UILabel alloc]initWithFrame:CGRectMake(8, height - 60, WIDTH - 5, 60)];
+    UILabel *address = [[UILabel alloc]init];
     address.text = @"公司地址：北京-海淀区-上地十街-1号院-4号楼-1715室";
     address.textColor = [UIColor blueColor];
     address.numberOfLines = 0;
     [self.view addSubview:address];
-    [address release];
+   
     
-    UIView *view = [[UIView alloc]initWithFrame:CGRectMake(8, height - 60, WIDTH - 5, 60)];
+    UIView *view = [[UIView alloc]init];
     [self.view addSubview:view];
-    [view release];
-    
+    //给地址加上轻拍手势
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(addressMap)];
     [view addGestureRecognizer:tap];
+   
+
+    //判断是否是iPhone5
+    if (iPhone5) {
+        
+         txtView.text = @"       北京华信互动数码科技有限公司是一家集Internet网站建设，信息收集传播,宣传企业文化，软件开发为一体的信息技术开发公司。本公司致力于政府、企业、学校的系列解决方案。并承接各种软件、网站项目的制作和维护。同时也提供专业技术员、技术团队或技术顾问外包服务。\n\n\n服务宗旨：求实、创新、奋进 \n\n\n提供服务：网站制作/维护 系统/软件开发 网站优化 网站推广";
+        
+        [address setFrame:CGRectMake(8, height - 120, WIDTH - 5, 60)];
+        [view setFrame:CGRectMake(8, height - 120, WIDTH - 5, 60)];
+        [telBtn setFrame:CGRectMake(0, height - 120 - 40, 240, 20)];
+        
+    } else {
+        
+         txtView.text = @"       北京华信互动数码科技有限公司是一家集Internet网站建设，信息收集传播,宣传企业文化，软件开发为一体的信息技术开发公司。本公司致力于政府、企业、学校的系列解决方案。并承接各种软件、网站项目的制作和维护。同时也提供专业技术员、技术团队或技术顾问外包服务。\n\n服务宗旨：求实、创新、奋进 \n\n提供服务：网站制作/维护 系统/软件开发 网站优化 网站推广";
+        
+        [address setFrame:CGRectMake(8, height - 60, WIDTH - 5, 60)];
+        [view setFrame:CGRectMake(8, height - 60, WIDTH - 5, 60)];
+        [telBtn setFrame:CGRectMake(0, height - 60 - 30, 240, 20)];
+    }
+    
+    [txtView release];
+    [address release];
+    [view release];
     [tap release];
 }
 

@@ -15,8 +15,6 @@
 
 #import "CheckNetwork.h"
 
-#define IOS_VERSION [[[UIDevice currentDevice] systemVersion] floatValue]
-
 @interface HomeViewController ()<AVHelperDelegate>
 {
     float rHeignt; // 刷新高度
@@ -37,6 +35,7 @@
     [_temp release];
     [_weather release];
     [_content release];
+    [_wind release];
     [_date release];
     
     [_imgView1 release];
@@ -205,13 +204,15 @@
     [_refreshBtn addTarget:self action:@selector(refreshControlMethod) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_refreshBtn];
     
+    
     //拍摄按钮
     _cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_cameraBtn setFrame:CGRectMake(15, vHeight, 50, 38)];
-    [_cameraBtn setImage:[UIImage imageNamed:@"Dock_Btn_2.png"] forState:UIControlStateNormal];
-    [_cameraBtn setImage:[UIImage imageNamed:@"Dock_Btn_2_Activated.png"] forState:UIControlStateHighlighted];
+    [_cameraBtn setImage:[UIImage imageNamed:@"camera.png"] forState:UIControlStateNormal];
+    [_cameraBtn setImage:[UIImage imageNamed:@"camera_pressed.png"] forState:UIControlStateHighlighted];
     [_cameraBtn addTarget:self action:@selector(snapPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_cameraBtn];
+    
     
     //信息按钮
     _infoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -652,7 +653,6 @@
     _temp.backgroundColor = [UIColor clearColor];
     _temp.textColor = [UIColor whiteColor];
     _temp.shadowColor = [UIColor grayColor];
-//    _temp.highlightedTextColor = [UIColor whiteColor];
     _temp.textAlignment = NSTextAlignmentCenter;
     [view addSubview:_temp];
     
@@ -665,20 +665,24 @@
     [view addSubview:_weather];
     
     //天气内容
-    _content = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 340, 160, 50)];
+    _content = [[UILabel alloc]init];
     _content.backgroundColor = [UIColor clearColor];
     _content.textColor = [UIColor whiteColor];
     _content.shadowColor = [UIColor grayColor];
-    _content.numberOfLines = 0;
     [view addSubview:_content];
+    
+    _wind = [[UILabel alloc]init];
+    _wind.backgroundColor = [UIColor clearColor];
+    _wind.textColor = [UIColor whiteColor];
+    _wind.shadowColor = [UIColor grayColor];
+    [view addSubview:_wind];
     
     
     //日期
-    _date = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 298, 160, 20)];
+    _date = [[UILabel alloc]init];
     _date.backgroundColor = [UIColor clearColor];
     _date.textColor = [UIColor whiteColor];
     _date.shadowColor = [UIColor grayColor];
-    _date.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_date];
     
     //显示天气图片
@@ -691,7 +695,7 @@
     [view addSubview:_imgView2];
     
     //城市名字
-    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(60, rHeignt + 80, 80, 40)];
+    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(60, rHeignt + 100, 80, 40)];
     [_cityLabel setBackgroundColor:[UIColor clearColor]];
     _cityLabel.textColor = [UIColor whiteColor];
     _cityLabel.shadowColor = [UIColor grayColor];
@@ -702,24 +706,23 @@
      第二天天气状况
      */
     //天气描述
-    _content2 = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 220, WIDTH - 160, 20)];
+    _content2 = [[UILabel alloc]init];
     _content2.backgroundColor = [UIColor clearColor];
     _content2.textColor = [UIColor whiteColor];
     _content2.shadowColor = [UIColor grayColor];
     [view addSubview:_content2];
 
     //温度范围
-    _weather2 = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 200, 100, 20)];
+    _weather2 = [[UILabel alloc]init];
     _weather2.backgroundColor = [UIColor clearColor];
     _weather2.textColor = [UIColor whiteColor];
     _weather2.shadowColor = [UIColor grayColor];
     [view addSubview:_weather2];
     
     //日期
-    _date2 = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 180, 140, 20)];
+    _date2 = [[UILabel alloc]init];
     _date2.backgroundColor = [UIColor clearColor];
     _date2.textColor = [UIColor whiteColor];
-    _date2.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_date2];
     
     
@@ -727,7 +730,7 @@
      第三天天气状况
      */
     //天气描述
-    _content3 = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 100, WIDTH - 160, 20)];
+    _content3 = [[UILabel alloc]init];
     _content3.backgroundColor = [UIColor clearColor];
     _content3.textColor = [UIColor whiteColor];
     _content3.shadowColor = [UIColor grayColor];
@@ -735,18 +738,17 @@
 
     
     //温度范围
-    _weather3 = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 80, 100, 20)];
+    _weather3 = [[UILabel alloc]init];
     _weather3.backgroundColor = [UIColor clearColor];
     _weather3.textColor = [UIColor whiteColor];
     _weather3.shadowColor = [UIColor grayColor];
     [view addSubview:_weather3];
     
     //日期
-    _date3 = [[UILabel alloc]initWithFrame:CGRectMake(160, vHeight - 60, 140, 20)];
+    _date3 = [[UILabel alloc]init];
     _date3.backgroundColor = [UIColor clearColor];
     _date3.textColor = [UIColor whiteColor];
     _date3.shadowColor = [UIColor grayColor];
-    _date3.font = [UIFont systemFontOfSize:14.0f];
 //    _date3.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     [view addSubview:_date3];
     
@@ -769,6 +771,40 @@
     _refreshDate.shadowColor = [UIColor grayColor];
     _refreshDate.font = [UIFont systemFontOfSize:14.0f];
     [view addSubview:_refreshDate];
+    
+    
+    if (iPhone5) {
+        
+        [_content setFrame:CGRectMake(150, vHeight - 380, 160, 20)];
+        [_wind setFrame:CGRectMake(150, vHeight - 360, 170, 20)];
+         _wind.lineBreakMode = NSLineBreakByTruncatingMiddle;
+        [_date setFrame:CGRectMake(150, vHeight - 338, 170, 20)];
+        
+        [_content2 setFrame:CGRectMake(150, vHeight - 240, WIDTH - 150, 20)];
+        [_weather2 setFrame:CGRectMake(150, vHeight - 220, 100, 20)];
+        [_date2  setFrame:CGRectMake(150, vHeight - 200, 140, 20)];
+        
+        
+        [_content3  setFrame:CGRectMake(150, vHeight - 110, WIDTH - 150, 20)];
+        [_weather3  setFrame:CGRectMake(150, vHeight - 90, 100, 20)];
+        [_date3  setFrame:CGRectMake(150, vHeight - 70, 140, 20)];
+        
+    } else {
+    
+        [_content setFrame:CGRectMake(150, vHeight - 330, 160, 20)];
+        [_wind setFrame:CGRectMake(150, vHeight - 310, 170, 20)];
+         _wind.lineBreakMode = NSLineBreakByTruncatingMiddle;
+        [_date setFrame:CGRectMake(150, vHeight - 288, 170, 20)];
+        
+        [_content2 setFrame:CGRectMake(150, vHeight - 220, WIDTH - 150, 20)];
+        [_weather2 setFrame:CGRectMake(150, vHeight - 200, 100, 20)];
+        [_date2  setFrame:CGRectMake(150, vHeight - 180, 140, 20)];
+        
+        
+        [_content3  setFrame:CGRectMake(150, vHeight - 110, WIDTH - 150, 20)];
+        [_weather3  setFrame:CGRectMake(150, vHeight - 90, 100, 20)];
+        [_date3  setFrame:CGRectMake(150, vHeight - 70, 140, 20)];
+    }
     
 }
 
@@ -819,6 +855,7 @@
             _temp.text = @"";
             _weather.text = @"";
             _content.text = @"";
+            _wind.text = @"";
             _date.text = @"";
             _imgView1.image = [UIImage imageNamed:@""];
             _imgView2.image = [UIImage imageNamed:@""];
@@ -845,18 +882,23 @@
         } 
         
         _subDic = [[dic objectForKey:@"weatherinfo"] retain];
+        
+        //当天天气
         _temp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
         _weather.text = [_subDic objectForKey:@"weather1"];
-        _content.text = [NSString stringWithFormat:@"%@\n%@",[_subDic objectForKey:@"temp1"],[_subDic objectForKey:@"wind1"]];
+        _content.text = [_subDic objectForKey:@"temp1"];
+        _wind.text = [_subDic objectForKey:@"wind1"];
         _date.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
         
-        
+        //获取天气图片
         NSString *str1 = [_subDic valueForKey:@"img1"];
         NSString *str2 = [_subDic valueForKey:@"img2"];
         UIImage *img1 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",str1]];
         UIImage *img2 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",str2]];
         [_imgView1 setImage: img1];
         [_imgView2 setImage: img2];
+        
+        
         
 //        NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
 //        NSString *strImg2 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img2"]];
@@ -869,14 +911,17 @@
 //        [_imgView1 setImage: imgPic1];
 //        [_imgView2 setImage: imgPic2];
         
+        
+        //当前城市
         _cityLabel.text = [_subDic objectForKey:@"city"];
         
+        //第二天天气
         _content2.text = [_subDic objectForKey:@"weather2"];
         _weather2.text = [_subDic objectForKey:@"temp2"];
         _date2.text = @"明天";
         //        _date2.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
         
-        
+        //第三天天气
         _content3.text = [_subDic objectForKey:@"weather3"];
         _weather3.text = [_subDic objectForKey:@"temp3"];
         _date3.text = @"后天";
@@ -900,6 +945,9 @@
         
         _date2.text = @"";
         _date3.text = @"";
+        
+        //失败时，停止菊花动画
+        [self stopAnimating];
         
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"加载失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
     

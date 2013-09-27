@@ -20,7 +20,7 @@
     self = [super initWithStyle:style];
     if (self) {
         
-//        [self.tableView initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT - 20) style:UITableViewStyleGrouped];
+//        [self.tableView initWithFrame:CGRectMake(0, 44, WIDTH, HEIGHT - 44) style:UITableViewStylePlain];
         
 //        [self.tableView initWithFrame:self.view.frame style:UITableViewStyleGrouped];
         
@@ -28,7 +28,11 @@
     
     return self; 
 }
-
+- (void)dealloc
+{
+    [_seachBar release];
+    [super dealloc];
+}
 
 - (void)viewDidLoad
 {
@@ -43,7 +47,7 @@
     self.navigationItem.leftBarButtonItem = leftBar;
     [leftBar release];
 
-    self.title = @"城市列表";
+    self.title = @"热门城市";
 
     NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
     NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:path];
@@ -57,7 +61,6 @@
     
     self.cityArray = [NSMutableArray array];
     self.cityArray = array;
-    
     
     //
     for (int i = 0; i < self.cityArray.count; i++) {
@@ -105,9 +108,24 @@
         }
         [cityNames addObject:cityName];
     }
-
     
-
+    
+    UISearchBar *seachBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 44, WIDTH, 44)];
+    seachBar.placeholder = @"搜索城市（中文）";
+    if (IOS_VERSION >= 7.0) {
+        
+        seachBar.searchBarStyle = UISearchBarStyleProminent;
+        
+    } else {
+        
+        [seachBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"]];
+    
+    }
+    
+    seachBar.delegate = self;
+    self.seachBar = seachBar;
+    [self.tableView setTableHeaderView:seachBar];
+    [seachBar release];
 }
 
 ////降序排列
@@ -116,6 +134,25 @@
 //    return NSOrderedDescending;
 //}
 
+#pragma mark - 键盘回收
+
+#pragma mark UIScrollViewDelegate Method
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [self.seachBar resignFirstResponder];
+}
+
+#pragma mark - UISearchBarDelegate Method
+
+-  (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    NSLog(@"搜索");
+    
+    [self.seachBar resignFirstResponder];
+}
+
+#pragma mark - 返回按钮
 
 - (void)backLeft
 {

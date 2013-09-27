@@ -16,6 +16,7 @@
     UILabel *_temp;            // 当日最佳温度
     UILabel *_weather;         // 当日天气情况
     UILabel *_content;         // 天气内容
+    UILabel *_wind;            // 风速描述
     UILabel *_date;            // 日期
     
     UIImageView *_imgView1;    // 天气图标

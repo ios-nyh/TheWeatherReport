@@ -30,7 +30,9 @@
 }
 - (void)dealloc
 {
-    [_seachBar release];
+    [_searchBar release];
+    [_mData release];
+    
     [super dealloc];
 }
 
@@ -61,6 +63,7 @@
     
     self.cityArray = [NSMutableArray array];
     self.cityArray = array;
+    
     
     //
     for (int i = 0; i < self.cityArray.count; i++) {
@@ -110,22 +113,25 @@
     }
     
     
-    UISearchBar *seachBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 44, WIDTH, 44)];
-    seachBar.placeholder = @"搜索城市（中文）";
+    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 44, WIDTH, 44)];
+    searchBar.placeholder = @"搜索城市（拼音）";
+    
+    
     if (IOS_VERSION >= 7.0) {
         
-        seachBar.searchBarStyle = UISearchBarStyleProminent;
+        searchBar.searchBarStyle = UISearchBarStyleProminent;
         
     } else {
         
-        [seachBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"]];
-    
+        [searchBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"]];
     }
     
-    seachBar.delegate = self;
-    self.seachBar = seachBar;
-    [self.tableView setTableHeaderView:seachBar];
-    [seachBar release];
+    searchBar.delegate = self;
+    self.searchBar = searchBar;
+    [self.tableView setTableHeaderView:searchBar];
+    [searchBar release];
+    
+    [self JSONParse];
 }
 
 ////降序排列
@@ -134,22 +140,80 @@
 //    return NSOrderedDescending;
 //}
 
+#pragma mark - JSON解析城市数据
+- (void)JSONParse
+{
+    NSString *strURL = [NSString stringWithFormat:@"http://192.168.11.10/josn.php"];
+    NSURL *url = [NSURL URLWithString:strURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+    [NSURLConnection connectionWithRequest:request delegate:self];
+}
+
+#pragma mark - NSURLConnectionDataDelegate 异步下载代理方法
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+{
+    self.mData = [NSMutableData data];
+
+}
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    
+    [self.mData appendData:data];
+
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    NSLog(@"---- > %@",self.mData);
+    
+    if (self.mData) {
+        
+        NSMutableArray *tempArray = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableLeaves error:nil];
+        
+        NSLog(@"---- ---- >>%@",tempArray);
+        
+        for (NSDictionary *dic in tempArray) {
+            
+            NSString *name = [dic objectForKey:@"name"];
+            NSString *codeid = [dic objectForKey:@"codeid"];
+            
+            NSMutableDictionary *mDic = [NSMutableDictionary dictionaryWithObject:name forKey:codeid];
+            
+        
+        }
+
+    }
+}
+
+#pragma - NSURLConnectionDelegate 
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    NSLog(@"error ->%@",[error localizedDescription]);
+}
+
+
 #pragma mark - 键盘回收
 
 #pragma mark UIScrollViewDelegate Method
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [self.seachBar resignFirstResponder];
+    [self.searchBar resignFirstResponder];
 }
 
 #pragma mark - UISearchBarDelegate Method
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    NSLog(@"searchText - > %@",searchText);
+
+}
 
 -  (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     NSLog(@"搜索");
     
-    [self.seachBar resignFirstResponder];
+    [self.searchBar resignFirstResponder];
 }
 
 #pragma mark - 返回按钮
@@ -175,7 +239,21 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
+    
+//    return [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
+    
+    NSInteger rows;
+    
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        
+        rows = [self.tempArray count];
+        
+    } else {
+        
+        rows = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
+    }
+    
+    return rows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -188,11 +266,19 @@
         cell = [[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier]autorelease];
     }
     
-    
+     if (tableView == self.searchDisplayController.searchResultsTableView) {
+         
+//         NSString  *cityName = [self.tempArray objectAtIndex:indexPath.row];;
+//         
+//         cell.textLabel.text = cityName;
 
-    NSString  *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+         
+     } else {
     
-    cell.textLabel.text = cityName;
+         NSString  *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+    
+         cell.textLabel.text = cityName;
+     }
     
     return cell;
 }

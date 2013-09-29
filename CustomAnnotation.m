@@ -25,11 +25,10 @@
 
 - (id)initWithCoordinate:(CLLocationCoordinate2D)coords
 {
-    
     if (self = [super init]) {
         
         _coordinate = coords;
-        
+    
     }
 
     return self;

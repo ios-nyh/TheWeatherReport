@@ -102,8 +102,9 @@
     [self.view addSubview:tableView];
     [tableView release];
     
+    
     UIImage *img = [UIImage imageNamed:@"hxhdClear.png"];
-    UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(0, 240, WIDTH, img.size.height)];
+    UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(0, HEIGHT - 240, WIDTH, img.size.height)];
     imgView.backgroundColor = [UIColor clearColor];
     imgView.image = img;
     [self.view addSubview:imgView];

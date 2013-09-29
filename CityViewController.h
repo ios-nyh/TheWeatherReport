@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 
-@interface CityViewController : UITableViewController<UISearchBarDelegate,UIScrollViewDelegate>
+@interface CityViewController : UITableViewController<UISearchBarDelegate,UIScrollViewDelegate,NSURLConnectionDelegate,NSURLConnectionDataDelegate>
 
 
 
@@ -17,9 +17,17 @@
 @property (retain,nonatomic) NSDictionary *cityDic;
 
 @property (retain,nonatomic) NSMutableOrderedSet *cityKeys;
-@property (retain,nonatomic) NSMutableDictionary *cityList;\
+@property (retain,nonatomic) NSMutableDictionary *cityList;
 
-@property (retain,nonatomic) UISearchBar *seachBar;
+@property (retain,nonatomic) NSMutableData *mData;
+
+@property (retain,nonatomic) UISearchBar *searchBar;
+
+
+@property (retain,nonatomic) NSArray *tempArray;
+
+@property (retain,nonatomic) NSMutableArray *searchResult;
+
 
 @end
 

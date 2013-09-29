@@ -103,9 +103,9 @@
         
          txtView.text = @"       北京华信互动数码科技有限公司是一家集Internet网站建设，信息收集传播,宣传企业文化，软件开发为一体的信息技术开发公司。本公司致力于政府、企业、学校的系列解决方案。并承接各种软件、网站项目的制作和维护。同时也提供专业技术员、技术团队或技术顾问外包服务。\n\n服务宗旨：求实、创新、奋进 \n\n提供服务：网站制作/维护 系统/软件开发 网站优化 网站推广";
         
-        [address setFrame:CGRectMake(8, height - 60, WIDTH - 5, 60)];
-        [view setFrame:CGRectMake(8, height - 60, WIDTH - 5, 60)];
-        [telBtn setFrame:CGRectMake(0, height - 60 - 30, 240, 20)];
+        [address setFrame:CGRectMake(7, height - 110, WIDTH - 7, 60)];
+        [view setFrame:CGRectMake(7, height - 110, WIDTH - 7, 60)];
+        [telBtn setFrame:CGRectMake(0, height - 60 - 80, 240, 20)];
     }
     
     [txtView release];

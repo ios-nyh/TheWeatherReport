@@ -816,7 +816,7 @@
 {
     NSString *URLStr = [NSString stringWithFormat:@"http://m.weather.com.cn/data/%@.html",cityid];
     NSURL *url = [NSURL URLWithString:URLStr];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
     [NSURLConnection connectionWithRequest:request delegate:self];
     
     //开启状态栏动画
@@ -835,23 +835,14 @@
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
+    
     if (self.mData) {
         
         NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableContainers error:nil];
         
-        //    NSError *error;
-        
-        
-        //    if (error) {
-        //
-        //        NSLog(@" parse error %@",error);
-        //
-        //    } else {
-        
-        //        NSLog(@"解析结果%@",dic);
-        
         if (dic) {
             
+            //清空天气信息
             _temp.text = @"";
             _weather.text = @"";
             _content.text = @"";
@@ -861,6 +852,7 @@
             _imgView2.image = [UIImage imageNamed:@""];
         
             
+            //清空当前城市信息
             _cityLabel.text = @"";
             
             
@@ -878,8 +870,7 @@
             
             //清空刷新时间
             _refreshDate.text = @"";
-
-        } 
+        }
         
         _subDic = [[dic objectForKey:@"weatherinfo"] retain];
         
@@ -898,6 +889,9 @@
         [_imgView1 setImage: img1];
         [_imgView2 setImage: img2];
         
+        
+//        NSLog(@"天气图片代码：str1 ->%@",str1);
+//        NSLog(@"天气图片代码：str2 ->%@",str2);
         
         
 //        NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
@@ -919,16 +913,12 @@
         _content2.text = [_subDic objectForKey:@"weather2"];
         _weather2.text = [_subDic objectForKey:@"temp2"];
         _date2.text = @"明天";
-        //        _date2.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        
         
         //第三天天气
         _content3.text = [_subDic objectForKey:@"weather3"];
         _weather3.text = [_subDic objectForKey:@"temp3"];
         _date3.text = @"后天";
-        //        _date3.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
-        
-        
-        //    }
         
         
         //显示刷新时间
@@ -940,7 +930,7 @@
         
         //关闭状态栏动画
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-
+        
     }  else {
         
         _date2.text = @"";
@@ -986,8 +976,12 @@
 }
 - (void)stopAnimating
 {
-    [_activityView stopAnimating];
-    [_loading setHidden:YES];
+    if ([_activityView isAnimating]) {
+        
+        [_activityView stopAnimating];
+        [_loading setHidden:YES];
+    }
+    
 }
 - (void)startAnimating
 {

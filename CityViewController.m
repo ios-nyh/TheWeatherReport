@@ -8,8 +8,12 @@
 
 #import "CityViewController.h"
 #import "ChineseToPinyin.h"
+#import "HomeViewController.h"
 
 @interface CityViewController ()
+{
+    BOOL compareResult;
+}
 
 @end
 
@@ -30,8 +34,17 @@
 }
 - (void)dealloc
 {
+    [_cityArray release];
+    [_cityDic release];
+    [_cityKeys release];
+    [_cityList release];
+    
     [_searchBar release];
     [_mData release];
+    
+    
+    [_searchResult release];
+    [_mDic release];
     
     [super dealloc];
 }
@@ -39,6 +52,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.title = @"热门城市";
     
     //重写左边返回按钮
     UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -49,18 +64,13 @@
     self.navigationItem.leftBarButtonItem = leftBar;
     [leftBar release];
 
-    self.title = @"热门城市";
-
+    
     NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
     NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.cityDic = dic;
     
    
     NSMutableArray *array = [NSMutableArray arrayWithArray:[dic allKeys]];
-    
-//    // 对数组排序
-//    NSArray *sortArray = [array sortedArrayUsingSelector:@selector(compare:)];
-    
     self.cityArray = [NSMutableArray array];
     self.cityArray = array;
     
@@ -113,9 +123,12 @@
     }
     
     
-    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 44, WIDTH, 44)];
-    searchBar.placeholder = @"搜索城市（拼音）";
+    //解析城市
+    [self JSONParse];
     
+    //加入搜索框
+    UISearchBar *searchBar = [[UISearchBar alloc]initWithFrame:CGRectMake(0, 44, WIDTH, 44)];
+    searchBar.placeholder = @"搜索城市（中文）";
     
     if (IOS_VERSION >= 7.0) {
         
@@ -130,20 +143,12 @@
     self.searchBar = searchBar;
     [self.tableView setTableHeaderView:searchBar];
     [searchBar release];
-    
-    [self JSONParse];
 }
-
-////降序排列
-//- (NSComparisonResult)caseInsensitiveCompare:(NSString *)aString
-//{
-//    return NSOrderedDescending;
-//}
 
 #pragma mark - JSON解析城市数据
 - (void)JSONParse
 {
-    NSString *strURL = [NSString stringWithFormat:@"http://192.168.11.10/josn.php"];
+    NSString *strURL = [NSString stringWithFormat:@"http://www.coolelife.com/weather/josn.php"];
     NSURL *url = [NSURL URLWithString:strURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
     [NSURLConnection connectionWithRequest:request delegate:self];
@@ -153,39 +158,21 @@
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
     self.mData = [NSMutableData data];
-
 }
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
-    
     [self.mData appendData:data];
-
 }
-
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    NSLog(@"---- > %@",self.mData);
-    
+{    
     if (self.mData) {
         
-        NSMutableArray *tempArray = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableLeaves error:nil];
-        
-        NSLog(@"---- ---- >>%@",tempArray);
-        
-        for (NSDictionary *dic in tempArray) {
-            
-            NSString *name = [dic objectForKey:@"name"];
-            NSString *codeid = [dic objectForKey:@"codeid"];
-            
-            NSMutableDictionary *mDic = [NSMutableDictionary dictionaryWithObject:name forKey:codeid];
-            
-        
-        }
-
+        self.infoArray = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableLeaves error:nil];
+        NSLog(@"解析数据JSON：%@",self.infoArray);
     }
 }
 
-#pragma - NSURLConnectionDelegate 
+#pragma - NSURLConnectionDelegate Method
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
     NSLog(@"error ->%@",[error localizedDescription]);
@@ -203,17 +190,87 @@
 
 #pragma mark - UISearchBarDelegate Method
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
 {
-    NSLog(@"searchText - > %@",searchText);
-
+    
+//    for (NSDictionary *dic in self.infoArray) {
+//        
+//        NSString *name = [dic objectForKey:@"name"];
+//        
+//        if ([searchBar.text isEqualToString:name] ) {
+//            
+//            compareResult = YES;
+//        }
+//    }
+//
+//
+//    if (!compareResult) {
+//        
+//        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"警告" message:@"输入有误请重新输入" delegate:nil cancelButtonTitle:@"OK"
+//                                             otherButtonTitles:nil, nil];
+//        [alert show];
+//        
+//        [alert release];
+//    }
+    
 }
+
 
 -  (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    NSLog(@"搜索");
-    
     [self.searchBar resignFirstResponder];
+    
+    if (searchBar.text) {
+        
+        NSLog(@"搜索城市：%@",searchBar.text);
+        
+        for (NSDictionary *dic in self.infoArray) {
+            
+            NSString *name = [dic objectForKey:@"name"];
+            NSString *codeid = [dic objectForKey:@"codeid"];
+            
+           
+            if ([searchBar.text isEqualToString:name] ) {
+                
+                compareResult = YES;
+                
+                NSDictionary *subDic = [NSDictionary dictionaryWithObjectsAndKeys:codeid,@"codeid", nil];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"selectedCityCodeidNotification" object:nil userInfo:subDic];
+                
+                NSLog(@"---->%@",codeid);
+                
+            }
+        }
+    }
+    
+    if (compareResult) {
+        
+         [self dismissViewControllerAnimated:YES completion:nil];
+        
+    } else {
+    
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"警告" message:@"没有此城市，请仔细检查" delegate:self cancelButtonTitle:@"OK"
+                                             otherButtonTitles:nil, nil];
+        [alert show];
+        
+        [alert release];
+    }
+   
+}
+
+#pragma mark - UIAlertViewDelegate Method 
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        
+        if ([self.searchBar canBecomeFirstResponder]) {
+            
+             [self.searchBar becomeFirstResponder];
+        }
+       
+    }
+
 }
 
 #pragma mark - 返回按钮
@@ -240,20 +297,8 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     
-//    return [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
+    return [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
     
-    NSInteger rows;
-    
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        
-        rows = [self.tempArray count];
-        
-    } else {
-        
-        rows = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
-    }
-    
-    return rows;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -266,19 +311,8 @@
         cell = [[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier]autorelease];
     }
     
-     if (tableView == self.searchDisplayController.searchResultsTableView) {
-         
-//         NSString  *cityName = [self.tempArray objectAtIndex:indexPath.row];;
-//         
-//         cell.textLabel.text = cityName;
-
-         
-     } else {
-    
-         NSString  *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
-    
-         cell.textLabel.text = cityName;
-     }
+    NSString  *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+    cell.textLabel.text = cityName;
     
     return cell;
 }
@@ -290,11 +324,13 @@
 {
     NSString *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];;
    
+    
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:cityName,@"cityName", nil];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"selectedCityNotification" object:nil userInfo:dic];
         
     [self dismissViewControllerAnimated:YES completion:nil];
+    
 }
 
 

@@ -10,7 +10,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "CameraImageHelper.h"
-#import "LocationViewController.h"
 #import "ShowInfoViewController.h"
 
 #import "CheckNetwork.h"
@@ -75,7 +74,9 @@
     
     [_imagePicker release];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityCodeidNotification" object:nil];
     
     [super dealloc];
 }
@@ -204,6 +205,10 @@
     [_refreshBtn addTarget:self action:@selector(refreshControlMethod) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_refreshBtn];
     
+    //给刷新按钮加上阴影效果
+    _refreshBtn.layer.shadowOffset = CGSizeMake(0, 0);
+    _refreshBtn.layer.shadowOpacity = 0.6;
+    _refreshBtn.layer.shadowColor = [UIColor grayColor].CGColor;
     
     //拍摄按钮
     _cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -229,6 +234,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(refreshControlMethod)
                                                  name:UIApplicationDidBecomeActiveNotification object:nil];
+    
+    //城市选择的通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCity:) name:@"selectedCityNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCityCodeid:) name:@"selectedCityCodeidNotification" object:nil];
+
 }
 
 
@@ -301,6 +311,7 @@
         
         [_cameraBtn setHidden:YES];
         [_infoBtn setHidden:YES];
+        [_refreshBtn setHidden:YES];
         
         
         //提示，是否保存图片
@@ -309,8 +320,7 @@
         [alertView show];
         [alertView release];
         
-        //清空刷新时间
-        _refreshDate.text = @"";
+       
         //获取当前位置信息
         _curLocation.text = self.location;
         
@@ -386,6 +396,7 @@
         {
             [_cameraBtn setHidden:NO];
             [_infoBtn setHidden:NO];
+            [_refreshBtn setHidden:NO];
             
             [self.preview setHidden:YES];
             
@@ -403,9 +414,6 @@
             
             UIImage *img = [self captureView:self.view];
             UIImageWriteToSavedPhotosAlbum(img,self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
-            
-            [_refreshBtn setHidden:NO];
-            
         }
             break;
             
@@ -429,7 +437,6 @@
     [alert show];
 
     [alert release];
-
 }
 
 
@@ -440,7 +447,7 @@
     NSDate *data = [NSDate date];
     
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
-    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    [formatter setDateFormat:@"HH:mm"];
     
     NSString *currentDateStr = [formatter stringFromDate:data];
     
@@ -496,30 +503,6 @@
     //开启指示视图
     [self activityIndicatorViewWithFrame:CGRectMake(WIDTH/2, HEIGHT/2, 20, 20)];
     [self startAnimating];
-    
-    
-    
-//    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-//        
-//        UIImagePickerController *imagePicker = [[UIImagePickerController alloc]init];
-//        
-//        [imagePicker setDelegate:self];
-//        
-//        [imagePicker setSourceType:UIImagePickerControllerSourceTypeCamera];
-//        
-//        imagePicker.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-//        
-//        self.imagePicker = imagePicker;
-//        
-//        [self presentViewController:imagePicker animated:YES completion:nil];
-//        
-//        [imagePicker release];
-//
-//    } else {
-//        
-//        NSLog(@"模拟其中无法打开照相机,请在真机中使用");
-//    }
-    
 }
 
 
@@ -537,8 +520,6 @@
     
     info.providesPresentationContextTransitionStyle = YES;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCity:) name:@"selectedCityNotification" object:nil];
-    
     [self presentViewController:navi animated:YES completion:nil];
     
     [info release];
@@ -554,91 +535,22 @@
     
     _cityid = [self.cityDic objectForKey:cityName];
     
-    NSLog(@"城市编号：%@",_cityid);
+    NSLog(@"城市编号selectCity：%@",_cityid);
     
     //重新解析新数据
     [self JSONStartParse:_cityid];
 }
 
 
-//#pragma mark - UIImagePickerControllerDelegate
-////调用系统相机，点击使用时，调用
-//- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-//{
-//    
-//    [self.preview setHidden:NO];
-//    [_cameraBtn setHidden:YES];
-//    
-//    _cancelBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-//    [_cancelBtn setFrame:CGRectMake(15, HEIGHT - 45, 50, 38)];
-//    [_cancelBtn setImage:[UIImage imageNamed:@"cancel.png"] forState:UIControlStateNormal];
-//    [_cancelBtn setImage:[UIImage imageNamed:@"cancel_pressed.png"] forState:UIControlStateHighlighted];
-//    [_cancelBtn addTarget:self action:@selector(cancelPhotos:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.view addSubview:_cancelBtn];
-//
-//    
-//    if (picker.sourceType == UIImagePickerControllerSourceTypeCamera)
-//    {
-//        //如果是来自照相机的image，那么先保存
-//        UIImage *original_image = [info objectForKey:@"UIImagePickerControllerOriginalImage"];
-//
-//        self.preview.image = original_image;
-//        
-//        
-////        // UIEdgeInsets insets = {top, left, bottom, right};
-////        UIImage *image = [original_image resizableImageWithCapInsets:UIEdgeInsetsMake(15,10,15,10) resizingMode:UIImageResizingModeStretch];
-////        self.preview.image = image;
-//
-//        
-//        [_refreshBtn setHidden:YES];
-//        [_cancelBtn setHidden:YES];
-//        [_infoBtn setHidden:YES];
-//        
-//        _curLocation.text = self.location;
-//        
-//        UIGraphicsBeginImageContext(self.view.bounds.size);
-//        [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
-//        UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
-//        UIGraphicsEndImageContext();
-//        
-//        
-//        UIImageWriteToSavedPhotosAlbum(viewImage, self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
-//        
-//        [_refreshBtn setHidden:NO];
-//        [_cancelBtn setHidden:NO];
-//        [_infoBtn setHidden:NO];
-//    }
-//    
-//    [self dismissViewControllerAnimated:YES completion:nil];
-//}
-//
-//- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
-//{
-//    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"存储照片成功"
-//                          
-//                                                    message:@"您已将照片存储于图片库中，打开照片程序即可查看。"
-//                          
-//                                                   delegate:nil
-//                          
-//                                          cancelButtonTitle:@"OK"
-//                          
-//                                          otherButtonTitles:nil];
-//    
-//    [alert show];
-//    
-//    [alert release];
-//    
-//}
-//
-//
-//- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
-//{
-//    [self.preview setHidden:YES];
-//    
-//    [self dismissViewControllerAnimated:YES completion:nil];
-//
-//}
-
+- (void)selectCityCodeid:(NSNotification *)noti
+{
+    _cityid = [noti.userInfo objectForKey:@"codeid"];
+    
+    NSLog(@"城市编号selectCityCodeid：%@",_cityid);
+    
+    //重新解析新数据
+    [self JSONStartParse:_cityid];
+}
 
 #pragma mark - 定义天气信息UI
 
@@ -648,20 +560,18 @@
      当日天气状况
      */
     //当日温度
-    _temp = [[UILabel alloc]initWithFrame:CGRectMake(160, rHeignt, 120, 40)];
+    _temp = [[UILabel alloc]init];
     _temp.font = [UIFont systemFontOfSize:34.0f];
     _temp.backgroundColor = [UIColor clearColor];
     _temp.textColor = [UIColor whiteColor];
     _temp.shadowColor = [UIColor grayColor];
-    _temp.textAlignment = NSTextAlignmentCenter;
     [view addSubview:_temp];
     
     //当日天气情况描述
-    _weather = [[UILabel alloc]initWithFrame:CGRectMake(160, rHeignt + 40, 120, 20)];
+    _weather = [[UILabel alloc]init];
     _weather.backgroundColor = [UIColor clearColor];
     _weather.textColor = [UIColor whiteColor];
     _weather.shadowColor = [UIColor grayColor];
-    _weather.textAlignment = NSTextAlignmentCenter;
     [view addSubview:_weather];
     
     //天气内容
@@ -684,7 +594,7 @@
     _date.textColor = [UIColor whiteColor];
     _date.shadowColor = [UIColor grayColor];
     [view addSubview:_date];
-    
+
     //显示天气图片
     _imgView1 = [[UIImageView alloc]initWithFrame:CGRectMake(10, rHeignt, 80, 80)];
     [_imgView1 setBackgroundColor:[UIColor clearColor]];
@@ -694,14 +604,25 @@
     [_imgView2 setBackgroundColor:[UIColor clearColor]];
     [view addSubview:_imgView2];
     
+    //刷新日期
+    _refreshDate = [[UILabel alloc]initWithFrame:CGRectMake(50, rHeignt + 80, 60, 20)];
+    _refreshDate.textAlignment = NSTextAlignmentCenter;
+    _refreshDate.backgroundColor = [UIColor clearColor];
+    _refreshDate.textColor = [UIColor whiteColor];
+    _refreshDate.shadowColor = [UIColor grayColor];
+    [view addSubview:_refreshDate];
+
+    
     //城市名字
-    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(60, rHeignt + 100, 80, 40)];
+    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(50, rHeignt + 100, 60, 20)];
+    _cityLabel.textAlignment = NSTextAlignmentCenter;
     [_cityLabel setBackgroundColor:[UIColor clearColor]];
     _cityLabel.textColor = [UIColor whiteColor];
     _cityLabel.shadowColor = [UIColor grayColor];
     [view addSubview:_cityLabel];
     
-    
+    float font = 22;
+    NSLog(@"%f",font/2);
     /**
      第二天天气状况
      */
@@ -710,6 +631,7 @@
     _content2.backgroundColor = [UIColor clearColor];
     _content2.textColor = [UIColor whiteColor];
     _content2.shadowColor = [UIColor grayColor];
+    _content2.font = [UIFont systemFontOfSize:font/2];
     [view addSubview:_content2];
 
     //温度范围
@@ -717,12 +639,15 @@
     _weather2.backgroundColor = [UIColor clearColor];
     _weather2.textColor = [UIColor whiteColor];
     _weather2.shadowColor = [UIColor grayColor];
+    _weather2.font = [UIFont systemFontOfSize:font/2];
     [view addSubview:_weather2];
     
     //日期
     _date2 = [[UILabel alloc]init];
     _date2.backgroundColor = [UIColor clearColor];
     _date2.textColor = [UIColor whiteColor];
+    _date.shadowColor = [UIColor grayColor];
+    _date2.font = [UIFont systemFontOfSize:font/2];
     [view addSubview:_date2];
     
     
@@ -734,6 +659,7 @@
     _content3.backgroundColor = [UIColor clearColor];
     _content3.textColor = [UIColor whiteColor];
     _content3.shadowColor = [UIColor grayColor];
+    _content3.font = [UIFont systemFontOfSize:font/2];
     [view addSubview:_content3];
 
     
@@ -742,6 +668,7 @@
     _weather3.backgroundColor = [UIColor clearColor];
     _weather3.textColor = [UIColor whiteColor];
     _weather3.shadowColor = [UIColor grayColor];
+    _weather3.font = [UIFont systemFontOfSize:font/2];
     [view addSubview:_weather3];
     
     //日期
@@ -750,6 +677,7 @@
     _date3.textColor = [UIColor whiteColor];
     _date3.shadowColor = [UIColor grayColor];
 //    _date3.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    _date3.font = [UIFont systemFontOfSize:font/2];
     [view addSubview:_date3];
     
     
@@ -763,49 +691,23 @@
     [view addSubview:_curLocation];
     
     
-    //刷新日期
-    _refreshDate = [[UILabel alloc]initWithFrame:CGRectMake(65, vHeight, WIDTH - 70 - 50, 40)];
-    _refreshDate.textAlignment = NSTextAlignmentCenter;
-    _refreshDate.backgroundColor = [UIColor clearColor];
-    _refreshDate.textColor = [UIColor whiteColor];
-    _refreshDate.shadowColor = [UIColor grayColor];
-    _refreshDate.font = [UIFont systemFontOfSize:14.0f];
-    [view addSubview:_refreshDate];
+    //设计UI界面Frame
+    [_temp setFrame:CGRectMake(150, vHeight - 210, 120, 40)];
+    [_weather setFrame:CGRectMake(150, vHeight - 170, 120, 20)];
+    [_content setFrame:CGRectMake(150, vHeight - 150, 160, 20)];
+    [_wind setFrame:CGRectMake(150, vHeight - 130, 170, 20)];
+    _wind.lineBreakMode = NSLineBreakByTruncatingMiddle;
+    [_date setFrame:CGRectMake(150, vHeight - 108, 170, 20)];
     
     
-    if (iPhone5) {
-        
-        [_content setFrame:CGRectMake(150, vHeight - 380, 160, 20)];
-        [_wind setFrame:CGRectMake(150, vHeight - 360, 170, 20)];
-         _wind.lineBreakMode = NSLineBreakByTruncatingMiddle;
-        [_date setFrame:CGRectMake(150, vHeight - 338, 170, 20)];
-        
-        [_content2 setFrame:CGRectMake(150, vHeight - 240, WIDTH - 150, 20)];
-        [_weather2 setFrame:CGRectMake(150, vHeight - 220, 100, 20)];
-        [_date2  setFrame:CGRectMake(150, vHeight - 200, 140, 20)];
-        
-        
-        [_content3  setFrame:CGRectMake(150, vHeight - 110, WIDTH - 150, 20)];
-        [_weather3  setFrame:CGRectMake(150, vHeight - 90, 100, 20)];
-        [_date3  setFrame:CGRectMake(150, vHeight - 70, 140, 20)];
-        
-    } else {
+    [_content2 setFrame:CGRectMake(150, vHeight - 80, 80, 20)];
+    [_weather2 setFrame:CGRectMake(150, vHeight - 60, 80, 20)];
+    [_date2  setFrame:CGRectMake(150, vHeight - 40, 80, 20)];
     
-        [_content setFrame:CGRectMake(150, vHeight - 330, 160, 20)];
-        [_wind setFrame:CGRectMake(150, vHeight - 310, 170, 20)];
-         _wind.lineBreakMode = NSLineBreakByTruncatingMiddle;
-        [_date setFrame:CGRectMake(150, vHeight - 288, 170, 20)];
-        
-        [_content2 setFrame:CGRectMake(150, vHeight - 220, WIDTH - 150, 20)];
-        [_weather2 setFrame:CGRectMake(150, vHeight - 200, 100, 20)];
-        [_date2  setFrame:CGRectMake(150, vHeight - 180, 140, 20)];
-        
-        
-        [_content3  setFrame:CGRectMake(150, vHeight - 110, WIDTH - 150, 20)];
-        [_weather3  setFrame:CGRectMake(150, vHeight - 90, 100, 20)];
-        [_date3  setFrame:CGRectMake(150, vHeight - 70, 140, 20)];
-    }
     
+    [_content3  setFrame:CGRectMake(240, vHeight - 80, 80, 20)];
+    [_weather3  setFrame:CGRectMake(240, vHeight - 60, 80, 20)];
+    [_date3  setFrame:CGRectMake(240, vHeight - 40, 80, 20)];
 }
 
 

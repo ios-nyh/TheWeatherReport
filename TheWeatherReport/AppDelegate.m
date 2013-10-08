@@ -28,19 +28,9 @@
    
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
-//    // ios7和ios6 屏幕适配
-//    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
-//        
-//        [application setStatusBarStyle:UIStatusBarStyleLightContent];
-//        self.window.clipsToBounds =YES;
-//        self.window.frame =  CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height-20);
-//        
-//        self.window.bounds = CGRectMake(0, 20, self.window.frame.size.width, self.window.frame.size.height);
-//    }
-    
     
     // ios7和ios6 屏幕适配
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 7.0) {
+    if (IOS_VERSION >= 7.0) {
         
         [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
         

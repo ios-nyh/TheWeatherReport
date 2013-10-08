@@ -173,9 +173,7 @@
     UIImageView *preview = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT)];
     preview.clipsToBounds = YES;  //超过边界的不显示
     preview.contentMode = UIViewContentModeScaleAspectFill;  //自适应，不变形
-    
 //    preview.contentMode = UIViewContentModeScaleAspectFit; //自适应，但是不能全覆盖
-  
 //    preview.contentMode = UIViewContentModeScaleToFill;    //自适应，但是会拉伸
     
     self.preview = preview;
@@ -622,7 +620,6 @@
     [view addSubview:_cityLabel];
     
     float font = 22;
-    NSLog(@"%f",font/2);
     /**
      第二天天气状况
      */
@@ -790,22 +787,6 @@
         UIImage *img2 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",str2]];
         [_imgView1 setImage: img1];
         [_imgView2 setImage: img2];
-        
-        
-//        NSLog(@"天气图片代码：str1 ->%@",str1);
-//        NSLog(@"天气图片代码：str2 ->%@",str2);
-        
-        
-//        NSString *strImg1 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img1"]];
-//        NSString *strImg2 = [NSString stringWithFormat:@"http://m.weather.com.cn/img/b%@.gif",[_subDic valueForKey:@"img2"]];
-//        NSURL *urlImg1 = [NSURL URLWithString:strImg1];
-//        NSURL *urlImg2 = [NSURL URLWithString:strImg2];
-//        NSData *data1 = [NSData dataWithContentsOfURL:urlImg1];
-//        NSData *data2 = [NSData dataWithContentsOfURL:urlImg2];
-//        UIImage *imgPic1 = [[[UIImage alloc] initWithData:data1] autorelease];
-//        UIImage *imgPic2 = [[[UIImage alloc] initWithData:data2] autorelease];
-//        [_imgView1 setImage: imgPic1];
-//        [_imgView2 setImage: imgPic2];
         
         
         //当前城市

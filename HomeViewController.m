@@ -93,7 +93,7 @@
 //            self.modalPresentationCapturesStatusBarAppearance = NO;
 //            
 //            }
-    
+        
     }
     
     return self;
@@ -202,11 +202,13 @@
     [_refreshBtn setImage:[UIImage imageNamed:@"refresh_pressed.png"] forState:UIControlStateHighlighted];
     [_refreshBtn addTarget:self action:@selector(refreshControlMethod) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_refreshBtn];
-    
     //给刷新按钮加上阴影效果
     _refreshBtn.layer.shadowOffset = CGSizeMake(0, 0);
     _refreshBtn.layer.shadowOpacity = 0.6;
     _refreshBtn.layer.shadowColor = [UIColor grayColor].CGColor;
+    //在刷新按钮位置，加入指示视图
+    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, rHeignt, 20, 20)];
+
     
     //拍摄按钮
     _cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -464,8 +466,7 @@
         
         [_refreshBtn setHidden:YES];
         
-        // 加入指示视图
-        [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, rHeignt, 20, 20)];
+        //开启转动轮动画
         [self startAnimating];
     }
    
@@ -481,11 +482,8 @@
             
             [self JSONStartParse:[self.cityDic objectForKey:self.address]];
         }
-        
-    } else {
-        
-        [self stopAnimating];
     }
+    
 }
 
 #pragma mark - 点击调用相机拍照
@@ -583,6 +581,7 @@
     _wind.backgroundColor = [UIColor clearColor];
     _wind.textColor = [UIColor whiteColor];
     _wind.shadowColor = [UIColor grayColor];
+    _wind.font = [UIFont systemFontOfSize:14];
     [view addSubview:_wind];
     
     
@@ -591,6 +590,7 @@
     _date.backgroundColor = [UIColor clearColor];
     _date.textColor = [UIColor whiteColor];
     _date.shadowColor = [UIColor grayColor];
+    _date.font = [UIFont systemFontOfSize:14];
     [view addSubview:_date];
 
     //显示天气图片
@@ -734,7 +734,6 @@
 }
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    
     if (self.mData) {
         
         NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableContainers error:nil];
@@ -807,25 +806,18 @@
         //显示刷新时间
         _refreshDate.text =  [self dataFormatter];
         
+        
         //停止右上角滚动轮
         [self stopAnimating];
+        //显示刷新按钮
         [_refreshBtn setHidden:NO];
-        
         //关闭状态栏动画
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
         
     }  else {
         
-        _date2.text = @"";
-        _date3.text = @"";
-        
-        //失败时，停止菊花动画
+        //数据为空时，停止菊花动画
         [self stopAnimating];
-        
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"加载失败" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-    
-        [alert show];
-        [alert release];
     }
 }
 
@@ -835,6 +827,7 @@
 {
     //失败时，停止菊花动画
     [self stopAnimating];
+    
     //打印出出错的主要内容
     NSLog(@"download fail ！%@",[error localizedDescription]);
 }

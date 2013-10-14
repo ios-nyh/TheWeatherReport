@@ -84,15 +84,8 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    
     if (self) {
-        
-//        if (IOS_VERSION >= 7.0) {
-//            
-//            self.edgesForExtendedLayout = UIRectEdgeNone;
-//            self.extendedLayoutIncludesOpaqueBars = NO;
-//            self.modalPresentationCapturesStatusBarAppearance = NO;
-//            
-//            }
         
     }
     
@@ -109,16 +102,9 @@
     [self.cameraHelper startRunning];
 }
 - (void)viewWillDisappear:(BOOL)animated
-{
+{   //停止取景
     [self.cameraHelper stopRunning];
 }
-
-
-//#pragma mark - 隐藏状态栏
-//- (BOOL)prefersStatusBarHidden
-//{
-//    return YES;
-//}
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     
@@ -128,8 +114,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-//    [self setNeedsStatusBarAppearanceUpdate];
     
     //判断ios系统版本
     if (IOS_VERSION >= 7.0) {
@@ -402,8 +386,17 @@
             
             _curLocation.text = @"";
             
+            //判断有无网络
+            if ([CheckNetwork isNetworkRunning]) {
+
             _refreshDate.text = [self dataFormatter];
+                
+            } else {
+                
+                //清空刷新时间
+                _refreshDate.text = @"";
             
+            }
         }
 
             break;
@@ -482,8 +475,12 @@
             
             [self JSONStartParse:[self.cityDic objectForKey:self.address]];
         }
+        
+    } else {
+        
+        //清空刷新时间
+        _refreshDate.text = @"";
     }
-    
 }
 
 #pragma mark - 点击调用相机拍照
@@ -492,7 +489,6 @@
 {
     [self.cameraHelper CaptureStillImage];
     
-//    [self performSelector:@selector(getImage) withObject:nil afterDelay:0.4];
     
     [self performSelector:@selector(didFinishedCapture:) withObject:nil];
     
@@ -509,10 +505,6 @@
     ShowInfoViewController *info = [[ShowInfoViewController alloc]init];
     
     UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:info];
-    
-
-//    [navi.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"] forBarMetrics:UIBarMetricsDefault];
-
     
     info.providesPresentationContextTransitionStyle = YES;
     
@@ -603,8 +595,7 @@
     [view addSubview:_imgView2];
     
     //刷新日期
-    _refreshDate = [[UILabel alloc]initWithFrame:CGRectMake(50, rHeignt + 80, 60, 20)];
-    _refreshDate.textAlignment = NSTextAlignmentCenter;
+    _refreshDate = [[UILabel alloc]initWithFrame:CGRectMake(60, rHeignt + 80, WIDTH - 60, 20)];
     _refreshDate.backgroundColor = [UIColor clearColor];
     _refreshDate.textColor = [UIColor whiteColor];
     _refreshDate.shadowColor = [UIColor grayColor];
@@ -612,8 +603,7 @@
 
     
     //城市名字
-    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(50, rHeignt + 100, 60, 20)];
-    _cityLabel.textAlignment = NSTextAlignmentCenter;
+    _cityLabel = [[UILabel alloc]initWithFrame:CGRectMake(60, rHeignt + 100, WIDTH - 60, 20)];
     [_cityLabel setBackgroundColor:[UIColor clearColor]];
     _cityLabel.textColor = [UIColor whiteColor];
     _cityLabel.shadowColor = [UIColor grayColor];

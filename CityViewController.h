@@ -26,6 +26,9 @@
 
 @property (retain,nonatomic) NSMutableArray *searchResult;
 @property (retain,nonatomic) NSMutableDictionary *mDic;
+@property (retain,nonatomic) NSMutableArray *nameArray;
+@property (retain,nonatomic) NSArray *sortArray;
+
 
 @property (retain,nonatomic) NSMutableArray *infoArray;
 

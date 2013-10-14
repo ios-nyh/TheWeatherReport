@@ -45,6 +45,8 @@
     
     [_searchResult release];
     [_mDic release];
+    [_nameArray release];
+    [_sortArray release];
     
     [super dealloc];
 }
@@ -123,7 +125,7 @@
     }
     
     
-    //解析城市
+    //解析城市数据
     [self JSONParse];
     
     //加入搜索框
@@ -170,6 +172,26 @@
         self.infoArray = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableLeaves error:nil];
         NSLog(@"解析数据JSON：%@",self.infoArray);
     }
+    
+    
+    NSMutableDictionary *mDictionary = [[NSMutableDictionary alloc]init];
+    NSMutableArray *nameArray = [[NSMutableArray alloc]init];
+    
+    for (NSDictionary *dic in self.infoArray) {
+        
+        NSString *name = [dic objectForKey:@"name"];
+        NSString *codeid = [dic objectForKey:@"codeid"];
+        
+        [mDictionary setObject:codeid forKey:name];
+        [nameArray addObject:name];
+    }
+    
+    self.mDic = mDictionary;
+    self.nameArray = nameArray;
+    
+    [mDictionary release];
+    [nameArray release];
+
 }
 
 #pragma - NSURLConnectionDelegate Method
@@ -188,31 +210,17 @@
     [self.searchBar resignFirstResponder];
 }
 
+
+
 #pragma mark - UISearchBarDelegate Method
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF CONTAINS %@ ",searchText];
     
-//    for (NSDictionary *dic in self.infoArray) {
-//        
-//        NSString *name = [dic objectForKey:@"name"];
-//        
-//        if ([searchBar.text isEqualToString:name] ) {
-//            
-//            compareResult = YES;
-//        }
-//    }
-//
-//
-//    if (!compareResult) {
-//        
-//        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"警告" message:@"输入有误请重新输入" delegate:nil cancelButtonTitle:@"OK"
-//                                             otherButtonTitles:nil, nil];
-//        [alert show];
-//        
-//        [alert release];
-//    }
+    self.sortArray = [self.nameArray filteredArrayUsingPredicate:predicate];
     
+    [self.tableView reloadData];
 }
 
 
@@ -268,9 +276,7 @@
             
              [self.searchBar becomeFirstResponder];
         }
-       
     }
-
 }
 
 #pragma mark - 返回按钮
@@ -291,13 +297,27 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-   return [self.cityKeys count];
+    if (self.sortArray.count > 0) {
+        
+        return 1;
+        
+    } else {
+        
+        return [self.cityKeys count];
+    }
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    
-    return [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
+    if (self.sortArray.count > 0) {
+        
+        
+        return [self.sortArray count];
+        
+    } else {
+        
+        return [[self.cityList objectForKey:[self.cityKeys objectAtIndex:section]] count];
+    }
     
 }
 
@@ -311,8 +331,16 @@
         cell = [[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleValue2 reuseIdentifier:CellIdentifier]autorelease];
     }
     
-    NSString  *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
-    cell.textLabel.text = cityName;
+    if (self.sortArray.count > 0) {
+        
+        NSString  *cityName = [self.sortArray objectAtIndex:indexPath.row];
+        cell.textLabel.text = cityName;
+        
+    } else {
+        
+        NSString  *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];
+        cell.textLabel.text = cityName;
+    }
     
     return cell;
 }
@@ -322,13 +350,29 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];;
-   
-    
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:cityName,@"cityName", nil];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"selectedCityNotification" object:nil userInfo:dic];
+    if (self.sortArray.count > 0) {
         
+        NSString *cityName = [self.sortArray objectAtIndex:indexPath.row];
+        
+        NSString *codeid = [self.mDic objectForKey:[self.sortArray objectAtIndex:indexPath.row]];
+        
+        
+        NSDictionary *subDic = [NSDictionary dictionaryWithObjectsAndKeys:codeid,@"codeid", nil];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"selectedCityCodeidNotification" object:nil userInfo:subDic];
+        
+        
+        NSLog(@"信息： %@ ** %@",codeid,cityName);
+        
+    } else {
+        
+        NSString *cityName = [[self.cityList objectForKey:[self.cityKeys objectAtIndex:indexPath.section]] objectAtIndex:indexPath.row];;
+        
+        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:cityName,@"cityName", nil];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"selectedCityNotification" object:nil userInfo:dic];
+    }
+    
     [self dismissViewControllerAnimated:YES completion:nil];
     
 }
@@ -337,13 +381,27 @@
 //设置每部分标题
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
-    return [self.cityKeys objectAtIndex:section];
+    if (self.sortArray.count > 0) {
+        
+        return 0;
+        
+    } else {
+        
+        return [self.cityKeys objectAtIndex:section];
+    }
 }
 
 //添加右侧索引
 -  (NSArray *)sectionIndexTitlesForTableView:(UITableView *)tableView
 {
-    return [self.cityKeys array];
+    if (self.sortArray.count > 0) {
+        
+        return 0;
+        
+    } else {
+        
+        return [self.cityKeys array];
+    }
 }
 
 

@@ -48,6 +48,12 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    //修改导航栏标题颜色
+    NSMutableDictionary *barAttrs = [NSMutableDictionary dictionary];
+    [barAttrs setObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
+    [barAttrs setObject:[NSValue valueWithUIOffset:UIOffsetMake(0, 0)] forKey:UITextAttributeTextShadowOffset];
+    [self.navigationController.navigationBar setTitleTextAttributes:barAttrs];
+    
     //导航栏图片：320x44
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"] forBarMetrics:UIBarMetricsDefault];
     
@@ -73,7 +79,7 @@
 // 自定义返回按钮
 - (void)backLeft
 {
-    [self dismissViewControllerAnimated:NO completion:nil];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 

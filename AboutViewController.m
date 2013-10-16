@@ -45,7 +45,6 @@
     [self.navigationController.navigationBar setTitleTextAttributes:barAttrs];
 
     
-    
     //判断ios版本，进行屏幕适配
     if (IOS_VERSION >= 7.0) {
         
@@ -77,7 +76,7 @@
     //点击拨打电话
     UIButton *telBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [telBtn setTitle:@"联系电话：010-62669813-0" forState:UIControlStateNormal];
-    [telBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [telBtn setTitleColor:[UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0] forState:UIControlStateNormal];
     [telBtn addTarget:self action:@selector(callTel) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:telBtn];
     
@@ -85,7 +84,7 @@
     //地址  用户位置：40.053126 ---- 116.300133
     UILabel *address = [[UILabel alloc]init];
     address.text = @"公司地址：北京-海淀区-上地十街-1号院-4号楼-1715室";
-    address.textColor = [UIColor blueColor];
+    address.textColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
     address.numberOfLines = 0;
     [self.view addSubview:address];
    
@@ -142,7 +141,7 @@
     
     comLoc.title = @"公司位置";
     
-    [self presentViewController:navi animated:NO completion:nil];
+    [self presentViewController:navi animated:YES completion:nil];
     
     [comLoc release];
     [navi release];

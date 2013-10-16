@@ -96,7 +96,7 @@
     
     NSArray *infoArray = [NSArray arrayWithObjects:@"关于我们",@"免责声明",@"版本信息", nil];
     self.array = infoArray;
-    NSArray *imgArray = [NSArray arrayWithObjects:@"Icon.png",@"Icon.png",@"Icon.png", nil];
+    NSArray *imgArray = [NSArray arrayWithObjects:@"about.png",@"disclaimer.png",@"version.png", nil];
     self.imgArray = imgArray;
    
     
@@ -116,6 +116,7 @@
     //注册通知，监听城市信息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showInfo:) name:@"showInfo" object:nil];
     
+    //设置view背景颜色
     //R:0.741  G:0.937  B:0.996
     self.tableView.backgroundColor = [UIColor colorWithRed:0.741 green:0.937 blue:0.996 alpha:1.0];
 }

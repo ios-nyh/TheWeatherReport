@@ -135,10 +135,11 @@
     if (IOS_VERSION >= 7.0) {
         
         searchBar.searchBarStyle = UISearchBarStyleProminent;
+        [searchBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"]];
         
     } else {
         
-        [searchBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg_1.png"]];
+        [searchBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"]];
     }
     
     searchBar.delegate = self;

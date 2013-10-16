@@ -51,6 +51,7 @@
 
     UIImageView *iconImgView = [[UIImageView alloc]initWithFrame:CGRectMake(60, 40, iconImg.size.width, iconImg.size.height)];
     iconImgView.image = iconImg;
+    iconImgView.layer.cornerRadius = 20;
     [self.view addSubview:iconImgView];
     
     [iconImgView release];
@@ -63,7 +64,7 @@
     
     
     UILabel *version = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 80, 100, 20)];
-    version.text = @"V1.0 测试版";
+    version.text = @"V1.1 正式版";
     [self.view addSubview:version];
     [version release];
     
@@ -71,7 +72,7 @@
     UIButton *urlBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [urlBtn setFrame:CGRectMake(60, 120, 100+iconImg.size.width+40, 20)];
     [urlBtn setTitle:@"http://www.elego.cn" forState:UIControlStateNormal];
-    [urlBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+    [urlBtn setTitleColor:[UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0] forState:UIControlStateNormal];
     [urlBtn addTarget:self action:@selector(openURLMethod) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:urlBtn];
     

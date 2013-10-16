@@ -47,6 +47,7 @@
     
     UIActivityIndicatorView *_activityView;
     UIView *_loading;
+    
 }
 
 

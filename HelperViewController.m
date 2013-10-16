@@ -9,6 +9,9 @@
 #import "HelperViewController.h"
 #import "HomeViewController.h"
 
+//#import "ShowInfoViewController.h"
+//#import "MMDrawerController.h"
+
 @interface HelperViewController ()
 
 @end
@@ -31,7 +34,7 @@
     UIScrollView *aScrollView = [[UIScrollView alloc]initWithFrame:[UIScreen mainScreen].bounds];
     aScrollView.contentSize = CGSizeMake(WIDTH * 2, HEIGHT);
     aScrollView.pagingEnabled = YES;
-    aScrollView.showsHorizontalScrollIndicator = YES;
+    aScrollView.showsHorizontalScrollIndicator = NO;
     [self.view addSubview:aScrollView];
     
     for (int i = 0; i < 2; i++)
@@ -66,6 +69,24 @@
     HomeViewController *home = [[HomeViewController alloc]init];
     [self presentViewController:home animated:YES completion:nil];
     [home release];
+    
+    
+//    ShowInfoViewController *rightDrawer = [[[ShowInfoViewController alloc]init]autorelease];
+//    UINavigationController *naRight = [[[UINavigationController alloc]initWithRootViewController:rightDrawer]autorelease];
+//    
+//    HomeViewController *home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
+//    UINavigationController *naHome = [[[UINavigationController alloc]initWithRootViewController:home]autorelease];
+//    
+//    MMDrawerController *drawer = [[MMDrawerController alloc]initWithCenterViewController:naHome rightDrawerViewController:naRight];
+//    
+//    [drawer setMaximumRightDrawerWidth:280.0f];
+//    [drawer setOpenDrawerGestureModeMask:MMOpenDrawerGestureModeAll];
+//    [drawer setCloseDrawerGestureModeMask:MMCloseDrawerGestureModeAll];
+//    
+//    [self presentViewController:drawer animated:YES completion:nil];
+//    
+//    [drawer release];
+
 }
 
 

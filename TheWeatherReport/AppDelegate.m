@@ -38,11 +38,10 @@
     
         [[UIApplication sharedApplication]setStatusBarHidden:NO];
     }
-
+    
     //加入导航视图
     [self setHelperViewController];
    
-    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
@@ -81,8 +80,8 @@
     } else {
         
         self.home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
-        UINavigationController *na = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];
-        self.window.rootViewController = na;
+        UINavigationController *naHome = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];
+        self.window.rootViewController = naHome;
     }
 }
 

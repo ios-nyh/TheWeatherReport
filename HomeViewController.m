@@ -395,7 +395,6 @@
                 
                 //清空刷新时间
                 _refreshDate.text = @"";
-            
             }
         }
 
@@ -459,6 +458,8 @@
         
         [_refreshBtn setHidden:YES];
         
+        //在刷新按钮位置，加入指示视图
+        [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, rHeignt, 20, 20)];
         //开启转动轮动画
         [self startAnimating];
     }
@@ -492,9 +493,16 @@
     
     [self performSelector:@selector(didFinishedCapture:) withObject:nil];
     
-    //开启指示视图
-    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH/2, HEIGHT/2, 20, 20)];
-    [self startAnimating];
+    if ([CheckNetwork isNetworkRunning]) {
+        
+        //开启指示视图
+        [self activityIndicatorViewWithFrame:CGRectMake(WIDTH/2, HEIGHT/2, 20, 20)];
+        [self startAnimating];
+        
+    } else {
+    
+        [self stopAnimating];
+    }
 }
 
 
@@ -705,7 +713,7 @@
 {
     NSString *URLStr = [NSString stringWithFormat:@"http://m.weather.com.cn/data/%@.html",cityid];
     NSURL *url = [NSURL URLWithString:URLStr];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15.0f];
     [NSURLConnection connectionWithRequest:request delegate:self];
     
     //开启状态栏动画

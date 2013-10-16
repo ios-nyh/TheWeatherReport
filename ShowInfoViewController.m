@@ -34,6 +34,7 @@
 {
     [_tableView release];
     [_array release];
+    [_imgArray release];
     
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"showInfo" object:nil];
     
@@ -58,6 +59,13 @@
     [super viewDidLoad];
     
     self.title = @"更多";
+    
+    //修改导航栏标题颜色
+    NSMutableDictionary *barAttrs = [NSMutableDictionary dictionary];
+    [barAttrs setObject:[UIColor whiteColor] forKey:UITextAttributeTextColor];
+    [barAttrs setObject:[NSValue valueWithUIOffset:UIOffsetMake(0, 0)] forKey:UITextAttributeTextShadowOffset];
+    [self.navigationController.navigationBar setTitleTextAttributes:barAttrs];
+
     
     //设置导航栏背景颜色
     [self.navigationController.navigationBar setBackgroundImage:[UIImage imageNamed:@"NavigationBg.png"] forBarMetrics:UIBarMetricsDefault];
@@ -88,6 +96,8 @@
     
     NSArray *infoArray = [NSArray arrayWithObjects:@"关于我们",@"免责声明",@"版本信息", nil];
     self.array = infoArray;
+    NSArray *imgArray = [NSArray arrayWithObjects:@"Icon.png",@"Icon.png",@"Icon.png", nil];
+    self.imgArray = imgArray;
    
     
     //自定义城市表格
@@ -102,16 +112,12 @@
     [self.view addSubview:tableView];
     [tableView release];
     
-    
-    UIImage *img = [UIImage imageNamed:@"hxhdClear.png"];
-    UIImageView *imgView = [[UIImageView alloc]initWithFrame:CGRectMake(0, HEIGHT - 240, WIDTH, img.size.height)];
-    imgView.backgroundColor = [UIColor clearColor];
-    imgView.image = img;
-    [self.view addSubview:imgView];
-    [imgView release];
-    
+
     //注册通知，监听城市信息
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showInfo:) name:@"showInfo" object:nil];
+    
+    //R:0.741  G:0.937  B:0.996
+    self.tableView.backgroundColor = [UIColor colorWithRed:0.741 green:0.937 blue:0.996 alpha:1.0];
 }
 
 
@@ -146,16 +152,21 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
+    
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         
         cell = [[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier]autorelease];
     }
     
+    cell.textLabel.textColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
     cell.textLabel.text = [self.array objectAtIndex:indexPath.row];
+    cell.imageView.image = [UIImage imageNamed:[self.imgArray objectAtIndex:indexPath.row]];
+    
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
-
+    
 }
 
 #pragma mark UITableViewDelegate 
@@ -166,6 +177,7 @@
         
         AboutViewController *about = [[AboutViewController alloc]init];
         about.title = @"关于我们";
+        
         [self.navigationController pushViewController:about animated:YES];
         [about release];
         

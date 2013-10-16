@@ -17,6 +17,8 @@
 
 @property (retain,nonatomic) NSArray *array;
 
+@property (retain,nonatomic) NSArray *imgArray;
+
 
 
 

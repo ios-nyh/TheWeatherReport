@@ -9,6 +9,7 @@
 #import "AppDelegate.h"
 
 #import "HomeViewController.h"
+#import "HelperViewController.h"
 #import "Reachability.h"
 
 @implementation AppDelegate
@@ -28,7 +29,6 @@
    
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
-    
     // ios7和ios6 屏幕适配
     if (IOS_VERSION >= 7.0) {
         
@@ -39,11 +39,9 @@
         [[UIApplication sharedApplication]setStatusBarHidden:NO];
     }
 
+    //加入导航视图
+    [self setHelperViewController];
    
-    
-    self.home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
-    UINavigationController *na = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];
-    self.window.rootViewController = na;
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
@@ -64,6 +62,28 @@
     }
 
     return YES;
+}
+
+//设置导航视图
+- (void)setHelperViewController
+{
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *path = [docPath stringByAppendingPathComponent:@"Helper"];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    if ([fm fileExistsAtPath:path] == NO) {
+        
+        [fm createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
+        HelperViewController *helper = [[HelperViewController alloc]init];
+        [self.window setRootViewController:helper];
+        [helper release];
+        
+    } else {
+        
+        self.home = [[[HomeViewController alloc]initWithNibName:@"HomeViewController" bundle:nil]autorelease];
+        UINavigationController *na = [[[UINavigationController alloc]initWithRootViewController:self.home]autorelease];
+        self.window.rootViewController = na;
+    }
 }
 
 //处理连接改变后的情况,对连接改变做出响应的处理动作

@@ -11,8 +11,6 @@
 
 @interface CityViewController : UITableViewController<UISearchBarDelegate,UIScrollViewDelegate,NSURLConnectionDelegate,NSURLConnectionDataDelegate,UIAlertViewDelegate>
 
-
-
 @property (retain,nonatomic) NSMutableArray *cityArray;
 @property (retain,nonatomic) NSDictionary *cityDic;
 

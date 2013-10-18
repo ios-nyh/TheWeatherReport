@@ -125,7 +125,7 @@
 - (void)callTel
 {
     UIWebView *callWebView = [[UIWebView alloc]init];
-    NSURL *telURL = [NSURL URLWithString:@"tel:010-62669813-0"];
+    NSURL *telURL = [NSURL URLWithString:@"tel:010-62669813"];
     [callWebView loadRequest:[NSURLRequest requestWithURL:telURL]];
     [self.view addSubview:callWebView];
     [callWebView release];

@@ -100,6 +100,16 @@
     
     //开始实时取景
     [self.cameraHelper startRunning];
+    
+    //在刷新按钮位置，加入指示视图
+    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, rHeignt, 20, 20)];
+    
+    //无网络时，停止菊花转动
+    if (![CheckNetwork isNetworkRunning]) {
+        
+        [self stopAnimating];
+    }
+
 }
 - (void)viewWillDisappear:(BOOL)animated
 {   //停止取景
@@ -182,22 +192,18 @@
     _refreshBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_refreshBtn setFrame:CGRectMake(WIDTH - 65, rHeignt, 50, 38)];
     [_refreshBtn setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
-//    [_refreshBtn setImage:[UIImage imageNamed:@"refresh_pressed.png"] forState:UIControlStateHighlighted];
     [_refreshBtn addTarget:self action:@selector(refreshControlMethod) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_refreshBtn];
     //给刷新按钮加上阴影效果
     _refreshBtn.layer.shadowOffset = CGSizeMake(0, 0);
     _refreshBtn.layer.shadowOpacity = 0.6;
     _refreshBtn.layer.shadowColor = [UIColor grayColor].CGColor;
-    //在刷新按钮位置，加入指示视图
-    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, rHeignt, 20, 20)];
-
+    
     
     //拍摄按钮
     _cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_cameraBtn setFrame:CGRectMake(15, vHeight, 50, 38)];
     [_cameraBtn setImage:[UIImage imageNamed:@"camera.png"] forState:UIControlStateNormal];
-//    [_cameraBtn setImage:[UIImage imageNamed:@"camera_pressed.png"] forState:UIControlStateHighlighted];
     [_cameraBtn addTarget:self action:@selector(snapPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_cameraBtn];
     
@@ -206,7 +212,6 @@
     _infoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_infoBtn setFrame:CGRectMake(WIDTH - 65, vHeight, 50, 38)];
     [_infoBtn setImage:[UIImage imageNamed:@"info.png"] forState:UIControlStateNormal];
-//    [_infoBtn setImage:[UIImage imageNamed:@"info_pressed.png"] forState:UIControlStateHighlighted];
     [_infoBtn addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
     
@@ -393,6 +398,8 @@
                 
                 //清空刷新时间
                 _refreshDate.text = @"";
+                
+                [self stopAnimating];
             }
         }
 
@@ -452,18 +459,18 @@
 
 - (void)refreshControlMethod
 {
-    if (_refreshBtn) {
-        
-        [_refreshBtn setHidden:YES];
-        
-        //在刷新按钮位置，加入指示视图
-        [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 65, rHeignt, 20, 20)];
-        //开启转动轮动画
-        [self startAnimating];
-    }
-   
     //判断有无网络
     if ([CheckNetwork isNetworkRunning]) {
+        
+        if (_refreshBtn) {
+            
+            [_refreshBtn setHidden:YES];
+            
+            //在刷新按钮位置，加入指示视图
+            [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 65, rHeignt, 20, 20)];
+            //开启转动轮动画
+            [self startAnimating];
+        }
         
         //刷新天气数据
         if (_cityid) {
@@ -708,7 +715,7 @@
 #pragma mark - JSON 解析
 
 - (void)JSONStartParse:(NSString *)cityid
-{
+{   //101080918
     NSString *URLStr = [NSString stringWithFormat:@"http://m.weather.com.cn/data/%@.html",cityid];
     NSURL *url = [NSURL URLWithString:URLStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15.0f];

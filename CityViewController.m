@@ -9,11 +9,15 @@
 #import "CityViewController.h"
 #import "ChineseToPinyin.h"
 #import "HomeViewController.h"
+#import "MBProgressHUD.h"
+#import "CheckNetwork.h"
 
-@interface CityViewController ()
+@interface CityViewController () <MBProgressHUDDelegate>
 {
     BOOL compareResult;
 }
+
+@property (retain,nonatomic) MBProgressHUD *progressHUD;
 
 @end
 
@@ -23,11 +27,7 @@
 {
     self = [super initWithStyle:style];
     if (self) {
-        
-//        [self.tableView initWithFrame:CGRectMake(0, 44, WIDTH, HEIGHT - 44) style:UITableViewStylePlain];
-        
-//        [self.tableView initWithFrame:self.view.frame style:UITableViewStyleGrouped];
-        
+            
     }
     
     return self; 
@@ -48,30 +48,63 @@
     [_nameArray release];
     [_sortArray release];
     
+    
+    [_progressHUD release];
+    
     [super dealloc];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    self.title = @"热门城市";
-    
-    //重写左边返回按钮
-    UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [leftBtn setFrame:CGRectMake(0, 0, 40, 40)];
-    [leftBtn setImage:[UIImage imageNamed:@"NaviBack.png"] forState:UIControlStateNormal];
-    [leftBtn addTarget:self action:@selector(backLeft) forControlEvents:UIControlEventTouchUpInside];
-    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc]initWithCustomView:leftBtn];
-    self.navigationItem.leftBarButtonItem = leftBar;
-    [leftBar release];
 
+//指示视图方法
+- (void)MBProgressHUDView
+{
+    //显示加载等待框
     
+    self.progressHUD = [[MBProgressHUD alloc] initWithView:self.view];
+    
+//    self.progressHUD.mode = MBProgressHUDModeDeterminate;
+    
+    [self.view addSubview:self.progressHUD];
+    
+    [self.view bringSubviewToFront:self.progressHUD];
+    
+    self.progressHUD.delegate = self;
+    
+    self.progressHUD.labelText = @"加载中...";
+    
+    [self.progressHUD show:YES];
+}
+
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    
+    NSLog(@"Hud: %@", hud);
+    
+    // Remove HUD from screen when the HUD was hidded
+    
+    [self.progressHUD removeFromSuperview];
+    
+    [self.progressHUD release];
+    
+    self.progressHUD = nil;
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self MBProgressHUDView];
+}
+
+//加载plist文件中的数据
+- (void)loadPlistData
+{
     NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
     NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:path];
     self.cityDic = dic;
     
-   
+    
     NSMutableArray *array = [NSMutableArray arrayWithArray:[dic allKeys]];
     self.cityArray = [NSMutableArray array];
     self.cityArray = array;
@@ -106,7 +139,7 @@
     //初始化索引集合和cityList字典
     self.cityKeys = [NSMutableOrderedSet orderedSet];
     self.cityList = [NSMutableDictionary dictionary];
-
+    
     
     //获取城市列表数据
     for (int i = 0; i < self.cityArray.count; i++) {
@@ -123,7 +156,24 @@
         }
         [cityNames addObject:cityName];
     }
+}
+
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     
+    self.title = @"热门城市";
+    
+    //重写左边返回按钮
+    UIButton *leftBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [leftBtn setFrame:CGRectMake(0, 0, 40, 40)];
+    [leftBtn setImage:[UIImage imageNamed:@"NaviBack.png"] forState:UIControlStateNormal];
+    [leftBtn addTarget:self action:@selector(backLeft) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *leftBar = [[UIBarButtonItem alloc]initWithCustomView:leftBtn];
+    self.navigationItem.leftBarButtonItem = leftBar;
+    [leftBar release];
+
     
     //解析城市数据
     [self JSONParse];
@@ -151,6 +201,9 @@
 #pragma mark - JSON解析城市数据
 - (void)JSONParse
 {
+    //http://192.168.11.10/josn.php              //测试
+    //http://www.coolelife.com/weather/josn.php  //接口
+    
     NSString *strURL = [NSString stringWithFormat:@"http://www.coolelife.com/weather/josn.php"];
     NSURL *url = [NSURL URLWithString:strURL];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
@@ -170,13 +223,14 @@
 {    
     if (self.mData) {
         
-        self.infoArray = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableLeaves error:nil];
-        NSLog(@"解析数据JSON：%@",self.infoArray);
+        self.infoArray = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableContainers error:nil];
+        
+        NSLog(@"解析数据：%@",self.infoArray);
     }
-    
     
     NSMutableDictionary *mDictionary = [[NSMutableDictionary alloc]init];
     NSMutableArray *nameArray = [[NSMutableArray alloc]init];
+    
     
     for (NSDictionary *dic in self.infoArray) {
         
@@ -192,7 +246,15 @@
     
     [mDictionary release];
     [nameArray release];
-
+    
+    if ([CheckNetwork isNetworkRunning]) {
+        
+        [self hudWasHidden:self.progressHUD];
+        
+        [self loadPlistData];
+        
+        [self.tableView reloadData];
+    }
 }
 
 #pragma - NSURLConnectionDelegate Method

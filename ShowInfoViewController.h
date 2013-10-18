@@ -12,15 +12,11 @@
 @interface ShowInfoViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
 
 
-
 @property (retain,nonatomic) UITableView *tableView;
 
-@property (retain,nonatomic) NSArray *array;
+@property (retain,nonatomic) NSArray *sectionArray;
 
 @property (retain,nonatomic) NSArray *imgArray;
-
-
-
 
 
 @end

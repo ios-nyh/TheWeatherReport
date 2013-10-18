@@ -8,6 +8,7 @@
 
 #import "ShowInfoViewController.h"
 
+#import "ProductionViewController.h"
 #import "AboutViewController.h"
 #import "DisclaimerViewController.h"
 #import "VersionViewController.h"
@@ -33,26 +34,14 @@
 - (void)dealloc
 {
     [_tableView release];
-    [_array release];
+    [_sectionArray release];
+    
     [_imgArray release];
     
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"showInfo" object:nil];
     
     [super dealloc];
 }
-
-
-////设置竖屏方向
-//- (BOOL)shouldAutorotate
-//{
-//    return YES;
-//}
-//- (NSUInteger)supportedInterfaceOrientations
-//{
-//    return UIInterfaceOrientationMaskPortrait;
-//}
-
-
 
 - (void)viewDidLoad
 {
@@ -94,12 +83,17 @@
 
     //www.elego.cn
     
-    NSArray *infoArray = [NSArray arrayWithObjects:@"关于我们",@"免责声明",@"版本信息", nil];
-    self.array = infoArray;
-    NSArray *imgArray = [NSArray arrayWithObjects:@"about.png",@"disclaimer.png",@"version.png", nil];
+    //存放分组图片
+    NSArray *infoOne = [NSArray arrayWithObjects:@"产品建议",@"给我们评分", nil];
+    NSArray *infoTwo = [NSArray arrayWithObjects:@"关于我们",@"免责声明",@"版本信息", nil];
+    NSArray *sectionArray = [NSArray arrayWithObjects:infoOne,infoTwo, nil];
+    self.sectionArray = sectionArray;
+    
+    NSArray *imgArrayOne = [NSArray arrayWithObjects:@"suggestion.png",@"score.png", nil];
+    NSArray *imgArrayTwo = [NSArray arrayWithObjects:@"about.png",@"disclaimer.png",@"version.png", nil];
+    NSArray *imgArray = [NSArray arrayWithObjects:imgArrayOne,imgArrayTwo, nil];
     self.imgArray = imgArray;
    
-    
     //自定义城市表格
     UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT - 44 - 20) style:UITableViewStyleGrouped];
     tableView.delegate = self;
@@ -142,12 +136,12 @@
 #pragma mark UITableViewDataSource 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return [self.sectionArray count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return [self.array count];
+    return [[self.sectionArray objectAtIndex:section] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -161,40 +155,56 @@
     }
     
     cell.textLabel.textColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
-    cell.textLabel.text = [self.array objectAtIndex:indexPath.row];
-    cell.imageView.image = [UIImage imageNamed:[self.imgArray objectAtIndex:indexPath.row]];
+    cell.textLabel.text = [[self.sectionArray objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    
+    cell.imageView.image = [UIImage imageNamed:[[self.imgArray objectAtIndex:indexPath.section]objectAtIndex:indexPath.row]];
     
     cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     
     return cell;
-    
 }
 
 #pragma mark UITableViewDelegate 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == 0) {
+    if (indexPath.section == 0) {
         
-        AboutViewController *about = [[AboutViewController alloc]init];
-        about.title = @"关于我们";
+        if (indexPath.row == 0) {
+            
+            ProductionViewController *production = [[ProductionViewController alloc]init];
+            production.title = @"产品建议";
+            [self.navigationController pushViewController:production animated:YES];
+            [production release];
+            
+        }  else if (indexPath.row == 1) {
+            //App ID：728307762
+            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?mt=8&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software&id=728307762"]];
+            
+        } } else {
         
-        [self.navigationController pushViewController:about animated:YES];
-        [about release];
-        
-    } else if (indexPath.row == 1) {
-        
-        DisclaimerViewController *disclaimer = [[DisclaimerViewController alloc]init];
-        disclaimer.title = @"免责声明";
-        [self.navigationController pushViewController:disclaimer animated:YES];
-        [disclaimer release];
-        
-    } else {
-        
-        VersionViewController *version = [[VersionViewController alloc]init];
-        version.title = @"版本信息";
-        [self.navigationController pushViewController:version animated:YES];
-        [version release];
+        if (indexPath.row == 0) {
+            
+            AboutViewController *about = [[AboutViewController alloc]init];
+            about.title = @"关于我们";
+            
+            [self.navigationController pushViewController:about animated:YES];
+            [about release];
+            
+        } else if (indexPath.row == 1) {
+            
+            DisclaimerViewController *disclaimer = [[DisclaimerViewController alloc]init];
+            disclaimer.title = @"免责声明";
+            [self.navigationController pushViewController:disclaimer animated:YES];
+            [disclaimer release];
+            
+        } else {
+            
+            VersionViewController *version = [[VersionViewController alloc]init];
+            version.title = @"版本信息";
+            [self.navigationController pushViewController:version animated:YES];
+            [version release];
+        }
     }
 }
 
@@ -207,22 +217,22 @@
 //section头部视图
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 40)];
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, 40)];
     view.backgroundColor = [UIColor clearColor];
     return [view autorelease];
 }
-////section底部间距
-//- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-//{
-//    return 100;
-//}
-////section底部视图
-//- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
-//{
-//    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
-//    view.backgroundColor = [UIColor clearColor];
-//    return [view autorelease];
-//}
+//section底部间距
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 20;
+}
+//section底部视图
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section
+{
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, 20)];
+    view.backgroundColor = [UIColor clearColor];
+    return [view autorelease];
+}
 
 
 - (void)didReceiveMemoryWarning

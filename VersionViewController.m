@@ -51,9 +51,13 @@
 
     UIImageView *iconImgView = [[UIImageView alloc]initWithFrame:CGRectMake(60, 40, iconImg.size.width, iconImg.size.height)];
     iconImgView.image = iconImg;
-    iconImgView.layer.cornerRadius = 20;
-    [self.view addSubview:iconImgView];
+    //设置图片为圆角
+    iconImgView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    iconImgView.layer.cornerRadius = 15;
+    iconImgView.layer.borderWidth = 1.0;
+    iconImgView.layer.masksToBounds = YES;
     
+    [self.view addSubview:iconImgView];
     [iconImgView release];
     
     UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 40, 100, 40)];
@@ -64,7 +68,7 @@
     
     
     UILabel *version = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 80, 100, 20)];
-    version.text = @"V1.1 正式版";
+    version.text = @"V1.0 正式版";
     [self.view addSubview:version];
     [version release];
     
@@ -83,7 +87,7 @@
     [aboutWeather release];
     
     
-    UILabel *rights = [[UILabel alloc]initWithFrame:CGRectMake(0, HEIGHT - 20 - 44 - 140 - 20, WIDTH, 140)];
+    UILabel *rights = [[UILabel alloc]initWithFrame:CGRectMake(0, HEIGHT - 20 - 44 - 140, WIDTH, 140)];
     rights.text = @"Copyright © 2013 HXHD Corporation, All Rights Reserved \n\n 华信互动公司 版权所有";
     rights.numberOfLines = 0;
     rights.font = [UIFont systemFontOfSize:20.0f];

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-@interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate>
+@interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
     UILabel *_cityLabel;       //当前城市
     

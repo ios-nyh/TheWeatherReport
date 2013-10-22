@@ -12,6 +12,12 @@
 #import "HelperViewController.h"
 #import "Reachability.h"
 
+#import <ShareSDK/ShareSDK.h>
+#import <TencentOpenAPI/QQApiInterface.h>
+#import <TencentOpenAPI/TencentOAuth.h>
+#import "WXApi.h"
+
+
 @implementation AppDelegate
 
 - (void)dealloc
@@ -28,6 +34,12 @@
 {
    
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
+    
+    //注册分享
+    [ShareSDK registerApp:@"af2527a0fea"];
+    
+    //初始化分享平台
+    [self initializePlat];
     
     // ios7和ios6 屏幕适配
     if (IOS_VERSION >= 7.0) {
@@ -62,6 +74,41 @@
 
     return YES;
 }
+
+//配置社会化平台的AppKeys
+
+- (void)initializePlat
+{
+    //添加新浪微博应用
+    [ShareSDK connectSinaWeiboWithAppKey:@"626312335" appSecret:@"5a4d07cf19ad731bd329e6ae33836295"
+                             redirectUri:@"http://open.weibo.com"];
+    //添加腾讯微博应用
+    [ShareSDK connectTencentWeiboWithAppKey:@"801430236" appSecret:@"2ef7c8d30f99ed121846a9123357c852"
+                                redirectUri:@"http://app.t.qq.com/app/playtest/801430236"];
+    //添加微信应用
+    [ShareSDK connectWeChatWithAppId:@"wxa87e471073449fde" wechatCls:[WXApi class]];
+    
+    //添加QQ应用
+    [ShareSDK connectQQWithQZoneAppKey:@"100589539"qqApiInterfaceCls:[QQApiInterface class]tencentOAuthCls:[TencentOAuth class]];
+    
+    //添加QQ空间应用
+    [ShareSDK connectQZoneWithAppKey:@"100589539" appSecret:@"c81424a09107e5fab62f8daaf8f6e3ee" qqApiInterfaceCls:[QQApiInterface class] tencentOAuthCls:[TencentOAuth class]];
+}
+//用于SSO客户端登录
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+    return [ShareSDK handleOpenURL:url
+                        wxDelegate:self];
+}
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return [ShareSDK handleOpenURL:url
+                 sourceApplication:sourceApplication
+                        annotation:annotation
+                        wxDelegate:self];
+}
+
 
 //设置导航视图
 - (void)setHelperViewController

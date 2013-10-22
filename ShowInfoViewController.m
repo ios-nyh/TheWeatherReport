@@ -179,7 +179,19 @@
             
         }  else if (indexPath.row == 1) {
             //App ID：728307762
-            [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?mt=8&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software&id=728307762"]];
+            NSString * appstoreUrlString = @"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?mt=8&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software&id=728307762";
+            
+            NSURL *url = [NSURL URLWithString:appstoreUrlString];
+            
+            if ([[UIApplication sharedApplication] canOpenURL:url])
+            {
+                
+                [[UIApplication sharedApplication] openURL:url];
+                
+            } else {
+                    	   
+                NSLog(@"can not open!");
+            }
             
         } } else {
         

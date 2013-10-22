@@ -13,12 +13,14 @@
 #import "ShowInfoViewController.h"
 
 #import "CheckNetwork.h"
+#import <ShareSDK/ShareSDK.h>
 
 @interface HomeViewController ()<AVHelperDelegate>
 {
     float rHeignt; // 刷新高度
     float vHeight; // 系统高度
     float cHeight; // 截屏高度
+    BOOL isAlertTwo;
 }
 
 @property (retain,nonatomic) CameraImageHelper *cameraHelper;
@@ -304,6 +306,8 @@
         //提示，是否保存图片
         UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:@"提示" message:@"是否保存图片" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"保存", nil];
         
+        isAlertTwo = NO;
+        
         [alertView show];
         [alertView release];
         
@@ -372,6 +376,30 @@
     return img;
 }
 
+#pragma mark - 设置相机界面
+- (void)setCameraUI
+{
+    [_cameraBtn setHidden:NO];
+    [_infoBtn setHidden:NO];
+    [_refreshBtn setHidden:NO];
+    
+    [self.preview setHidden:YES];
+    
+    _curLocation.text = @"";
+    
+    //判断有无网络
+    if ([CheckNetwork isNetworkRunning]) {
+        
+        _refreshDate.text = [self dataFormatter];
+        
+    } else {
+        
+        //清空刷新时间
+        _refreshDate.text = @"";
+        
+        [self stopAnimating];
+    }
+}
 
 #pragma mark - UIAlertViewDelegate
 
@@ -381,36 +409,29 @@
             
         case 0:
         {
-            [_cameraBtn setHidden:NO];
-            [_infoBtn setHidden:NO];
-            [_refreshBtn setHidden:NO];
-            
-            [self.preview setHidden:YES];
-            
-            _curLocation.text = @"";
-            
-            //判断有无网络
-            if ([CheckNetwork isNetworkRunning]) {
-
-            _refreshDate.text = [self dataFormatter];
-                
-            } else {
-                
-                //清空刷新时间
-                _refreshDate.text = @"";
-                
-                [self stopAnimating];
-            }
+            [self setCameraUI];
         }
 
             break;
             
         case 1:
         {
+            // isAlertTwo == YES 分享图片
+            if (isAlertTwo) {
+                
+                isAlertTwo = NO;
+                
+                [self share];
+                
+            } else {
+            
+            //保存图片到相册
             [_refreshBtn setHidden:YES];
             
             UIImage *img = [self captureView:self.view];
             UIImageWriteToSavedPhotosAlbum(img,self,@selector(image:didFinishSavingWithError:contextInfo:),nil);
+            
+            }
         }
             break;
             
@@ -429,13 +450,74 @@
 
                                           cancelButtonTitle:@"OK"
 
-                                          otherButtonTitles:nil];
+                                          otherButtonTitles:@"Share",nil];
+    isAlertTwo = YES;
+    
+    [alert dismissWithClickedButtonIndex:1 animated:YES];
 
     [alert show];
 
     [alert release];
+    
 }
 
+#pragma mark - 分享图片
+
+- (void)share
+{
+    UIImage *img = [self captureView:self.view];
+    //分享的图片
+    id<ISSCAttachment> fileName = [ShareSDK pngImageWithImage:img];
+    
+    //构造分享内容
+    id<ISSContent> publishContent = [ShareSDK content:@"天气.相机"
+                                       defaultContent:@"默认分享内容，没内容时显示，天气.相机"
+                                                image:fileName
+                                                title:@"天气.相机"
+                                                  url:@"http://www.sharesdk.cn"
+                                          description:@"天气.相机分享"
+                                            mediaType:SSPublishContentMediaTypeNews];
+    
+    //创建弹出菜单容器,用于显示分享界面的容器，如果只显示在iPhone客户端可以传入nil。如果需要在iPad上显示需要指定容器。
+    id<ISSContainer> container = [ShareSDK container];
+    
+    //自定义分享列表
+    NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo,ShareTypeWeixiSession,ShareTypeQQ,ShareTypeQQSpace,ShareTypeTencentWeibo, nil];
+    
+   
+    //分享选项，用于定义分享视图部分属性（如：标题、一键分享列表、功能按钮等）,默认可传入nil
+    id<ISSShareOptions> shareOptions = [ShareSDK defaultShareOptionsWithTitle:@"内容分享"
+                                                              oneKeyShareList:nil
+                                                               qqButtonHidden:YES
+                                                        wxSessionButtonHidden:YES
+                                                       wxTimelineButtonHidden:YES
+                                                         showKeyboardOnAppear:NO
+                                                            shareViewDelegate:nil
+                                                          friendsViewDelegate:nil
+                                                        picViewerViewDelegate:nil];
+    [ShareSDK showShareActionSheet:container
+                         shareList:shareList
+                           content:publishContent
+                     statusBarTips:YES
+                       authOptions:nil
+                      shareOptions:shareOptions
+                            result:^(ShareType type, SSPublishContentState state, id<ISSStatusInfo> statusInfo, id<ICMErrorInfo> error, BOOL end) {
+                                
+                                if (state == SSPublishContentStateSuccess) {
+                                    
+                                    NSLog(@"分享成功");
+                                    
+                                } else if (state == SSPublishContentStateFail) {
+                                    
+                                    NSLog(@"分享失败,错误码:%d,错误描述:%@", [error errorCode], [error errorDescription]);
+                                }
+                                
+                                //重置相机界面
+                                [self setCameraUI];
+                                
+                            }];
+
+}
 
 #pragma mark - 获取当前日期
 

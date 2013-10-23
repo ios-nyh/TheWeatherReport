@@ -13,6 +13,9 @@
 #import "ShowInfoViewController.h"
 
 #import "CheckNetwork.h"
+#import "CycleScrollView.h"
+#import "WeatherData.h"
+
 #import <ShareSDK/ShareSDK.h>
 
 @interface HomeViewController ()<AVHelperDelegate>
@@ -80,6 +83,8 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityCodeidNotification" object:nil];
     
+    [_weatherData release];
+    
     [super dealloc];
 }
 
@@ -99,6 +104,10 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setNavigationBarHidden:YES];
+    
+    //开始定位服务
+    [self startUpdates];
+
     
     //开始实时取景
     [self.cameraHelper startRunning];
@@ -123,10 +132,10 @@
     return UIStatusBarStyleLightContent;
 }
 
-- (void)viewDidLoad
+#pragma mark - 判断版本及屏幕适配
+
+- (void)setVersionAndScreen
 {
-    [super viewDidLoad];
-    
     //判断ios系统版本
     if (IOS_VERSION >= 7.0) {
         
@@ -142,54 +151,12 @@
         
         cHeight = HEIGHT - 20;
     }
+}
 
-    //当前背景颜色
-    [self.view setBackgroundColor:[UIColor blackColor]];
-    
-    //开始定位服务
-    [self startUpdates];
+#pragma mark - 自定义界面按钮
 
-    
-    //获取城市信息
-    NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
-    NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:path];
-    self.cityDic = dic;
-    
-    
-    //当前拍摄视图
-    UIView *liveView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT)];
-    self.liveView = liveView;
-    liveView.contentMode = UIViewContentModeScaleToFill;
-    [self.view addSubview:liveView];
-    [liveView release];
-    
-    
-    //当前预览视图
-    UIImageView *preview = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT)];
-    preview.clipsToBounds = YES;  //超过边界的不显示
-    preview.contentMode = UIViewContentModeScaleAspectFill;  //自适应，不变形
-//    preview.contentMode = UIViewContentModeScaleAspectFit; //自适应，但是不能全覆盖
-//    preview.contentMode = UIViewContentModeScaleToFill;    //自适应，但是会拉伸
-    
-    self.preview = preview;
-    [self.view addSubview:preview];
-    [preview release];
-    
-    
-    //初始化天气信息label
-    [self setBackgroundView:self.view];
-    
-    
-    //初始化相机
-    CameraImageHelper *cameraHelper = [[CameraImageHelper alloc]init];
-    cameraHelper.delegate = self;
-    self.cameraHelper = cameraHelper;
-    [cameraHelper release];
-    
-    
-    [self.cameraHelper embedPreviewInView:self.liveView];
-    
-    
+- (void)customUIBtn
+{
     //刷新按钮
     _refreshBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_refreshBtn setFrame:CGRectMake(WIDTH - 65, rHeignt, 50, 38)];
@@ -216,6 +183,66 @@
     [_infoBtn setImage:[UIImage imageNamed:@"info.png"] forState:UIControlStateNormal];
     [_infoBtn addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
+}
+
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    //当前背景颜色
+    [self.view setBackgroundColor:[UIColor blackColor]];
+
+    //判断版本及屏幕适配
+    [self setVersionAndScreen];
+
+//    //开始定位服务
+//    [self startUpdates];
+
+    //获取城市信息
+    NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
+    NSDictionary *dic = [NSDictionary dictionaryWithContentsOfFile:path];
+    self.cityDic = dic;
+    
+    
+    //当前拍摄视图
+    UIView *liveView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT)];
+    self.liveView = liveView;
+    liveView.contentMode = UIViewContentModeScaleToFill;
+    [self.view addSubview:liveView];
+    [liveView release];
+    
+    
+    //当前预览视图
+    UIImageView *preview = [[UIImageView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT)];
+    preview.clipsToBounds = YES;  //超过边界的不显示
+    preview.contentMode = UIViewContentModeScaleAspectFill;  //自适应，不变形
+//    preview.contentMode = UIViewContentModeScaleAspectFit; //自适应，但是不能全覆盖
+//    preview.contentMode = UIViewContentModeScaleToFill;    //自适应，但是会拉伸
+    
+    self.preview = preview;
+    [self.view addSubview:preview];
+    [preview release];
+    
+    
+//    //初始化天气信息label
+//    [self setBackgroundView:self.view];
+    
+    [self scrollViewMethod];
+    
+    
+    
+    //初始化相机
+    CameraImageHelper *cameraHelper = [[CameraImageHelper alloc]init];
+    cameraHelper.delegate = self;
+    self.cameraHelper = cameraHelper;
+    [cameraHelper release];
+    
+    //载入拍摄视图
+    [self.cameraHelper embedPreviewInView:self.liveView];
+    
+    //自定义按钮
+    [self customUIBtn];
     
     //增加一个计时器，每隔两小时刷新一次
     [NSTimer scheduledTimerWithTimeInterval:7200.0f target:self selector:@selector(refreshControlMethod) userInfo:nil repeats:YES];
@@ -224,10 +251,66 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(refreshControlMethod)
                                                  name:UIApplicationDidBecomeActiveNotification object:nil];
-    
     //城市选择的通知
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCity:) name:@"selectedCityNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCityCodeid:) name:@"selectedCityCodeidNotification" object:nil];
+}
+
+#pragma mark - 加入滚动视图
+
+- (void)scrollViewMethod
+{
+    NSMutableArray *picArray = [[NSMutableArray alloc] init];
+    
+    UIView *v1 = [[UIView alloc]init];
+    UIView *v2 = [[UIView alloc]init];
+    UIView *v3 = [[UIView alloc]init];
+    UIView *v4 = [[UIView alloc]init];
+    
+    
+    [self setBackgroundView1:v1];
+    [self setBackgroundView2:v2];
+    [self setBackgroundView3:v3];
+    [self setBackgroundView4:v4];
+
+    [picArray addObject:v1];
+    [picArray addObject:v2];
+    [picArray addObject:v3];
+    [picArray addObject:v4];
+
+    [v1 release];
+    [v2 release];
+    [v3 release];
+    [v4 release];
+    
+    
+    //显示数组对象
+    CFShow(picArray);
+    
+    CycleScrollView *cycle = [[CycleScrollView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, cHeight)
+                                                     cycleDirection:CycleDirectionLandscape
+                                                           pictures:picArray];
+    [self.view addSubview:cycle];
+    [cycle release];
+    [picArray release];
+}
+
+- (UIImage *)convertViewToImage:(UIView *)v
+{
+//    CGSize s = v.bounds.size;
+//    // 下面方法，第一个参数表示区域大小。第二个参数表示是否是非透明的。如果需要显示半透明效果，需要传NO，否则传YES。第三个参数就是屏幕密度了
+//    UIGraphicsBeginImageContextWithOptions(s, NO, [UIScreen mainScreen].scale);
+//    [v.layer renderInContext:UIGraphicsGetCurrentContext()];
+//    UIImage*image = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    
+//    return image;
+    
+    UIGraphicsBeginImageContext(v.bounds.size);
+    [v.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
 }
 
 
@@ -376,6 +459,7 @@
     return img;
 }
 
+
 #pragma mark - 设置相机界面
 - (void)setCameraUI
 {
@@ -448,9 +532,9 @@
 
                                                    delegate:self
 
-                                          cancelButtonTitle:@"OK"
+                                          cancelButtonTitle:@"关闭"
 
-                                          otherButtonTitles:@"Share",nil];
+                                          otherButtonTitles:@"分享",nil];
     isAlertTwo = YES;
     
     [alert dismissWithClickedButtonIndex:1 animated:YES];
@@ -470,19 +554,20 @@
     id<ISSCAttachment> fileName = [ShareSDK pngImageWithImage:img];
     
     //构造分享内容
-    id<ISSContent> publishContent = [ShareSDK content:@"天气.相机"
-                                       defaultContent:@"默认分享内容，没内容时显示，天气.相机"
+    id<ISSContent> publishContent = [ShareSDK content:@"天气图片"
+                                       defaultContent:@"默认内容"
                                                 image:fileName
                                                 title:@"天气.相机"
                                                   url:@"http://www.sharesdk.cn"
-                                          description:@"天气.相机分享"
-                                            mediaType:SSPublishContentMediaTypeNews];
+                                          description:@"天气相机分享"
+                                            mediaType:SSPublishContentMediaTypeImage];
     
     //创建弹出菜单容器,用于显示分享界面的容器，如果只显示在iPhone客户端可以传入nil。如果需要在iPad上显示需要指定容器。
     id<ISSContainer> container = [ShareSDK container];
+    [container setIPhoneContainerWithViewController:self];
     
     //自定义分享列表
-    NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo,ShareTypeWeixiSession,ShareTypeQQ,ShareTypeQQSpace,ShareTypeTencentWeibo, nil];
+    NSArray *shareList = [ShareSDK getShareListWithType:ShareTypeSinaWeibo,ShareTypeWeixiSession,ShareTypeQQ,ShareTypeTencentWeibo, nil];
     
    
     //分享选项，用于定义分享视图部分属性（如：标题、一键分享列表、功能按钮等）,默认可传入nil
@@ -495,6 +580,9 @@
                                                             shareViewDelegate:nil
                                                           friendsViewDelegate:nil
                                                         picViewerViewDelegate:nil];
+    
+   
+    
     [ShareSDK showShareActionSheet:container
                          shareList:shareList
                            content:publishContent
@@ -637,64 +725,66 @@
 
 #pragma mark - 定义天气信息UI
 
-- (void)setBackgroundView:(UIView *)view
+- (void)setBackgroundView1:(UIView *)view1
 {
     /**
      当日天气状况
-     */
+     **/
     //当日温度
     _temp = [[UILabel alloc]init];
     _temp.font = [UIFont systemFontOfSize:34.0f];
     _temp.backgroundColor = [UIColor clearColor];
     _temp.textColor = [UIColor whiteColor];
     _temp.shadowColor = [UIColor grayColor];
-    [view addSubview:_temp];
+    [view1 addSubview:_temp];
     
     //当日天气情况描述
     _weather = [[UILabel alloc]init];
     _weather.backgroundColor = [UIColor clearColor];
     _weather.textColor = [UIColor whiteColor];
     _weather.shadowColor = [UIColor grayColor];
-    [view addSubview:_weather];
+    [view1 addSubview:_weather];
     
     //天气内容
     _content = [[UILabel alloc]init];
     _content.backgroundColor = [UIColor clearColor];
     _content.textColor = [UIColor whiteColor];
     _content.shadowColor = [UIColor grayColor];
-    [view addSubview:_content];
+    [view1 addSubview:_content];
     
     _wind = [[UILabel alloc]init];
     _wind.backgroundColor = [UIColor clearColor];
     _wind.textColor = [UIColor whiteColor];
     _wind.shadowColor = [UIColor grayColor];
     _wind.font = [UIFont systemFontOfSize:14];
-    [view addSubview:_wind];
+    [view1 addSubview:_wind];
     
     
     //日期
-    _date = [[UILabel alloc]init];
-    _date.backgroundColor = [UIColor clearColor];
-    _date.textColor = [UIColor whiteColor];
-    _date.shadowColor = [UIColor grayColor];
-    _date.font = [UIFont systemFontOfSize:14];
-    [view addSubview:_date];
+    _dateT1 = [[UILabel alloc]init];
+    _dateT1.backgroundColor = [UIColor clearColor];
+    _dateT1.textColor = [UIColor whiteColor];
+    _dateT1.shadowColor = [UIColor grayColor];
+    _dateT1.font = [UIFont systemFontOfSize:14];
+    [view1 addSubview:_dateT1];
+    [_dateT1 setFrame:CGRectMake(150, vHeight - 108, 170, 20)];
+   
 
     //显示天气图片
     _imgView1 = [[UIImageView alloc]initWithFrame:CGRectMake(10, rHeignt, 80, 80)];
     [_imgView1 setBackgroundColor:[UIColor clearColor]];
-    [view addSubview:_imgView1];
+    [view1 addSubview:_imgView1];
     
     _imgView2 = [[UIImageView alloc]initWithFrame:CGRectMake(75, rHeignt, 80, 80)];
     [_imgView2 setBackgroundColor:[UIColor clearColor]];
-    [view addSubview:_imgView2];
+    [view1 addSubview:_imgView2];
     
     //刷新日期
     _refreshDate = [[UILabel alloc]initWithFrame:CGRectMake(60, rHeignt + 80, WIDTH - 60, 20)];
     _refreshDate.backgroundColor = [UIColor clearColor];
     _refreshDate.textColor = [UIColor whiteColor];
     _refreshDate.shadowColor = [UIColor grayColor];
-    [view addSubview:_refreshDate];
+    [view1 addSubview:_refreshDate];
 
     
     //城市名字
@@ -702,7 +792,7 @@
     [_cityLabel setBackgroundColor:[UIColor clearColor]];
     _cityLabel.textColor = [UIColor whiteColor];
     _cityLabel.shadowColor = [UIColor grayColor];
-    [view addSubview:_cityLabel];
+    [view1 addSubview:_cityLabel];
     
     float font = 22;
     /**
@@ -714,7 +804,7 @@
     _content2.textColor = [UIColor whiteColor];
     _content2.shadowColor = [UIColor grayColor];
     _content2.font = [UIFont systemFontOfSize:font/2];
-    [view addSubview:_content2];
+    [view1 addSubview:_content2];
 
     //温度范围
     _weather2 = [[UILabel alloc]init];
@@ -722,7 +812,7 @@
     _weather2.textColor = [UIColor whiteColor];
     _weather2.shadowColor = [UIColor grayColor];
     _weather2.font = [UIFont systemFontOfSize:font/2];
-    [view addSubview:_weather2];
+    [view1 addSubview:_weather2];
     
     //日期
     _date2 = [[UILabel alloc]init];
@@ -730,7 +820,7 @@
     _date2.textColor = [UIColor whiteColor];
     _date.shadowColor = [UIColor grayColor];
     _date2.font = [UIFont systemFontOfSize:font/2];
-    [view addSubview:_date2];
+    [view1 addSubview:_date2];
     
     
     /**
@@ -742,7 +832,7 @@
     _content3.textColor = [UIColor whiteColor];
     _content3.shadowColor = [UIColor grayColor];
     _content3.font = [UIFont systemFontOfSize:font/2];
-    [view addSubview:_content3];
+    [view1 addSubview:_content3];
 
     
     //温度范围
@@ -751,7 +841,7 @@
     _weather3.textColor = [UIColor whiteColor];
     _weather3.shadowColor = [UIColor grayColor];
     _weather3.font = [UIFont systemFontOfSize:font/2];
-    [view addSubview:_weather3];
+    [view1 addSubview:_weather3];
     
     //日期
     _date3 = [[UILabel alloc]init];
@@ -760,7 +850,7 @@
     _date3.shadowColor = [UIColor grayColor];
 //    _date3.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     _date3.font = [UIFont systemFontOfSize:font/2];
-    [view addSubview:_date3];
+    [view1 addSubview:_date3];
     
     
     //当前位置
@@ -770,7 +860,7 @@
     _curLocation.textColor = [UIColor whiteColor];
     _curLocation.shadowColor = [UIColor grayColor];
     _curLocation.font = [UIFont systemFontOfSize:14.0f];
-    [view addSubview:_curLocation];
+    [view1 addSubview:_curLocation];
     
     
     //设计UI界面Frame
@@ -790,6 +880,34 @@
     [_content3  setFrame:CGRectMake(240, vHeight - 80, 80, 20)];
     [_weather3  setFrame:CGRectMake(240, vHeight - 60, 80, 20)];
     [_date3  setFrame:CGRectMake(240, vHeight - 40, 80, 20)];
+    
+}
+
+
+- (void)setBackgroundView2:(UIView *)view2
+{
+    
+    //日期
+    _dateT2 = [[UILabel alloc]init];
+    _dateT2.backgroundColor = [UIColor clearColor];
+    _dateT2.textColor = [UIColor whiteColor];
+    _dateT2.shadowColor = [UIColor grayColor];
+    _dateT2.font = [UIFont systemFontOfSize:14];
+    [view2 addSubview:_dateT2];
+    [_dateT2 setFrame:CGRectMake(150, vHeight - 108, 170, 20)];
+    
+}
+
+- (void)setBackgroundView3:(UIView *)view3
+{
+  
+    
+}
+
+- (void)setBackgroundView4:(UIView *)view4
+{
+
+   
 }
 
 
@@ -856,13 +974,23 @@
         }
         
         _subDic = [[dic objectForKey:@"weatherinfo"] retain];
-        
+        self.weatherData = [[[WeatherData alloc]init]autorelease];
         //当天天气
-        _temp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
-        _weather.text = [_subDic objectForKey:@"weather1"];
-        _content.text = [_subDic objectForKey:@"temp1"];
-        _wind.text = [_subDic objectForKey:@"wind1"];
-        _date.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        self.weatherData.temp = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
+        self.weatherData.weather = [_subDic objectForKey:@"weather1"];
+        self.weatherData.content = [_subDic objectForKey:@"temp1"];
+        self.weatherData.wind = [_subDic objectForKey:@"wind1"];
+        self.weatherData.date = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        _date.text = self.weatherData.date;
+         NSLog(@"self.weatherData.date -- 解析完成 ： >%@",self.weatherData.date);
+        
+        
+        _dateT2.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        _dateT1.text = [NSString stringWithFormat:@"%@%@",[_subDic objectForKey:@"date_y"],[_subDic objectForKey:@"week"]];
+        
+        
+        
+       
         
         //获取天气图片
         NSString *str1 = [_subDic valueForKey:@"img1"];
@@ -904,6 +1032,7 @@
         //数据为空时，停止菊花动画
         [self stopAnimating];
     }
+
 }
 
 #pragma mark - NSURLConnectionDelegate method

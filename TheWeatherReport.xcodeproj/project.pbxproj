@@ -84,6 +84,7 @@
 		8148CC0E180D3FB1006410EF /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 8148CC02180D3FB1006410EF /* Icon@2x.png */; };
 		8148CC11180D3FB1006410EF /* NavigationBg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8148CC05180D3FB1006410EF /* NavigationBg.png */; };
 		8148CC17180D4F59006410EF /* helper2.png in Resources */ = {isa = PBXBuildFile; fileRef = 8148CC15180D4F59006410EF /* helper2.png */; };
+		814A9E831817C9D000CB2542 /* WeatherData.m in Sources */ = {isa = PBXBuildFile; fileRef = 814A9E821817C9D000CB2542 /* WeatherData.m */; };
 		815300B6180E41EE0062F60B /* helper1.png in Resources */ = {isa = PBXBuildFile; fileRef = 815300B5180E41EE0062F60B /* helper1.png */; };
 		815300BA180E5B130062F60B /* about.png in Resources */ = {isa = PBXBuildFile; fileRef = 815300B7180E5B130062F60B /* about.png */; };
 		815300BB180E5B130062F60B /* suggestion.png in Resources */ = {isa = PBXBuildFile; fileRef = 815300B8180E5B130062F60B /* suggestion.png */; };
@@ -108,6 +109,7 @@
 		81C3DAEA180FEAA40071C2C3 /* iTunesArtwork.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C3DAE5180FEAA40071C2C3 /* iTunesArtwork.png */; };
 		81C3DAEB180FEAA40071C2C3 /* iTunesArtwork@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C3DAE6180FEAA40071C2C3 /* iTunesArtwork@2x.png */; };
 		81E96F0417F9126300E6E0CC /* 18.png in Resources */ = {isa = PBXBuildFile; fileRef = 81E96F0317F9126300E6E0CC /* 18.png */; };
+		81F0C520181659D30099C6E1 /* CycleScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 81F0C51F181659D30099C6E1 /* CycleScrollView.m */; };
 		81F7A7C417F2B8030049BBD8 /* CheckNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */; };
 		81FD160817E039F2004B714A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160717E039F2004B714A /* UIKit.framework */; };
 		81FD160A17E039F2004B714A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 81FD160917E039F2004B714A /* Foundation.framework */; };
@@ -223,6 +225,8 @@
 		8148CC02180D3FB1006410EF /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
 		8148CC05180D3FB1006410EF /* NavigationBg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = NavigationBg.png; path = TheWeatherReport/NavigationBg.png; sourceTree = "<group>"; };
 		8148CC15180D4F59006410EF /* helper2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helper2.png; sourceTree = "<group>"; };
+		814A9E811817C9D000CB2542 /* WeatherData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherData.h; sourceTree = "<group>"; };
+		814A9E821817C9D000CB2542 /* WeatherData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherData.m; sourceTree = "<group>"; };
 		815300B5180E41EE0062F60B /* helper1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helper1.png; sourceTree = "<group>"; };
 		815300B7180E5B130062F60B /* about.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about.png; sourceTree = "<group>"; };
 		815300B8180E5B130062F60B /* suggestion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggestion.png; sourceTree = "<group>"; };
@@ -249,6 +253,8 @@
 		81C3DAE5180FEAA40071C2C3 /* iTunesArtwork.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesArtwork.png; sourceTree = "<group>"; };
 		81C3DAE6180FEAA40071C2C3 /* iTunesArtwork@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "iTunesArtwork@2x.png"; sourceTree = "<group>"; };
 		81E96F0317F9126300E6E0CC /* 18.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 18.png; sourceTree = "<group>"; };
+		81F0C51E181659D30099C6E1 /* CycleScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CycleScrollView.h; sourceTree = "<group>"; };
+		81F0C51F181659D30099C6E1 /* CycleScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CycleScrollView.m; sourceTree = "<group>"; };
 		81F7A7C217F2B8030049BBD8 /* CheckNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CheckNetwork.h; path = Reachability/CheckNetwork.h; sourceTree = "<group>"; };
 		81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CheckNetwork.m; path = Reachability/CheckNetwork.m; sourceTree = "<group>"; };
 		81FD160417E039F2004B714A /* TheWeatherReport.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TheWeatherReport.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -430,6 +436,15 @@
 			name = Introduce;
 			sourceTree = "<group>";
 		};
+		814A9E801817C97C00CB2542 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				814A9E811817C9D000CB2542 /* WeatherData.h */,
+				814A9E821817C9D000CB2542 /* WeatherData.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		81530099180E2F720062F60B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -454,6 +469,7 @@
 		81FD15FB17E039F2004B714A = {
 			isa = PBXGroup;
 			children = (
+				814A9E801817C97C00CB2542 /* Models */,
 				81530099180E2F720062F60B /* Resources */,
 				81FD162417E03A0F004B714A /* Other */,
 				81FD167517E03C11004B714A /* VC */,
@@ -540,6 +556,8 @@
 				8104C36E17E952A500A54475 /* CustomAnnotation.m */,
 				81F7A7C217F2B8030049BBD8 /* CheckNetwork.h */,
 				81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */,
+				81F0C51E181659D30099C6E1 /* CycleScrollView.h */,
+				81F0C51F181659D30099C6E1 /* CycleScrollView.m */,
 				81FD162517E03A3D004B714A /* CityInfo.plist */,
 			);
 			name = Other;
@@ -785,6 +803,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				81F0C520181659D30099C6E1 /* CycleScrollView.m in Sources */,
 				81FD161417E039F2004B714A /* main.m in Sources */,
 				81FD161817E039F2004B714A /* AppDelegate.m in Sources */,
 				81FD162A17E03B0C004B714A /* Reachability.m in Sources */,
@@ -797,6 +816,7 @@
 				81FD169517E040C9004B714A /* ShowInfoViewController.m in Sources */,
 				81FD169617E040C9004B714A /* VersionViewController.m in Sources */,
 				810B470717E1671400E2F12F /* CityViewController.m in Sources */,
+				814A9E831817C9D000CB2542 /* WeatherData.m in Sources */,
 				8148CBEE180D2464006410EF /* HelperViewController.m in Sources */,
 				819A2AF517E2BD5500254595 /* ChineseToPinyin.m in Sources */,
 				8104C36A17E94DFE00A54475 /* CompanyLocationViewController.m in Sources */,

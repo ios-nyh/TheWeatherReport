@@ -32,7 +32,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-   
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
     
     //注册分享
@@ -84,15 +83,12 @@
                              redirectUri:@"http://open.weibo.com"];
     //添加腾讯微博应用
     [ShareSDK connectTencentWeiboWithAppKey:@"801430236" appSecret:@"2ef7c8d30f99ed121846a9123357c852"
-                                redirectUri:@"http://app.t.qq.com/app/playtest/801430236"];
+                                redirectUri:@"http://dev.t.qq.com/"];
     //添加微信应用
-    [ShareSDK connectWeChatWithAppId:@"wxa87e471073449fde" wechatCls:[WXApi class]];
+    [ShareSDK connectWeChatWithAppId:@"wxa2027b66a0a2d6f0" wechatCls:[WXApi class]];
     
     //添加QQ应用
-    [ShareSDK connectQQWithQZoneAppKey:@"100589539"qqApiInterfaceCls:[QQApiInterface class]tencentOAuthCls:[TencentOAuth class]];
-    
-    //添加QQ空间应用
-    [ShareSDK connectQZoneWithAppKey:@"100589539" appSecret:@"c81424a09107e5fab62f8daaf8f6e3ee" qqApiInterfaceCls:[QQApiInterface class] tencentOAuthCls:[TencentOAuth class]];
+    [ShareSDK connectQQWithQZoneAppKey:@"100596158"qqApiInterfaceCls:[QQApiInterface class]tencentOAuthCls:[TencentOAuth class]];
 }
 //用于SSO客户端登录
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -121,7 +117,7 @@
         
         [fm createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:nil];
         HelperViewController *helper = [[HelperViewController alloc]init];
-        [self.window setRootViewController:helper];
+        self.window.rootViewController = helper;
         [helper release];
         
     } else {

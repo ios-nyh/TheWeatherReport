@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
+@class WeatherData;
+
 @interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
     UILabel *_cityLabel;       //当前城市
@@ -48,6 +50,9 @@
     UIActivityIndicatorView *_activityView;
     UIView *_loading;
     
+    
+    UILabel *_dateT1;
+    UILabel *_dateT2;
 }
 
 
@@ -63,6 +68,6 @@
 
 @property (retain,nonatomic) UIImagePickerController *imagePicker;
 
-
+@property (retain,nonatomic) WeatherData *weatherData;
 
 @end

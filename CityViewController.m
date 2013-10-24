@@ -48,9 +48,6 @@
     [_nameArray release];
     [_sortArray release];
     
-    
-    [_progressHUD release];
-    
     [super dealloc];
 }
 
@@ -60,7 +57,9 @@
 {
     //显示加载等待框
     
-    self.progressHUD = [[MBProgressHUD alloc] initWithView:self.view];
+    MBProgressHUD *progressHUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
+    
+    self.progressHUD = progressHUD;
     
 //    self.progressHUD.mode = MBProgressHUDModeDeterminate;
     
@@ -86,9 +85,9 @@
     
     [self.progressHUD removeFromSuperview];
     
-    [self.progressHUD release];
+    [_progressHUD release];
     
-    self.progressHUD = nil;
+    _progressHUD = nil;
     
 }
 

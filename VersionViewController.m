@@ -61,7 +61,7 @@
     [iconImgView release];
     
     UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 40, 100, 40)];
-    title.text = @"天气相机";
+    title.text = @"天气.相机";
     title.font = [UIFont systemFontOfSize:24.0f];
     [self.view addSubview:title];
     [title release];

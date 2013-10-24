@@ -49,7 +49,16 @@
         
 //        [self addSubview:scrollView];
         
-        pc = [[UIPageControl alloc]initWithFrame:CGRectMake(0, 100, 320, 20)];
+        float vHeight;
+        //判断ios系统版本
+        if (IOS_VERSION >= 7.0) {
+            vHeight = HEIGHT - 45;
+        } else {
+            vHeight = HEIGHT - 65;
+        }
+        
+        //加入分页控制指示标记
+        pc = [[UIPageControl alloc]initWithFrame:CGRectMake(0, vHeight - 20, 320, 20)];
         [pc addTarget:self action:@selector(updateCurrentPageDisplayM:) forControlEvents:UIControlEventTouchUpInside];
         pc.numberOfPages = 4;
         [self addSubview:pc];
@@ -64,6 +73,7 @@
     
     return self;
 }
+
 
 ////图片循环滚动响应方法
 //-(void)scrollTimer
@@ -85,18 +95,17 @@
 //    }
 //}
 
+
 //
 - (void)updateCurrentPageDisplayM:(UIPageControl *)sender
 {
-    NSLog(@"%@",sender);
-    
     //令UIScrollView做出相应的滑动显示
     CGSize viewSize = scrollView.frame.size;
     CGRect rect = CGRectMake(sender.currentPage * viewSize.width,0, viewSize.width, viewSize.height);
     [scrollView scrollRectToVisible:rect animated:YES];
 }
 
-//
+//刷新滚动视图
 - (void)refreshScrollView {
     
     NSArray *subViews = [scrollView subviews];
@@ -250,5 +259,6 @@
     [pc release];
     [super dealloc];
 }
+
 
 @end

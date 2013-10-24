@@ -9,8 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-@class WeatherData;
-
 @interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
     UILabel *_cityLabel;       //当前城市
@@ -47,12 +45,44 @@
     NSString *_cityid;        //城市编号
     UILabel *_curLocation;;   //当前位置
     
-    UIActivityIndicatorView *_activityView;
+    UIActivityIndicatorView *_activityView;   //指示视图
     UIView *_loading;
     
+    //滚动视图One
+    UILabel *_OcityName;
+    UILabel *_Otemp;
+    UIImageView *_OimgView1;
+    UIImageView *_OimgView2;
+    UILabel *_Odate;
+    //Two
+    UILabel *_Ttemp;
+    UILabel *_Tdate;
+    UILabel *_TcityName;
+    UILabel *_Tcontent;
+    UILabel *_Twind;
+    UILabel *_Tweather;
     
-    UILabel *_dateT1;
-    UILabel *_dateT2;
+    UIImageView *_TimgView1;    // 天气图标
+    UIImageView *_TimgView2;
+    
+    UILabel *_Tdate2;
+    UILabel *_Tweather2;
+    UIView *_Tview2;
+
+    UIImageView *_TimgView21;
+    UIImageView *_TimgView22;
+    
+    UILabel *_Tdate3;
+    UILabel *_Tweather3;
+    UIView *_Tview3;
+
+    UIImageView *_TimgView31;    // 天气图标
+    UIImageView *_TimgView32;
+    
+    
+    //three
+    
+    
 }
 
 
@@ -68,6 +98,5 @@
 
 @property (retain,nonatomic) UIImagePickerController *imagePicker;
 
-@property (retain,nonatomic) WeatherData *weatherData;
 
 @end

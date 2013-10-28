@@ -60,14 +60,14 @@
     [self.view addSubview:iconImgView];
     [iconImgView release];
     
-    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 40, 100, 40)];
+    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 40, WIDTH - (80+iconImg.size.width), 40)];
     title.text = @"天气.相机";
     title.font = [UIFont systemFontOfSize:24.0f];
     [self.view addSubview:title];
     [title release];
     
     
-    UILabel *version = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 80, 100, 20)];
+    UILabel *version = [[UILabel alloc]initWithFrame:CGRectMake(80+iconImg.size.width, 80, WIDTH - (80+iconImg.size.width), 20)];
     version.text = @"V1.0 正式版";
     [self.view addSubview:version];
     [version release];
@@ -94,7 +94,7 @@
     rights.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:rights];
     [rights release];
-
+    
 }
 
 

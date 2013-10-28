@@ -63,12 +63,21 @@
         pc.numberOfPages = 4;
         [self addSubview:pc];
         
+        
+        //        if ([delegate respondsToSelector:@selector()]) {
+        //
+        //        }
+
+        
         [self refreshScrollView];
+        
         
 //        //加入计时器，使图片无缝隙循环滚动
 //        timerCount = 0;
 //        scrollDir = 1;//从左往右滚动
 //        [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(scrollTimer) userInfo:nil repeats:YES];
+        
+
     }
     
     return self;

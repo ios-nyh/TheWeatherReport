@@ -81,8 +81,10 @@
     
     
     //three
-    
-    
+    UILabel *_tHDate;
+    UIImageView *_tHImgView1;
+    UIImageView *_tHImgView2;
+    UILabel *_tHArea;
 }
 
 
@@ -90,6 +92,7 @@
 @property (retain, nonatomic) NSDictionary *cityDic;
 @property (copy, nonatomic) NSString *address;
 @property (copy, nonatomic) NSString *location;
+@property (copy, nonatomic) NSString *subLocality;
 
 @property (retain, nonatomic) CLLocationManager *locationManager;
 

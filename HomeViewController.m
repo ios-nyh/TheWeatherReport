@@ -87,6 +87,11 @@
     [_TimgView32 release];
     
     //three
+    [_tHDate release];
+    [_tHImgView1 release];
+    [_tHImgView2 release];
+    [_tHArea release];
+    
     
     //指示视图
     [_loading release];
@@ -97,6 +102,7 @@
     [_cityDic release];
     [_address release];
     [_location release];
+    [_subLocality release];
     
     [_subDic release];
     
@@ -115,7 +121,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityCodeidNotification" object:nil];
-    
     
     
     [super dealloc];
@@ -380,14 +385,22 @@
         
         for (CLPlacemark *placemark in placemarks) {
             
-            NSLog(@"address dic %@",placemark.addressDictionary);
+//            NSLog(@"address dic ---->：%@",placemark.addressDictionary);
             NSString *address = [placemark.addressDictionary objectForKey:@"State"];
     
 
             self.location = [[placemark.addressDictionary objectForKey:@"FormattedAddressLines"] lastObject];
             
             self.address = address;
-                    
+    
+            self.subLocality = [placemark.addressDictionary objectForKey:@"SubLocality"];
+          
+            
+//            NSLog(@"FormattedAddressLines = %@",self.location);
+//            NSLog(@"State = %@",self.address);
+//            NSLog(@"SubLocality = %@",self.subLocality);
+            
+            
             //开始JSON解析
             [self JSONStartParse:[self.cityDic objectForKey:self.address]];
         }
@@ -951,13 +964,22 @@
     
     
     //设计UI界面Frame
-    [_OcityName setFrame:CGRectMake(20, vHeight - 380, 100, 20)];
-    [_Otemp setFrame:CGRectMake(20, vHeight - 360, 100, 20)];
-    [barImgView setFrame:CGRectMake(20, vHeight - 330, img.size.width, img.size.height)];
-    [_Odate setFrame:CGRectMake(20, vHeight - 320, WIDTH - 20, 20)];
+//    [_OcityName setFrame:CGRectMake(20, vHeight - 380, 100, 20)];
+//    [_Otemp setFrame:CGRectMake(20, vHeight - 360, 100, 20)];
+//    [barImgView setFrame:CGRectMake(20, vHeight - 330, img.size.width, img.size.height)];
+//    [_Odate setFrame:CGRectMake(20, vHeight - 320, WIDTH - 20, 20)];
+//    
+//    [_OimgView1 setFrame:CGRectMake(120, vHeight - 380, 40, 40)];
+//    [_OimgView2 setFrame:CGRectMake(160, vHeight - 380, 40, 40)];
     
-    [_OimgView1 setFrame:CGRectMake(120, vHeight - 380, 40, 40)];
-    [_OimgView2 setFrame:CGRectMake(160, vHeight - 380, 40, 40)];
+    [_OcityName setFrame:CGRectMake(20, rHeignt, 100, 20)];
+    [_Otemp setFrame:CGRectMake(20, rHeignt + 20, 100, 20)];
+    [barImgView setFrame:CGRectMake(20, rHeignt + 50, img.size.width, img.size.height)];
+    [_Odate setFrame:CGRectMake(20, rHeignt + 60, WIDTH - 20, 20)];
+    
+    [_OimgView1 setFrame:CGRectMake(120, rHeignt, 40, 40)];
+    [_OimgView2 setFrame:CGRectMake(160, rHeignt, 40, 40)];
+
 }
 
 - (void)setBackgroundView3:(UIView *)view3
@@ -1067,38 +1089,99 @@
     
     
     //设计UI界面Frame
-    //当天
-    [_Ttemp setFrame:CGRectMake(20, vHeight - 380, 100, 40)];
-    [_Tdate setFrame:CGRectMake(20, vHeight - 340, WIDTH - 20, 20)];
-    [_TcityName setFrame:CGRectMake(20, vHeight - 320, WIDTH - 20, 20)];
-    [_Tcontent setFrame:CGRectMake(20, vHeight - 300, WIDTH - 20, 20)];
-    [_Tweather setFrame:CGRectMake(20, vHeight - 280, 100, 20)];
-    [_Twind setFrame:CGRectMake(120, vHeight - 280, WIDTH - 20, 20)];
+//    //当天
+//    [_Ttemp setFrame:CGRectMake(20, vHeight - 380, 100, 40)];
+//    [_Tdate setFrame:CGRectMake(20, vHeight - 340, WIDTH - 20, 20)];
+//    [_TcityName setFrame:CGRectMake(20, vHeight - 320, WIDTH - 20, 20)];
+//    [_Tcontent setFrame:CGRectMake(20, vHeight - 300, WIDTH - 20, 20)];
+//    [_Tweather setFrame:CGRectMake(20, vHeight - 280, 100, 20)];
+//    [_Twind setFrame:CGRectMake(120, vHeight - 280, WIDTH - 20, 20)];
+//    
+//    [_TimgView1 setFrame:CGRectMake(120, vHeight - 380, 40, 40)];
+//    [_TimgView2 setFrame:CGRectMake(160, vHeight - 380, 40, 40)];
+//    
+//    //明天
+//    [_Tdate2 setFrame:CGRectMake(30, vHeight - 240, 100, 20)];
+//    [_Tweather2 setFrame:CGRectMake(30, vHeight - 220, 100, 20)];
+//    [_TimgView21 setFrame:CGRectMake(120, vHeight - 240, 40, 40)];
+//    [_TimgView22 setFrame:CGRectMake(160, vHeight - 240, 40, 40)];
+//    [bg2 setFrame:CGRectMake(20, vHeight - 250, 180, 60)];
+//    
+//    //后天
+//    [_Tdate3 setFrame:CGRectMake(30, vHeight - 160, 100, 20)];
+//    [_Tweather3 setFrame:CGRectMake(30, vHeight - 140, 100, 20)];
+//
+//    [_TimgView31 setFrame:CGRectMake(120, vHeight - 160, 40, 40)];
+//    [_TimgView32 setFrame:CGRectMake(160, vHeight - 160, 40, 40)];
+//    [bg3 setFrame:CGRectMake(20, vHeight - 170, 180, 60)];
     
-    [_TimgView1 setFrame:CGRectMake(120, vHeight - 380, 40, 40)];
-    [_TimgView2 setFrame:CGRectMake(160, vHeight - 380, 40, 40)];
+    //当天
+    [_Ttemp setFrame:CGRectMake(20, rHeignt, 100, 40)];
+    [_Tdate setFrame:CGRectMake(20, rHeignt + 40, WIDTH - 20, 20)];
+    [_TcityName setFrame:CGRectMake(20, rHeignt + 60, WIDTH - 20, 20)];
+    [_Tcontent setFrame:CGRectMake(20, rHeignt + 80, WIDTH - 20, 20)];
+    [_Tweather setFrame:CGRectMake(20, rHeignt + 100, 100, 20)];
+    [_Twind setFrame:CGRectMake(120, rHeignt + 100, WIDTH - 20, 20)];
+    
+    [_TimgView1 setFrame:CGRectMake(120, rHeignt, 40, 40)];
+    [_TimgView2 setFrame:CGRectMake(160, rHeignt, 40, 40)];
     
     //明天
-    [_Tdate2 setFrame:CGRectMake(30, vHeight - 240, 100, 20)];
-    [_Tweather2 setFrame:CGRectMake(30, vHeight - 220, 100, 20)];
-    [_TimgView21 setFrame:CGRectMake(120, vHeight - 240, 40, 40)];
-    [_TimgView22 setFrame:CGRectMake(160, vHeight - 240, 40, 40)];
-    [bg2 setFrame:CGRectMake(20, vHeight - 250, 180, 60)];
+    [_Tdate2 setFrame:CGRectMake(30, rHeignt + 160, 100, 20)];
+    [_Tweather2 setFrame:CGRectMake(30, rHeignt + 180, 100, 20)];
+    [_TimgView21 setFrame:CGRectMake(120, rHeignt + 160, 40, 40)];
+    [_TimgView22 setFrame:CGRectMake(160, rHeignt + 160, 40, 40)];
+    [bg2 setFrame:CGRectMake(20, rHeignt + 150, 180, 60)];
     
     //后天
-    [_Tdate3 setFrame:CGRectMake(30, vHeight - 160, 100, 20)];
-    [_Tweather3 setFrame:CGRectMake(30, vHeight - 140, 100, 20)];
-
-    [_TimgView31 setFrame:CGRectMake(120, vHeight - 160, 40, 40)];
-    [_TimgView32 setFrame:CGRectMake(160, vHeight - 160, 40, 40)];
-    [bg3 setFrame:CGRectMake(20, vHeight - 170, 180, 60)];
+    [_Tdate3 setFrame:CGRectMake(30, rHeignt + 240, 100, 20)];
+    [_Tweather3 setFrame:CGRectMake(30, rHeignt + 260, 100, 20)];
+    
+    [_TimgView31 setFrame:CGRectMake(120, rHeignt + 240, 40, 40)];
+    [_TimgView32 setFrame:CGRectMake(160, rHeignt + 240, 40, 40)];
+    [bg3 setFrame:CGRectMake(20, rHeignt + 230, 180, 60)];
     
 }
 
 - (void)setBackgroundView4:(UIView *)view4
 {
+    UIImage *img = [UIImage imageNamed:@"v_three.png"];
+    UIImageView *imgView = [[[UIImageView alloc]init]autorelease];
+    imgView.image = img;
+    [imgView setBackgroundColor:[UIColor clearColor]];
+    [view4 addSubview:imgView];
     
-   
+    
+    _tHDate = [[UILabel alloc]init];
+    _tHDate.backgroundColor = [UIColor clearColor];
+    _tHDate.textColor = [UIColor whiteColor];
+    _tHDate.shadowColor = [UIColor grayColor];
+    _tHDate.textAlignment = NSTextAlignmentCenter;
+    [view4 addSubview:_tHDate];
+    
+    
+    _tHImgView1 = [[UIImageView alloc]init];
+    _tHImgView1.backgroundColor = [UIColor clearColor];
+    [view4 addSubview:_tHImgView1];
+
+
+    _tHImgView2 = [[UIImageView alloc]init];
+    _tHImgView2.backgroundColor = [UIColor clearColor];
+    [view4 addSubview:_tHImgView2];
+
+    
+    _tHArea = [[UILabel alloc]init];
+    _tHArea.backgroundColor = [UIColor clearColor];
+    _tHArea.textAlignment = NSTextAlignmentCenter;
+    [view4 addSubview:_tHArea];
+    
+    
+    [_tHDate setFrame:CGRectMake(20, rHeignt, 80, 20)];
+    [_tHImgView1 setFrame:CGRectMake(20, rHeignt + 25, 40, 40)];
+    [_tHImgView2 setFrame:CGRectMake(60, rHeignt + 25, 40, 40)];
+    [_tHArea setFrame:CGRectMake(20, rHeignt + 70, 80, 20)];
+    [imgView setFrame:CGRectMake(10, rHeignt, 95, 100)];
+    
 }
 
 
@@ -1162,6 +1245,7 @@
             
             //清空刷新时间
             _refreshDate.text = @"";
+            
         }
         
         _subDic = [[dic objectForKey:@"weatherinfo"] retain];
@@ -1204,7 +1288,7 @@
         
         
         //*********************************************************************************
-        //选择视图One
+        /** 选择视图One **/
         _OcityName.text = [NSString stringWithFormat:@"%@",[_subDic objectForKey:@"city"]];
         _Otemp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
         NSString *week = [_subDic objectForKey:@"week"];
@@ -1245,7 +1329,7 @@
         [_OimgView1 setImage: Oimg1];
         [_OimgView2 setImage: Oimg2];
         
-        //选择视图Two
+        /** 选择视图Two **/
         //当天
         _Ttemp.text = [NSString stringWithFormat:@"%@℃",[_subDic objectForKey:@"st1"]];
         _Tweather.text = [_subDic objectForKey:@"weather1"];
@@ -1283,6 +1367,18 @@
         UIImage *Timg32 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",Tstr32]];
         [_TimgView31 setImage: Timg31];
         [_TimgView32 setImage: Timg32];
+        
+        
+        /** 选择视图Three **/
+        _tHDate.text = [_subDic objectForKey:@"week"];
+        //获取天气图片
+        NSString *tHstr1 = [_subDic valueForKey:@"img1"];
+        NSString *tHstr2 = [_subDic valueForKey:@"img2"];
+        UIImage *tHimg1 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",tHstr1]];
+        UIImage *tHimg2 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",tHstr2]];
+        [_tHImgView1 setImage: tHimg1];
+        [_tHImgView2 setImage: tHimg2];
+        _tHArea.text = self.subLocality;
 
         
         //停止右上角滚动轮

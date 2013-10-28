@@ -85,6 +85,7 @@
 		8148CC11180D3FB1006410EF /* NavigationBg.png in Resources */ = {isa = PBXBuildFile; fileRef = 8148CC05180D3FB1006410EF /* NavigationBg.png */; };
 		8148CC17180D4F59006410EF /* helper2.png in Resources */ = {isa = PBXBuildFile; fileRef = 8148CC15180D4F59006410EF /* helper2.png */; };
 		814A9E831817C9D000CB2542 /* WeatherData.m in Sources */ = {isa = PBXBuildFile; fileRef = 814A9E821817C9D000CB2542 /* WeatherData.m */; };
+		8152677A181E5DDF00C03D35 /* v_three.png in Resources */ = {isa = PBXBuildFile; fileRef = 81526779181E5DDF00C03D35 /* v_three.png */; };
 		815300B6180E41EE0062F60B /* helper1.png in Resources */ = {isa = PBXBuildFile; fileRef = 815300B5180E41EE0062F60B /* helper1.png */; };
 		815300BA180E5B130062F60B /* about.png in Resources */ = {isa = PBXBuildFile; fileRef = 815300B7180E5B130062F60B /* about.png */; };
 		815300BB180E5B130062F60B /* suggestion.png in Resources */ = {isa = PBXBuildFile; fileRef = 815300B8180E5B130062F60B /* suggestion.png */; };
@@ -228,6 +229,7 @@
 		8148CC15180D4F59006410EF /* helper2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helper2.png; sourceTree = "<group>"; };
 		814A9E811817C9D000CB2542 /* WeatherData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherData.h; sourceTree = "<group>"; };
 		814A9E821817C9D000CB2542 /* WeatherData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherData.m; sourceTree = "<group>"; };
+		81526779181E5DDF00C03D35 /* v_three.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = v_three.png; sourceTree = "<group>"; };
 		815300B5180E41EE0062F60B /* helper1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helper1.png; sourceTree = "<group>"; };
 		815300B7180E5B130062F60B /* about.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = about.png; sourceTree = "<group>"; };
 		815300B8180E5B130062F60B /* suggestion.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = suggestion.png; sourceTree = "<group>"; };
@@ -465,6 +467,7 @@
 				812CEA2F1810DD2F00CFD317 /* version@2x.png */,
 				8148CC05180D3FB1006410EF /* NavigationBg.png */,
 				819D20EE1818CDB900F7A12B /* bar.png */,
+				81526779181E5DDF00C03D35 /* v_three.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -777,6 +780,7 @@
 				815300CD180E75950062F60B /* info.png in Resources */,
 				81C3DAE7180FEAA40071C2C3 /* Default-568h@2x.png in Resources */,
 				812691D317F0152A00CEEC66 /* 17.png in Resources */,
+				8152677A181E5DDF00C03D35 /* v_three.png in Resources */,
 				812691D517F0152A00CEEC66 /* 19.png in Resources */,
 				815300D8180E7AD20062F60B /* refresh.png in Resources */,
 				819A2AEA17E2B19000254595 /* NaviBack@2x.png in Resources */,

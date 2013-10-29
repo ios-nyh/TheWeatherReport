@@ -105,6 +105,7 @@
 		819A2AF017E2B6AB00254595 /* CancelBack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AEE17E2B6AB00254595 /* CancelBack@2x.png */; };
 		819A2AF517E2BD5500254595 /* ChineseToPinyin.m in Sources */ = {isa = PBXBuildFile; fileRef = 819A2AF417E2BD5500254595 /* ChineseToPinyin.m */; };
 		819D20EF1818CDB900F7A12B /* bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 819D20EE1818CDB900F7A12B /* bar.png */; };
+		81BCA885181F9EC000847DB2 /* ActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 81BCA884181F9EC000847DB2 /* ActivityIndicatorView.m */; };
 		81C3DAE7180FEAA40071C2C3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C3DAE2180FEAA40071C2C3 /* Default-568h@2x.png */; };
 		81C3DAE8180FEAA40071C2C3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C3DAE3180FEAA40071C2C3 /* Default@2x.png */; };
 		81C3DAE9180FEAA40071C2C3 /* Dfault.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C3DAE4180FEAA40071C2C3 /* Dfault.png */; };
@@ -251,6 +252,8 @@
 		819A2AF417E2BD5500254595 /* ChineseToPinyin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChineseToPinyin.m; sourceTree = "<group>"; };
 		819A2AFA17E3121E00254595 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		819D20EE1818CDB900F7A12B /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bar.png; sourceTree = "<group>"; };
+		81BCA883181F9EC000847DB2 /* ActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityIndicatorView.h; sourceTree = "<group>"; };
+		81BCA884181F9EC000847DB2 /* ActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityIndicatorView.m; sourceTree = "<group>"; };
 		81C3DAE2180FEAA40071C2C3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		81C3DAE3180FEAA40071C2C3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		81C3DAE4180FEAA40071C2C3 /* Dfault.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Dfault.png; sourceTree = "<group>"; };
@@ -472,9 +475,29 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		81BCA882181F9E6700847DB2 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				81FD168517E03EFF004B714A /* CameraImageHelper.h */,
+				81FD168617E03EFF004B714A /* CameraImageHelper.m */,
+				819A2AF317E2BD5500254595 /* ChineseToPinyin.h */,
+				819A2AF417E2BD5500254595 /* ChineseToPinyin.m */,
+				8104C36D17E952A500A54475 /* CustomAnnotation.h */,
+				8104C36E17E952A500A54475 /* CustomAnnotation.m */,
+				81F7A7C217F2B8030049BBD8 /* CheckNetwork.h */,
+				81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */,
+				81F0C51E181659D30099C6E1 /* CycleScrollView.h */,
+				81F0C51F181659D30099C6E1 /* CycleScrollView.m */,
+				81BCA883181F9EC000847DB2 /* ActivityIndicatorView.h */,
+				81BCA884181F9EC000847DB2 /* ActivityIndicatorView.m */,
+			);
+			name = Custom;
+			sourceTree = "<group>";
+		};
 		81FD15FB17E039F2004B714A = {
 			isa = PBXGroup;
 			children = (
+				81BCA882181F9E6700847DB2 /* Custom */,
 				814A9E801817C97C00CB2542 /* Models */,
 				81530099180E2F720062F60B /* Resources */,
 				81FD162417E03A0F004B714A /* Other */,
@@ -554,16 +577,6 @@
 				8124027D1814DD2F0072EF51 /* ShareSDK_v2.5.1 */,
 				812CEA271810D53100CFD317 /* MBProgressHUD */,
 				81FD162717E03B0C004B714A /* Reachability */,
-				81FD168517E03EFF004B714A /* CameraImageHelper.h */,
-				81FD168617E03EFF004B714A /* CameraImageHelper.m */,
-				819A2AF317E2BD5500254595 /* ChineseToPinyin.h */,
-				819A2AF417E2BD5500254595 /* ChineseToPinyin.m */,
-				8104C36D17E952A500A54475 /* CustomAnnotation.h */,
-				8104C36E17E952A500A54475 /* CustomAnnotation.m */,
-				81F7A7C217F2B8030049BBD8 /* CheckNetwork.h */,
-				81F7A7C317F2B8030049BBD8 /* CheckNetwork.m */,
-				81F0C51E181659D30099C6E1 /* CycleScrollView.h */,
-				81F0C51F181659D30099C6E1 /* CycleScrollView.m */,
 				81FD162517E03A3D004B714A /* CityInfo.plist */,
 			);
 			name = Other;
@@ -818,6 +831,7 @@
 				81FD167917E03C45004B714A /* HomeViewController.m in Sources */,
 				812CEA2D1810D95800CFD317 /* ProductionViewController.m in Sources */,
 				81FD168717E03EFF004B714A /* CameraImageHelper.m in Sources */,
+				81BCA885181F9EC000847DB2 /* ActivityIndicatorView.m in Sources */,
 				81F7A7C417F2B8030049BBD8 /* CheckNetwork.m in Sources */,
 				81FD169217E040C9004B714A /* AboutViewController.m in Sources */,
 				81FD169317E040C9004B714A /* DisclaimerViewController.m in Sources */,

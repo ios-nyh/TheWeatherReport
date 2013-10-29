@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
+@class ActivityIndicatorView;
+
 @interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIActionSheetDelegate>
 {
     UILabel *_cityLabel;       //当前城市
@@ -100,6 +102,8 @@
 @property (retain, nonatomic) UIImageView *preview;                  //预览视图
 
 @property (retain,nonatomic) UIImagePickerController *imagePicker;
+
+@property (retain,nonatomic) ActivityIndicatorView *activity;
 
 
 @end

@@ -11,11 +11,13 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CameraImageHelper.h"
 #import "ShowInfoViewController.h"
-
+#import "ActivityIndicatorView.h"
 #import "CheckNetwork.h"
 #import "CycleScrollView.h"
 
 #import <ShareSDK/ShareSDK.h>
+
+
 
 @interface HomeViewController ()<AVHelperDelegate>
 {
@@ -117,6 +119,8 @@
     [_refreshDate release];
     
     [_imagePicker release];
+    [_activity release];
+    
     
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityNotification" object:nil];
@@ -137,7 +141,6 @@
     return self;
 }
 
-
 #pragma mark - 系统方法，用于拍照
 - (void)viewWillAppear:(BOOL)animated
 {
@@ -146,27 +149,22 @@
     //开始定位服务
     [self startUpdates];
 
-    
     //开始实时取景
     [self.cameraHelper startRunning];
     
-    //在刷新按钮位置，加入指示视图
-    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 50, rHeignt, 20, 20)];
+    //加入加载视图
+    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
+    [self startAnimating];
     
-    //无网络时，停止菊花转动
-    if (![CheckNetwork isNetworkRunning]) {
-        
-        [self stopAnimating];
-    }
-
 }
 - (void)viewWillDisappear:(BOOL)animated
 {   //停止取景
     [self.cameraHelper stopRunning];
 }
 
-- (UIStatusBarStyle)preferredStatusBarStyle {
-    
+//状态栏类型
+- (UIStatusBarStyle)preferredStatusBarStyle
+{
     return UIStatusBarStyleLightContent;
 }
 
@@ -188,7 +186,7 @@
         rHeignt = 20;
         
         cHeight = HEIGHT - 20;
-    }
+    }    
 }
 
 #pragma mark - 自定义界面按钮
@@ -199,7 +197,7 @@
     _refreshBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_refreshBtn setFrame:CGRectMake(WIDTH - 65, rHeignt, 50, 38)];
     [_refreshBtn setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
-    [_refreshBtn addTarget:self action:@selector(refreshControlMethod) forControlEvents:UIControlEventTouchUpInside];
+    [_refreshBtn addTarget:self action:@selector(selectFrontCamera) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_refreshBtn];
     //给刷新按钮加上阴影效果
     _refreshBtn.layer.shadowOffset = CGSizeMake(0, 0);
@@ -221,6 +219,12 @@
     [_infoBtn setImage:[UIImage imageNamed:@"info.png"] forState:UIControlStateNormal];
     [_infoBtn addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
+}
+
+- (void)selectFrontCamera
+{
+    [self.cameraHelper addVideoInputFrontCamera:YES];
+
 }
 
 
@@ -287,7 +291,9 @@
                                              selector:@selector(refreshControlMethod)
                                                  name:UIApplicationDidBecomeActiveNotification object:nil];
     //城市选择的通知
+    //选择本地城市
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCity:) name:@"selectedCityNotification" object:nil];
+    //选择接口城市
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCityCodeid:) name:@"selectedCityCodeidNotification" object:nil];
 }
 
@@ -318,9 +324,8 @@
     [v3 release];
     [v4 release];
     
-    
-    //显示数组对象
-    CFShow(picArray);
+//    //显示数组对象
+//    CFShow(picArray);
     
     CycleScrollView *cycle = [[CycleScrollView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, cHeight)
                                                      cycleDirection:CycleDirectionLandscape
@@ -443,8 +448,8 @@
         
     }
     
-    [self stopAnimating];
-    
+    //取消拍摄动画
+    [self.activity hidden];
 }
 
 //- (void)getImage
@@ -523,8 +528,6 @@
         
         //清空刷新时间
         _refreshDate.text = @"";
-        
-        [self stopAnimating];
     }
 }
 
@@ -677,9 +680,6 @@
             
             [_refreshBtn setHidden:YES];
             
-            //在刷新按钮位置，加入指示视图
-            [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 65, rHeignt, 20, 20)];
-            //开启转动轮动画
             [self startAnimating];
         }
         
@@ -697,6 +697,9 @@
         
         //清空刷新时间
         _refreshDate.text = @"";
+        
+        //无网络连接时，停止动画
+        [self stopAnimating];
     }
 }
 
@@ -706,19 +709,13 @@
 {
     [self.cameraHelper CaptureStillImage];
     
-    
     [self performSelector:@selector(didFinishedCapture:) withObject:nil];
     
-    if ([CheckNetwork isNetworkRunning]) {
-        
-        //开启指示视图
-        [self activityIndicatorViewWithFrame:CGRectMake(WIDTH/2 - 20, HEIGHT/2, 20, 20)];
-        [self startAnimating];
-        
-    } else {
+    //创建自定义的活动指示器视图
+    self.activity = [[[ActivityIndicatorView alloc]initWithFrame:CGRectMake(0, 0, 20, 20)]autorelease];
+    [self.view addSubview:self.activity];
+    [self.activity show];
     
-        [self stopAnimating];
-    }
 }
 
 
@@ -1189,7 +1186,7 @@
 #pragma mark - JSON 解析
 
 - (void)JSONStartParse:(NSString *)cityid
-{   //101080918
+{
     NSString *URLStr = [NSString stringWithFormat:@"http://m.weather.com.cn/data/%@.html",cityid];
     NSURL *url = [NSURL URLWithString:URLStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15.0f];
@@ -1215,38 +1212,6 @@
         
         NSMutableDictionary *dic = [NSJSONSerialization JSONObjectWithData:self.mData options:NSJSONReadingMutableContainers error:nil];
         
-        if (dic) {
-            
-            //清空天气信息
-            _temp.text = @"";
-            _weather.text = @"";
-            _content.text = @"";
-            _wind.text = @"";
-            _date.text = @"";
-            _imgView1.image = [UIImage imageNamed:@""];
-            _imgView2.image = [UIImage imageNamed:@""];
-        
-            
-            //清空当前城市信息
-            _cityLabel.text = @"";
-            
-            
-            _content2.text = @"";
-            _date2.text = @"";
-            _weather2.text = @"";
-                
-                
-            _content3.text = @"";
-            _date3.text = @"";
-            _weather3.text = @"";
-            
-            //清空当前位置信息
-            _curLocation.text = @"";
-            
-            //清空刷新时间
-            _refreshDate.text = @"";
-            
-        }
         
         _subDic = [[dic objectForKey:@"weatherinfo"] retain];
         NSLog(@"详细信息：%@",_subDic);
@@ -1378,29 +1343,27 @@
         UIImage *tHimg2 = [UIImage imageNamed:[NSString stringWithFormat:@"%@.png",tHstr2]];
         [_tHImgView1 setImage: tHimg1];
         [_tHImgView2 setImage: tHimg2];
-        _tHArea.text = self.subLocality;
-
+        if (self.subLocality) {
+            _tHArea.text = self.subLocality;
+        } else {
         
-        //停止右上角滚动轮
+            _tHArea.text = [_subDic objectForKey:@"city"];
+        }
+        
+        //停止加载动画
         [self stopAnimating];
         //显示刷新按钮
         [_refreshBtn setHidden:NO];
         //关闭状态栏动画
         [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:NO];
-        
-    }  else {
-        
-        //数据为空时，停止菊花动画
-        [self stopAnimating];
     }
-
 }
 
 #pragma mark - NSURLConnectionDelegate method
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
 {
-    //失败时，停止菊花动画
+    //解析失败时，停止动画
     [self stopAnimating];
     
     //打印出出错的主要内容
@@ -1409,14 +1372,13 @@
 
 
 #pragma mark - 指示视图方法
-
 - (void)activityIndicatorViewWithFrame:(CGRect)frame
 {
     //展示风火轮和文字
     _loading = [[UIView alloc] initWithFrame:frame];
 
     //设置进度轮
-    _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
     
     //指定进度轮中心点
     [_activityView setCenter:CGPointMake(20, 20)];

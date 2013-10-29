@@ -32,6 +32,8 @@
 
 //- (void)changePreviewOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
+- (void)addVideoInputFrontCamera:(BOOL)front;
+
 
 @end
 
@@ -41,6 +43,8 @@
 
 -(void)didFinishedCapture:(UIImage*)_img;
 -(void)foucusStatus:(BOOL)isadjusting;
+
+
 
 
 @end

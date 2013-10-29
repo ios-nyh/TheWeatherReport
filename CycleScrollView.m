@@ -61,13 +61,10 @@
         pc = [[UIPageControl alloc]initWithFrame:CGRectMake(0, vHeight - 20, 320, 20)];
         [pc addTarget:self action:@selector(updateCurrentPageDisplayM:) forControlEvents:UIControlEventTouchUpInside];
         pc.numberOfPages = 4;
+        pc.pageIndicatorTintColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
+//        pc.currentPageIndicatorTintColor = [UIColor blueColor];
         [self addSubview:pc];
         
-        
-        //        if ([delegate respondsToSelector:@selector()]) {
-        //
-        //        }
-
         
         [self refreshScrollView];
         
@@ -82,7 +79,6 @@
     
     return self;
 }
-
 
 ////图片循环滚动响应方法
 //-(void)scrollTimer
@@ -240,6 +236,9 @@
     if ([delegate respondsToSelector:@selector(cycleScrollViewDelegate:didScrollImageView:)]) {
         [delegate cycleScrollViewDelegate:self didScrollImageView:curPage];
     }
+    
+    //控制PageControl不隐藏
+    pc.hidden = NO;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)aScrollView {
@@ -250,6 +249,8 @@
     if (scrollDirection == CycleDirectionPortait) {
         [scrollView setContentOffset:CGPointMake(0, scrollFrame.size.height) animated:YES];
     }
+
+    [self performSelector:@selector(hidePageControl) withObject:self afterDelay:5.0f];
 }
 
 
@@ -260,6 +261,11 @@
     }
 }
 
+//隐藏UIPageControl
+- (void)hidePageControl
+{
+    pc.hidden = YES;
+}
 
 - (void)dealloc
 {

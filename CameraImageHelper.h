@@ -32,8 +32,8 @@
 
 //- (void)changePreviewOrientation:(UIInterfaceOrientation)interfaceOrientation;
 
-- (void)addVideoInputFrontCamera:(BOOL)front;
 
+- (void)swapFrontAndBackCameras;
 
 @end
 
@@ -44,7 +44,7 @@
 -(void)didFinishedCapture:(UIImage*)_img;
 -(void)foucusStatus:(BOOL)isadjusting;
 
-
+- (void)addVideoInputFrontCamera:(BOOL)front;                            //增加一个前置摄像头
 
 
 @end

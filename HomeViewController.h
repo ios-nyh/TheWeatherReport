@@ -11,7 +11,7 @@
 
 @class ActivityIndicatorView;
 
-@interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIActionSheetDelegate>
+@interface HomeViewController : UIViewController<UIAlertViewDelegate,CLLocationManagerDelegate,UINavigationControllerDelegate, UIImagePickerControllerDelegate,UIActionSheetDelegate,UIGestureRecognizerDelegate>
 {
     UILabel *_cityLabel;       //当前城市
     
@@ -104,6 +104,8 @@
 @property (retain,nonatomic) UIImagePickerController *imagePicker;
 
 @property (retain,nonatomic) ActivityIndicatorView *activity;
+
+@property (retain,nonatomic) UIImageView *panImgView;
 
 
 @end

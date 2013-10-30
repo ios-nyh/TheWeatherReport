@@ -93,6 +93,7 @@
     [_tHImgView1 release];
     [_tHImgView2 release];
     [_tHArea release];
+    [_panImgView release];
     
     
     //指示视图
@@ -152,7 +153,10 @@
     //开始实时取景
     [self.cameraHelper startRunning];
     
-    //加入加载视图
+    //视图刚出现时，隐藏刷新按钮
+    [_refreshBtn setHidden:YES];
+    
+    //在右上角，加入加载视图
     [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
     [self startAnimating];
     
@@ -221,10 +225,11 @@
     [self.view addSubview:_infoBtn];
 }
 
+#pragma mark -前置摄像头切换
+
 - (void)selectFrontCamera
 {
-    [self.cameraHelper addVideoInputFrontCamera:YES];
-
+    [self.cameraHelper swapFrontAndBackCameras];
 }
 
 
@@ -279,6 +284,7 @@
     
     //载入拍摄视图
     [self.cameraHelper embedPreviewInView:self.liveView];
+
     
     //自定义按钮
     [self customUIBtn];
@@ -333,6 +339,13 @@
     [self.view addSubview:cycle];
     [cycle release];
     [picArray release];
+    
+    //创建长安手势
+    UILongPressGestureRecognizer *longPress  =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
+    longPress.delegate = self;
+    [cycle addGestureRecognizer:longPress];
+    [longPress release];
+
 }
 
 //- (UIImage *)convertViewToImage:(UIView *)v
@@ -390,7 +403,7 @@
         
         for (CLPlacemark *placemark in placemarks) {
             
-//            NSLog(@"address dic ---->：%@",placemark.addressDictionary);
+            NSLog(@"address dic ---->：%@",placemark.addressDictionary);
             NSString *address = [placemark.addressDictionary objectForKey:@"State"];
     
 
@@ -403,7 +416,7 @@
             
 //            NSLog(@"FormattedAddressLines = %@",self.location);
 //            NSLog(@"State = %@",self.address);
-//            NSLog(@"SubLocality = %@",self.subLocality);
+            NSLog(@"SubLocality = %@",self.subLocality);
             
             
             //开始JSON解析
@@ -1145,6 +1158,7 @@
     UIImage *img = [UIImage imageNamed:@"v_three.png"];
     UIImageView *imgView = [[[UIImageView alloc]init]autorelease];
     imgView.image = img;
+    self.panImgView = imgView;
     [imgView setBackgroundColor:[UIColor clearColor]];
     [view4 addSubview:imgView];
     
@@ -1178,9 +1192,59 @@
     [_tHImgView2 setFrame:CGRectMake(60, rHeignt + 25, 40, 40)];
     [_tHArea setFrame:CGRectMake(20, rHeignt + 70, 80, 20)];
     [imgView setFrame:CGRectMake(10, rHeignt, 95, 100)];
+    [view4 setFrame:CGRectMake(10, rHeignt, 95, 100)];
     
+    
+//    //创建长安手势
+//    UILongPressGestureRecognizer *longPress  =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
+//    longPress.delegate = self;
+//    [self.view addGestureRecognizer:longPress];
+//    [longPress release];
+
+    
+    //创建拖拽手势
+    UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                                           action:@selector(handlePanGestures:)];
+    panGestureRecognizer.delegate = self;
+    //无论最大还是最小都只允许一个手指
+    panGestureRecognizer.minimumNumberOfTouches = 1;
+    panGestureRecognizer.maximumNumberOfTouches = 1;
+    [view4 addGestureRecognizer:panGestureRecognizer];
+    [panGestureRecognizer release];
 }
 
+- (void)longPressAction:(UIGestureRecognizer *)longPress
+{
+    self.panImgView.layer.borderColor = [UIColor blueColor].CGColor;
+//    self.panImgView.layer.cornerRadius = 15;
+    self.panImgView.layer.borderWidth = 1.0;
+//    self.panImgView.layer.masksToBounds = YES;
+}
+
+
+- (void)handlePanGestures:(UIPanGestureRecognizer *)paramSender
+{
+    NSLog(@"拖拽手势");
+    if (paramSender.state != UIGestureRecognizerStateEnded && paramSender.state != UIGestureRecognizerStateFailed) {
+        
+        //通过使用 locationInView 这个方法,来获取到手势的坐标
+        CGPoint location = [paramSender locationInView:paramSender.view.superview];
+        paramSender.view.center = location;
+        
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    NSLog(@"接触停止");
+}
+
+
+#pragma mark - 手势代理方法，同时触发手势
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return YES;
+}
 
 #pragma mark
 #pragma mark - JSON 解析
@@ -1189,7 +1253,7 @@
 {
     NSString *URLStr = [NSString stringWithFormat:@"http://m.weather.com.cn/data/%@.html",cityid];
     NSURL *url = [NSURL URLWithString:URLStr];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:15.0f];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0f];
     [NSURLConnection connectionWithRequest:request delegate:self];
     
     //开启状态栏动画
@@ -1344,7 +1408,10 @@
         [_tHImgView1 setImage: tHimg1];
         [_tHImgView2 setImage: tHimg2];
         if (self.subLocality) {
+            
             _tHArea.text = self.subLocality;
+            self.subLocality = nil;
+            
         } else {
         
             _tHArea.text = [_subDic objectForKey:@"city"];

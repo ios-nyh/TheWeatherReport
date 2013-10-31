@@ -267,6 +267,7 @@
     pc.hidden = YES;
 }
 
+
 - (void)dealloc
 {
     [imagesArray release];

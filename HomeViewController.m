@@ -17,8 +17,6 @@
 
 #import <ShareSDK/ShareSDK.h>
 
-
-
 @interface HomeViewController ()<AVHelperDelegate>
 {
     float rHeignt;    // 刷新高度
@@ -197,11 +195,22 @@
 
 - (void)customUIBtn
 {
+    //前后摄像头切换按钮
+    UIButton *changeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [changeBtn setFrame:CGRectMake(WIDTH - 65, rHeignt - 20, 50, 38)];
+    [changeBtn setImage:[UIImage imageNamed:@"switchover.png"] forState:UIControlStateNormal];
+    [changeBtn addTarget:self action:@selector(selectFrontCamera) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:changeBtn];
+    //给切换按钮加上阴影效果
+    changeBtn.layer.shadowOffset = CGSizeMake(0, 0);
+    changeBtn.layer.shadowOpacity = 0.6;
+    changeBtn.layer.shadowColor = [UIColor grayColor].CGColor;
+    
     //刷新按钮
     _refreshBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_refreshBtn setFrame:CGRectMake(WIDTH - 65, rHeignt, 50, 38)];
     [_refreshBtn setImage:[UIImage imageNamed:@"refresh.png"] forState:UIControlStateNormal];
-    [_refreshBtn addTarget:self action:@selector(selectFrontCamera) forControlEvents:UIControlEventTouchUpInside];
+    [_refreshBtn addTarget:self action:@selector(refreshControlMethod) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_refreshBtn];
     //给刷新按钮加上阴影效果
     _refreshBtn.layer.shadowOffset = CGSizeMake(0, 0);
@@ -223,6 +232,7 @@
     [_infoBtn setImage:[UIImage imageNamed:@"info.png"] forState:UIControlStateNormal];
     [_infoBtn addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
+    
 }
 
 #pragma mark -前置摄像头切换
@@ -1187,19 +1197,19 @@
     [view4 addSubview:_tHArea];
     
     
-    [_tHDate setFrame:CGRectMake(20, rHeignt, 80, 20)];
-    [_tHImgView1 setFrame:CGRectMake(20, rHeignt + 25, 40, 40)];
-    [_tHImgView2 setFrame:CGRectMake(60, rHeignt + 25, 40, 40)];
-    [_tHArea setFrame:CGRectMake(20, rHeignt + 70, 80, 20)];
+    [_tHDate setFrame:CGRectMake(20, rHeignt + 10, 80, 20)];
+    [_tHImgView1 setFrame:CGRectMake(20, rHeignt + 5 + 25, 40, 40)];
+    [_tHImgView2 setFrame:CGRectMake(60, rHeignt + 5 + 25, 40, 40)];
+    [_tHArea setFrame:CGRectMake(20,rHeignt + 70, 80, 20)];
     [imgView setFrame:CGRectMake(10, rHeignt, 95, 100)];
-    [view4 setFrame:CGRectMake(10, rHeignt, 95, 100)];
+    [view4 setFrame:CGRectMake(10, 0, 95, 100)];
     
     
-//    //创建长安手势
-//    UILongPressGestureRecognizer *longPress  =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
-//    longPress.delegate = self;
-//    [self.view addGestureRecognizer:longPress];
-//    [longPress release];
+    //创建长安手势
+    UILongPressGestureRecognizer *longPress  =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
+    longPress.delegate = self;
+    [self.view addGestureRecognizer:longPress];
+    [longPress release];
 
     
     //创建拖拽手势
@@ -1215,13 +1225,10 @@
 
 - (void)longPressAction:(UIGestureRecognizer *)longPress
 {
-    self.panImgView.layer.borderColor = [UIColor blueColor].CGColor;
-//    self.panImgView.layer.cornerRadius = 15;
+    self.panImgView.layer.borderColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0].CGColor;
     self.panImgView.layer.borderWidth = 1.0;
-//    self.panImgView.layer.masksToBounds = YES;
+
 }
-
-
 - (void)handlePanGestures:(UIPanGestureRecognizer *)paramSender
 {
     NSLog(@"拖拽手势");
@@ -1234,10 +1241,6 @@
     }
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    NSLog(@"接触停止");
-}
 
 
 #pragma mark - 手势代理方法，同时触发手势

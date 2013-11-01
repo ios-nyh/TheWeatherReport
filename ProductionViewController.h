@@ -8,8 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ProductionViewController : UIViewController
+@interface ProductionViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
 
 @property (retain,nonatomic) UIView *bgView;
+
+@property (retain,nonatomic) UITextField *txt;
+
+@property (retain,nonatomic) UITableView *customTV;
+
+@property (retain,nonatomic) NSMutableArray *contentArray;
+@property (retain,nonatomic) NSMutableArray *dateArray;
 
 @end

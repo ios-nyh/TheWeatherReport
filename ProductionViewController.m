@@ -7,6 +7,8 @@
 //
 
 #import "ProductionViewController.h"
+#import "ProductionCell.h"
+#import "PostDataTools.h"
 
 @interface ProductionViewController ()
 
@@ -25,7 +27,13 @@
 
 - (void)dealloc
 {
+    [_customTV release];
     [_bgView release];
+    [_txt release];
+    
+    [_contentArray release];
+    [_dateArray release];
+    
     
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
@@ -34,6 +42,20 @@
     [super dealloc];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    //读取缓存数据
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+   
+    NSMutableArray *dateArray = [defaults objectForKey:@"dateArray"];
+    NSMutableArray *contentArray = [defaults objectForKey:@"contentArray"];
+    
+    if (dateArray && contentArray ) {
+        
+        self.dateArray = dateArray;
+        self.contentArray = contentArray;
+    }
+}
 
 - (void)viewDidLoad
 {
@@ -60,6 +82,24 @@
     
     [self setUpForDismissKeyboard];
     
+    //添加表格
+    UITableView *tableView = [[UITableView alloc]initWithFrame:CGRectMake(0, 0, WIDTH, HEIGHT - 44 - 20 - 60) style:UITableViewStylePlain];
+    tableView.delegate = self;
+    tableView.dataSource = self;
+    tableView.bouncesZoom = YES;
+    self.customTV = tableView;
+    [self.view addSubview:tableView];
+    [tableView release];
+    
+    //初始化存储建议内容数组
+    //内容
+    NSMutableArray *contentArray = [NSMutableArray array];
+    self.contentArray = contentArray;
+    //时间
+    NSMutableArray *dateArray = [NSMutableArray array];
+    self.dateArray = dateArray;
+
+    
     //发表框
     UIView *bgView = [[UIView alloc]initWithFrame:CGRectMake(0, HEIGHT - 44 - 20 - 60, WIDTH, 60)];
     bgView.backgroundColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
@@ -69,6 +109,8 @@
     UITextField *txt = [[UITextField alloc]initWithFrame:CGRectMake(10, 10, WIDTH - 20, 40)];
     txt.borderStyle = UITextBorderStyleLine;
     txt.backgroundColor = [UIColor whiteColor];
+    txt.delegate = self;
+    self.txt = txt;
     [bgView addSubview:txt];
     
     [bgView release];
@@ -162,8 +204,47 @@
 
 - (void)sendSuggestion
 {
-    
+    if (self.txt.text.length == 0) {
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"温馨提示" message:@"内容不能为空！"delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        
+        [alert show];
+        
+        [alert release];
+        
+    } else {
+        
+        NSString *argument = [NSString stringWithFormat:PUBLISH_COMMENT_ARGUMENT,self.txt.text];
+        
+        NSString *api = [NSString stringWithFormat:@"%@",PUBLISH_COMMENT_API];
+        
+        NSDictionary *dic = [PostDataTools postDataWithPostArgument:argument andAPI:api];
 
+        
+        for (NSDictionary *subDic in dic) {
+            
+            NSString *content = [subDic objectForKey:@"content"];
+            NSString *date = [subDic objectForKey:@"times"];
+            
+            [self.contentArray addObject:content];
+            [self.dateArray addObject:date];
+        
+            
+            //缓存数据
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            [defaults setObject:self.contentArray forKey:@"contentArray"];
+            [defaults setObject:self.dateArray forKey:@"dateArray"];
+            [defaults synchronize];
+        }
+        
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"发送成功！"delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+        [alert show];
+        [alert release];
+    }
+    
+    //重载数据
+    [self.customTV reloadData];
+    
 }
 
 
@@ -191,13 +272,90 @@
                 usingBlock:^(NSNotification *note){
                     [self.view removeGestureRecognizer:singleTapGR];
                 }];
-    
 }
 
 - (void)tapAnywhereToDismissKeyboard:(UIGestureRecognizer *)gestureRecognizer
 {
     //此method会将self.view里所有的subview的first responder都resign掉
     [self.view endEditing:YES];
+}
+
+#pragma mark - UITableViewDataSource
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.contentArray count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"Cell";
+    
+    ProductionCell *cell = (ProductionCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    if (cell == nil) {
+        
+        cell = [[ProductionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        
+        //取消点击cell时候的效果
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+    }
+
+    cell.content.text = [self.contentArray objectAtIndex:indexPath.row];
+    cell.date.text = [self.dateArray objectAtIndex:indexPath.row];
+    
+    return cell;
+}
+
+
+#pragma mark - UITableViewDelegate
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 100.0f;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    
+    
+}
+
+
+//点击textField时，tableView往上移动
+-(void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    int offset = 216;//键盘高度216
+    
+    NSLog(@"offset的高度：%d",offset);
+    
+    NSTimeInterval animationDuration = 0.25f;
+    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    
+    //将视图的Y坐标向上移动 offset 个单位
+    
+    self.customTV.frame = CGRectMake(0.0f, - offset, WIDTH, self.customTV.frame.size.height);
+    
+    [UIView commitAnimations];
+}
+
+//输入框编辑完成以后，将视图恢复到原始状态
+-(void)textFieldDidEndEditing:(UITextField *)textField
+{
+    NSTimeInterval animationDuration = 0.25f;
+    [UIView beginAnimations:@"ResizeForKeyboard" context:nil];
+    [UIView setAnimationDuration:animationDuration];
+
+    self.customTV.frame =CGRectMake(0, 0, WIDTH, self.customTV.frame.size.height);
+    
+    [UIView commitAnimations];
+
 }
 
 

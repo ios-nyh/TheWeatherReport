@@ -56,6 +56,7 @@
     UIImageView *_OimgView1;
     UIImageView *_OimgView2;
     UILabel *_Odate;
+    UILabel *_OcurLocation;     //当前位置
     //Two
     UILabel *_Ttemp;
     UILabel *_Tdate;
@@ -81,12 +82,14 @@
     UIImageView *_TimgView31;    // 天气图标
     UIImageView *_TimgView32;
     
+    UILabel *_TcurLocation;      //当前位置
     
     //three
     UILabel *_tHDate;
     UIImageView *_tHImgView1;
     UIImageView *_tHImgView2;
     UILabel *_tHArea;
+    UILabel *_tHcurLocation;    //当前位置
 }
 
 

@@ -107,6 +107,9 @@
 		819A2AF017E2B6AB00254595 /* CancelBack@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 819A2AEE17E2B6AB00254595 /* CancelBack@2x.png */; };
 		819A2AF517E2BD5500254595 /* ChineseToPinyin.m in Sources */ = {isa = PBXBuildFile; fileRef = 819A2AF417E2BD5500254595 /* ChineseToPinyin.m */; };
 		819D20EF1818CDB900F7A12B /* bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 819D20EE1818CDB900F7A12B /* bar.png */; };
+		81B3C859182377800073D771 /* ProductionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B3C858182377800073D771 /* ProductionCell.m */; };
+		81B3C85D182382390073D771 /* HTTPDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B3C85C182382390073D771 /* HTTPDownload.m */; };
+		81B3C860182388C10073D771 /* PostDataTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 81B3C85F182388C10073D771 /* PostDataTools.m */; };
 		81BCA885181F9EC000847DB2 /* ActivityIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 81BCA884181F9EC000847DB2 /* ActivityIndicatorView.m */; };
 		81C3DAE7180FEAA40071C2C3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C3DAE2180FEAA40071C2C3 /* Default-568h@2x.png */; };
 		81C3DAE8180FEAA40071C2C3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C3DAE3180FEAA40071C2C3 /* Default@2x.png */; };
@@ -256,6 +259,13 @@
 		819A2AF417E2BD5500254595 /* ChineseToPinyin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChineseToPinyin.m; sourceTree = "<group>"; };
 		819A2AFA17E3121E00254595 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		819D20EE1818CDB900F7A12B /* bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bar.png; sourceTree = "<group>"; };
+		81B3C857182377800073D771 /* ProductionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductionCell.h; sourceTree = "<group>"; };
+		81B3C858182377800073D771 /* ProductionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductionCell.m; sourceTree = "<group>"; };
+		81B3C85B182382390073D771 /* HTTPDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTTPDownload.h; sourceTree = "<group>"; };
+		81B3C85C182382390073D771 /* HTTPDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTTPDownload.m; sourceTree = "<group>"; };
+		81B3C85E182388C10073D771 /* PostDataTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostDataTools.h; sourceTree = "<group>"; };
+		81B3C85F182388C10073D771 /* PostDataTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostDataTools.m; sourceTree = "<group>"; };
+		81B3C86118238A720073D771 /* InterfaceFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InterfaceFile.h; sourceTree = "<group>"; };
 		81BCA883181F9EC000847DB2 /* ActivityIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActivityIndicatorView.h; sourceTree = "<group>"; };
 		81BCA884181F9EC000847DB2 /* ActivityIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActivityIndicatorView.m; sourceTree = "<group>"; };
 		81C3DAE2180FEAA40071C2C3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
@@ -452,6 +462,9 @@
 			children = (
 				814A9E811817C9D000CB2542 /* WeatherData.h */,
 				814A9E821817C9D000CB2542 /* WeatherData.m */,
+				81B3C85E182388C10073D771 /* PostDataTools.h */,
+				81B3C85F182388C10073D771 /* PostDataTools.m */,
+				81B3C86118238A720073D771 /* InterfaceFile.h */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -479,9 +492,19 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		81B3C85A182382100073D771 /* HTTPDownload */ = {
+			isa = PBXGroup;
+			children = (
+				81B3C85B182382390073D771 /* HTTPDownload.h */,
+				81B3C85C182382390073D771 /* HTTPDownload.m */,
+			);
+			name = HTTPDownload;
+			sourceTree = "<group>";
+		};
 		81BCA882181F9E6700847DB2 /* Custom */ = {
 			isa = PBXGroup;
 			children = (
+				81B3C85A182382100073D771 /* HTTPDownload */,
 				81FD168517E03EFF004B714A /* CameraImageHelper.h */,
 				81FD168617E03EFF004B714A /* CameraImageHelper.m */,
 				819A2AF317E2BD5500254595 /* ChineseToPinyin.h */,
@@ -494,6 +517,8 @@
 				81F0C51F181659D30099C6E1 /* CycleScrollView.m */,
 				81BCA883181F9EC000847DB2 /* ActivityIndicatorView.h */,
 				81BCA884181F9EC000847DB2 /* ActivityIndicatorView.m */,
+				81B3C857182377800073D771 /* ProductionCell.h */,
+				81B3C858182377800073D771 /* ProductionCell.m */,
 			);
 			name = Custom;
 			sourceTree = "<group>";
@@ -839,6 +864,7 @@
 				81FD167917E03C45004B714A /* HomeViewController.m in Sources */,
 				812CEA2D1810D95800CFD317 /* ProductionViewController.m in Sources */,
 				81FD168717E03EFF004B714A /* CameraImageHelper.m in Sources */,
+				81B3C85D182382390073D771 /* HTTPDownload.m in Sources */,
 				81BCA885181F9EC000847DB2 /* ActivityIndicatorView.m in Sources */,
 				81F7A7C417F2B8030049BBD8 /* CheckNetwork.m in Sources */,
 				81FD169217E040C9004B714A /* AboutViewController.m in Sources */,
@@ -849,7 +875,9 @@
 				814A9E831817C9D000CB2542 /* WeatherData.m in Sources */,
 				8148CBEE180D2464006410EF /* HelperViewController.m in Sources */,
 				819A2AF517E2BD5500254595 /* ChineseToPinyin.m in Sources */,
+				81B3C859182377800073D771 /* ProductionCell.m in Sources */,
 				8104C36A17E94DFE00A54475 /* CompanyLocationViewController.m in Sources */,
+				81B3C860182388C10073D771 /* PostDataTools.m in Sources */,
 				8104C36F17E952A500A54475 /* CustomAnnotation.m in Sources */,
 				812CEA2A1810D53200CFD317 /* MBProgressHUD.m in Sources */,
 			);

@@ -61,6 +61,8 @@
     [_OimgView1 release];
     [_OimgView2 release];
     [_Odate release];
+    [_OcurLocation release];
+    
     //Two
     [_Ttemp release];
     [_Tdate release];
@@ -86,12 +88,16 @@
     [_TimgView31 release];    // 天气图标
     [_TimgView32 release];
     
+    [_TcurLocation release];
+    
     //three
     [_tHDate release];
     [_tHImgView1 release];
     [_tHImgView2 release];
     [_tHArea release];
     [_panImgView release];
+    
+    [_tHcurLocation release];
     
     
     //指示视图
@@ -145,23 +151,27 @@
 {
     [self.navigationController setNavigationBarHidden:YES];
     
-    //开始定位服务
-    [self startUpdates];
+//    //开始定位服务
+//    [self startUpdates];
 
     //开始实时取景
     [self.cameraHelper startRunning];
     
-    //视图刚出现时，隐藏刷新按钮
-    [_refreshBtn setHidden:YES];
+//    //视图刚出现时，隐藏刷新按钮
+//    [_refreshBtn setHidden:YES];
     
-    //在右上角，加入加载视图
-    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
-    [self startAnimating];
+//    //在右上角，加入加载视图
+//    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
+//    [self startAnimating];
     
 }
+
+
 - (void)viewWillDisappear:(BOOL)animated
 {   //停止取景
     [self.cameraHelper stopRunning];
+    
+    [self stopAnimating];
 }
 
 //状态栏类型
@@ -218,6 +228,11 @@
     _refreshBtn.layer.shadowColor = [UIColor grayColor].CGColor;
     
     
+    //在右上角，加入加载视图
+    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
+    [self startAnimating];
+
+    
     //拍摄按钮
     _cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_cameraBtn setFrame:CGRectMake(15, vHeight, 50, 38)];
@@ -225,7 +240,7 @@
     [_cameraBtn addTarget:self action:@selector(snapPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_cameraBtn];
     
-    
+
     //信息按钮
     _infoBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [_infoBtn setFrame:CGRectMake(WIDTH - 65, vHeight, 50, 38)];
@@ -253,8 +268,8 @@
     //判断版本及屏幕适配
     [self setVersionAndScreen];
 
-//    //开始定位服务
-//    [self startUpdates];
+    //开始定位服务
+    [self startUpdates];
 
     //获取城市信息
     NSString *path = [[NSBundle mainBundle]pathForResource:@"CityInfo" ofType:@"plist"];
@@ -389,6 +404,10 @@
         [_locationManager startUpdatingLocation];
     }
     
+//    //在右上角，加入加载视图
+//    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
+//    [self startAnimating];
+
     //开启状态栏动画
     [[UIApplication sharedApplication]setNetworkActivityIndicatorVisible:YES];
 }
@@ -468,6 +487,9 @@
        
         //获取当前位置信息
         _curLocation.text = self.location;
+        _OcurLocation.text = self.location;
+        _TcurLocation.text = self.location;
+        _tHcurLocation.text = self.location;
         
     }
     
@@ -540,7 +562,12 @@
     
     [self.preview setHidden:YES];
     
+    //拍完照后，点击取消时，清空位置信息
     _curLocation.text = @"";
+    _OcurLocation.text = @"";
+    _TcurLocation.text = @"";
+    _tHcurLocation.text = @"";
+    
     
     //判断有无网络
     if ([CheckNetwork isNetworkRunning]) {
@@ -982,6 +1009,16 @@
     _Odate.shadowColor = [UIColor grayColor];
     [view2 addSubview:_Odate];
     
+    //当前位置
+    _OcurLocation = [[UILabel alloc]initWithFrame:CGRectMake(0, vHeight, WIDTH, 40)];
+    _OcurLocation.textAlignment = NSTextAlignmentCenter;
+    _OcurLocation.backgroundColor = [UIColor clearColor];
+    _OcurLocation.textColor = [UIColor whiteColor];
+    _OcurLocation.shadowColor = [UIColor grayColor];
+    _OcurLocation.font = [UIFont systemFontOfSize:14.0f];
+    [view2 addSubview:_OcurLocation];
+
+    
     
     //设计UI界面Frame
 //    [_OcityName setFrame:CGRectMake(20, vHeight - 380, 100, 20)];
@@ -1107,6 +1144,16 @@
     [_TimgView32 setBackgroundColor:[UIColor clearColor]];
     [view3 addSubview:_TimgView32];
     
+    //当前位置
+    _TcurLocation = [[UILabel alloc]initWithFrame:CGRectMake(0, vHeight, WIDTH, 40)];
+    _TcurLocation.textAlignment = NSTextAlignmentCenter;
+    _TcurLocation.backgroundColor = [UIColor clearColor];
+    _TcurLocation.textColor = [UIColor whiteColor];
+    _TcurLocation.shadowColor = [UIColor grayColor];
+    _TcurLocation.font = [UIFont systemFontOfSize:14.0f];
+    [view3 addSubview:_TcurLocation];
+
+    
     
     //设计UI界面Frame
 //    //当天
@@ -1196,6 +1243,15 @@
     _tHArea.textAlignment = NSTextAlignmentCenter;
     [view4 addSubview:_tHArea];
     
+    //当前位置
+    _tHcurLocation = [[UILabel alloc]initWithFrame:CGRectMake(0, vHeight, WIDTH, 40)];
+    _tHcurLocation.textAlignment = NSTextAlignmentCenter;
+    _tHcurLocation.backgroundColor = [UIColor clearColor];
+    _tHcurLocation.textColor = [UIColor whiteColor];
+    _tHcurLocation.shadowColor = [UIColor grayColor];
+    _tHcurLocation.font = [UIFont systemFontOfSize:14.0f];
+    [view4 addSubview:_tHcurLocation];
+
     
     [_tHDate setFrame:CGRectMake(20, rHeignt + 10, 80, 20)];
     [_tHImgView1 setFrame:CGRectMake(20, rHeignt + 5 + 25, 40, 40)];
@@ -1235,7 +1291,7 @@
     if (paramSender.state != UIGestureRecognizerStateEnded && paramSender.state != UIGestureRecognizerStateFailed) {
         
         //通过使用 locationInView 这个方法,来获取到手势的坐标
-        CGPoint location = [paramSender locationInView:paramSender.view.superview];
+        CGPoint location = [paramSender locationInView:paramSender.view.superview]; //触摸在指定视图中的当前位置
         paramSender.view.center = location;
         
     }
@@ -1258,7 +1314,7 @@
     NSURL *url = [NSURL URLWithString:URLStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0f];
     [NSURLConnection connectionWithRequest:request delegate:self];
-    
+
     //开启状态栏动画
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }

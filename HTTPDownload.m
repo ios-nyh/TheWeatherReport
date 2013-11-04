@@ -12,7 +12,7 @@
 @synthesize mData = _mData;
 @synthesize delegate = _delegate;
 
-- (void)downloadFromURL:(NSString *)url withArgument:(NSString *)argument
+- (void)downloadFromURL:(NSString *)url
 {
     if (self.mData == nil) {
         
@@ -24,14 +24,8 @@
     }
     
     _mRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-    [_mRequest setHTTPMethod:@"POST"];
     
-    NSString *str = [NSString stringWithFormat:@"%@",argument];
-    NSData *data = [str dataUsingEncoding:NSUTF8StringEncoding];
-    
-    [_mRequest setHTTPBody:data];
     [NSURLConnection connectionWithRequest:_mRequest delegate:self];
-    
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data

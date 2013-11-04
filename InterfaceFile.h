@@ -31,16 +31,18 @@
 //
 
 
-//发表建议
-//
-#define PUBLISH_COMMENT_API @"http://192.168.11.2/index.php"
+/**
+ *  发表建议
+ */
+#define PUBLISH_COMMENT_API @"http://192.168.11.2/addComment_json.php"
 #define PUBLISH_COMMENT_ARGUMENT @"cont=%@"
 
 
-//获取建议列表
-//
-#define GET_COMMENT_LIST_API @"http://www.coolelife.com/json/comment_json.php"
-#define GET_COMMENT_LIST_ARGUMENT @"op=getCommentList&curpage=%d&shop_id=%d"
+/**
+ *  获取建议列表
+ */
+#define GET_COMMENT_LIST_API @"http://192.168.11.2/getComment_json.php"
+
 
 
 #endif

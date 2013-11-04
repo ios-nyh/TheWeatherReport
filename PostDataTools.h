@@ -10,6 +10,6 @@
 
 @interface PostDataTools : NSObject
 
-+ (NSDictionary *)postDataWithPostArgument:(NSString *)argument andAPI:(NSString *)api;
++ (NSString *)postDataWithPostArgument:(NSString *)argument andAPI:(NSString *)apiURL;
 
 @end

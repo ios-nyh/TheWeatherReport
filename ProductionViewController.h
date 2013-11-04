@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HTTPDownload.h"
 
-@interface ProductionViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate>
+
+@interface ProductionViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UITextFieldDelegate,HTTPDownloadDelegate>
 
 @property (retain,nonatomic) UIView *bgView;
 
@@ -18,5 +20,7 @@
 
 @property (retain,nonatomic) NSMutableArray *contentArray;
 @property (retain,nonatomic) NSMutableArray *dateArray;
+
+@property (retain,nonatomic)HTTPDownload *HD;
 
 @end

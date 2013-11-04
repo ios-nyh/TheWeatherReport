@@ -9,8 +9,11 @@
 #import "ProductionViewController.h"
 #import "ProductionCell.h"
 #import "PostDataTools.h"
+#import "MBProgressHUD.h"
 
-@interface ProductionViewController ()
+@interface ProductionViewController ()<MBProgressHUDDelegate>
+
+@property (retain,nonatomic) MBProgressHUD *progressHUD;
 
 @end
 
@@ -34,33 +37,21 @@
     [_contentArray release];
     [_dateArray release];
     
+    [_HD release];
+    [_progressHUD release];
+    
     
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter]removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-
     
     [super dealloc];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    //读取缓存数据
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-   
-    NSMutableArray *dateArray = [defaults objectForKey:@"dateArray"];
-    NSMutableArray *contentArray = [defaults objectForKey:@"contentArray"];
-    
-    if (dateArray && contentArray ) {
-        
-        self.dateArray = dateArray;
-        self.contentArray = contentArray;
-    }
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    
     //设置view背景颜色
     self.view.backgroundColor = [UIColor whiteColor];
     
@@ -91,6 +82,7 @@
     [self.view addSubview:tableView];
     [tableView release];
     
+   
     //初始化存储建议内容数组
     //内容
     NSMutableArray *contentArray = [NSMutableArray array];
@@ -99,6 +91,18 @@
     NSMutableArray *dateArray = [NSMutableArray array];
     self.dateArray = dateArray;
 
+    //初始化异步下载
+    HTTPDownload *hd = [[[HTTPDownload alloc]init]autorelease];
+    hd.delegate = self;
+    self.HD = hd;
+    
+    //开始下载
+    [self.HD downloadFromURL:GET_COMMENT_LIST_API];
+    //加入指示视图
+    [self MBProgressHUDView];
+    
+   
+    
     
     //发表框
     UIView *bgView = [[UIView alloc]initWithFrame:CGRectMake(0, HEIGHT - 44 - 20 - 60, WIDTH, 60)];
@@ -218,33 +222,51 @@
         
         NSString *api = [NSString stringWithFormat:@"%@",PUBLISH_COMMENT_API];
         
-        NSDictionary *dic = [PostDataTools postDataWithPostArgument:argument andAPI:api];
+        NSString *msg = [PostDataTools postDataWithPostArgument:argument andAPI:api];
 
+        if ([msg isEqualToString:@"添加成功"]){
+            
+            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"发送成功！"delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
+            [alert show];
+            [alert release];
+            
+            [self.HD downloadFromURL:GET_COMMENT_LIST_API];
+        }
+    }
+}
+
+#pragma mark - HTTPDownload method 
+
+- (void)downloadDidFinishLoading:(HTTPDownload *)hd
+{
+    if (self.HD.mData) {
         
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:self.HD.mData options:NSJSONReadingMutableContainers error:nil];
+        NSLog(@"下载内容：---- >%@",dic);
+        
+       
+        [self.contentArray removeAllObjects];
+        [self.dateArray removeAllObjects];
+
         for (NSDictionary *subDic in dic) {
             
-            NSString *content = [subDic objectForKey:@"content"];
+            NSString *content = [subDic objectForKey:@"comment"];
             NSString *date = [subDic objectForKey:@"times"];
             
             [self.contentArray addObject:content];
             [self.dateArray addObject:date];
-        
-            
-            //缓存数据
-            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:self.contentArray forKey:@"contentArray"];
-            [defaults setObject:self.dateArray forKey:@"dateArray"];
-            [defaults synchronize];
         }
-        
-        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"提示" message:@"发送成功！"delegate:nil cancelButtonTitle:nil otherButtonTitles:@"确定", nil];
-        [alert show];
-        [alert release];
     }
     
-    //重载数据
+    //下载完成后，重载数据
     [self.customTV reloadData];
     
+    [self hudWasHidden:self.progressHUD];
+}
+
+- (void)downloadDidFail:(HTTPDownload *)hd
+{
+    NSLog(@"download fail %@ ！",hd);
 }
 
 
@@ -300,12 +322,12 @@
     
     if (cell == nil) {
         
-        cell = [[ProductionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        cell = [[[ProductionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier]autorelease];
         
         //取消点击cell时候的效果
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
-
+    
     cell.content.text = [self.contentArray objectAtIndex:indexPath.row];
     cell.date.text = [self.dateArray objectAtIndex:indexPath.row];
     
@@ -318,6 +340,10 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 100.0f;
+    
+//    UITableViewCell *cell = [self tableView:tableView cellForRowAtIndexPath:indexPath];
+//    return cell.frame.size.height;
+    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -343,6 +369,13 @@
     self.customTV.frame = CGRectMake(0.0f, - offset, WIDTH, self.customTV.frame.size.height);
     
     [UIView commitAnimations];
+    
+   
+//    NSInteger count = [self.contentArray count] - 1;
+//    //界面展现好之后如果客户这一栏有数据，则自动选中第一栏
+//    NSIndexPath *first = [NSIndexPath indexPathForRow:count inSection:0];
+//    [self.customTV selectRowAtIndexPath:first animated:YES scrollPosition:UITableViewScrollPositionTop];
+    
 }
 
 //输入框编辑完成以后，将视图恢复到原始状态
@@ -356,6 +389,71 @@
     
     [UIView commitAnimations];
 
+}
+
+
+#pragma mark - 指示视图方法
+
+- (void)MBProgressHUDView
+{
+    //显示加载等待框
+    
+    MBProgressHUD *progressHUD = [[[MBProgressHUD alloc] initWithView:self.view] autorelease];
+    
+    self.progressHUD = progressHUD;
+    
+//    self.progressHUD.mode = MBProgressHUDModeDeterminate;
+    
+    [self.view addSubview:self.progressHUD];
+    
+    [self.view bringSubviewToFront:self.progressHUD];
+    
+    self.progressHUD.delegate = self;
+    
+//    self.progressHUD.labelText = @"加载中...";
+    
+    [self.progressHUD show:YES];
+}
+
+/**
+ *  MBProgress Block 形式
+ */
+- (void)showProgressDialog {
+    
+    MBProgressHUD *HUD = [[MBProgressHUD alloc] initWithView:self.view];
+    self.progressHUD = HUD;
+    [self.view addSubview:HUD];
+    HUD.labelText = @"正在加载";
+    HUD.mode = MBProgressHUDModeAnnularDeterminate;
+    
+    [HUD showAnimated:YES whileExecutingBlock:^{
+        float progress = 0.0f;
+        while (progress < 1.0f){
+            progress += 0.01f;
+            HUD.progress = progress;
+            usleep(50000);
+        }
+    } completionBlock:^{
+        
+        [self.progressHUD removeFromSuperview];
+        [self.progressHUD release];
+         self.progressHUD = nil;
+    }];
+}
+
+#pragma mark -
+#pragma mark MBProgressHUDDelegate methods
+
+- (void)hudWasHidden:(MBProgressHUD *)hud {
+    
+    // Remove HUD from screen when the HUD was hidded
+    
+    [self.progressHUD removeFromSuperview];
+    
+    [_progressHUD release];
+    
+    _progressHUD = nil;
+    
 }
 
 

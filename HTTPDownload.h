@@ -28,10 +28,9 @@
     NSMutableURLRequest *_mRequest;
 }
 
-//从指定网址下载数据
-- (void)downloadFromURL:(NSString *)url withArgument:(NSString *)argument;
+- (void)downloadFromURL:(NSString *)url;  //用get方法，从指定网址下载数据
 
-@property (retain,nonatomic)NSMutableData *mData;
-@property (assign,nonatomic)id <HTTPDownloadDelegate>delegate;
+@property (retain,nonatomic) NSMutableData *mData;
+@property (assign,nonatomic) id <HTTPDownloadDelegate>delegate;
 
 @end

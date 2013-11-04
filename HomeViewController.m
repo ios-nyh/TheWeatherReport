@@ -3,7 +3,7 @@
 //  TheWeatherReport
 //
 //  Created by ios on 13-9-11.
-//  Copyright (c) 2013年 hxhd. All rights reserved.
+//  Copyright (c) 2013年   . All rights reserved.
 //
 
 #import "HomeViewController.h"
@@ -1018,8 +1018,7 @@
     _OcurLocation.font = [UIFont systemFontOfSize:14.0f];
     [view2 addSubview:_OcurLocation];
 
-    
-    
+
     //设计UI界面Frame
 //    [_OcityName setFrame:CGRectMake(20, vHeight - 380, 100, 20)];
 //    [_Otemp setFrame:CGRectMake(20, vHeight - 360, 100, 20)];

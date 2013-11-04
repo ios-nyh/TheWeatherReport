@@ -11,7 +11,7 @@
 
 @implementation PostDataTools
 
-+ (NSDictionary *)postDataWithPostArgument:(NSString *)argument andAPI:(NSString *)api
++ (NSString *)postDataWithPostArgument:(NSString *)argument andAPI:(NSString *)apiURL
 
 {
     NSString *post = [NSString stringWithFormat:@"%@",argument];
@@ -25,7 +25,7 @@
     //定义NSMutableURLRequest
     NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] init] autorelease];
     //设置提交目的url
-    [request setURL:[NSURL URLWithString:api]];
+    [request setURL:[NSURL URLWithString:apiURL]];
     //设置提交方式为 POST
     [request setHTTPMethod:@"POST"];
     //设置http-header:Content-Type
@@ -43,10 +43,15 @@
     NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
     
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:nil];
+    
     NSLog(@"dic %@",dic);
     
-    return dic;
+    NSString *msg = [dic objectForKey:@"msg"];
+    
+    return msg;
+    
 }
+
 
 
 @end

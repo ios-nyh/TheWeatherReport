@@ -26,9 +26,11 @@
         
         _content = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, WIDTH - 20, 80)];
         _content.textAlignment = NSTextAlignmentRight;
+        _content.numberOfLines = 0;
+//        _content.backgroundColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
         [self addSubview:_content];
         
-        _date = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, WIDTH - 10, 20)];
+        _date = [[UILabel alloc]initWithFrame:CGRectMake(0, 80, WIDTH - 20, 20)];
         _date.textAlignment = NSTextAlignmentRight;
         _date.textColor = [UIColor lightGrayColor];
         [self addSubview:_date];

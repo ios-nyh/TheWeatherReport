@@ -146,26 +146,28 @@
     return self;
 }
 
+/////////////////////////////////////////////////////
 #pragma mark - 系统方法，用于拍照
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.navigationController setNavigationBarHidden:YES];
     
 //    //开始定位服务
 //    [self startUpdates];
-
+    
     //开始实时取景
     [self.cameraHelper startRunning];
     
-//    //视图刚出现时，隐藏刷新按钮
-//    [_refreshBtn setHidden:YES];
+    //视图刚出现时，隐藏刷新按钮
+    [_refreshBtn setHidden:YES];
     
 //    //在右上角，加入加载视图
 //    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
 //    [self startAnimating];
     
 }
-
+/////////////////////////////////////////////////////
 
 - (void)viewWillDisappear:(BOOL)animated
 {   //停止取景
@@ -228,10 +230,14 @@
     _refreshBtn.layer.shadowColor = [UIColor grayColor].CGColor;
     
     
+/////////////////////////////////////////////////////
+    //视图加载完成后，显示刷新按钮
+    [_refreshBtn setHidden:NO];
     //在右上角，加入加载视图
     [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
     [self startAnimating];
-
+/////////////////////////////////////////////////////
+    
     
     //拍摄按钮
     _cameraBtn = [UIButton buttonWithType:UIButtonTypeCustom];

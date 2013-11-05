@@ -11,7 +11,17 @@
 #import "PostDataTools.h"
 #import "MBProgressHUD.h"
 
+
+
+#define FONT_SIZE 14.0f
+#define CELL_CONTENT_WIDTH 300.0f
+#define CELL_CONTENT_MARGIN 10.0f
+
+
 @interface ProductionViewController ()<MBProgressHUDDelegate>
+{
+    BOOL result; //判断是否执行要滚动到最后一个cell位置的方法
+}
 
 @property (retain,nonatomic) MBProgressHUD *progressHUD;
 
@@ -100,9 +110,6 @@
     [self.HD downloadFromURL:GET_COMMENT_LIST_API];
     //加入指示视图
     [self MBProgressHUDView];
-    
-   
-    
     
     //发表框
     UIView *bgView = [[UIView alloc]initWithFrame:CGRectMake(0, HEIGHT - 44 - 20 - 60, WIDTH, 60)];
@@ -231,6 +238,8 @@
             [alert release];
             
             [self.HD downloadFromURL:GET_COMMENT_LIST_API];
+            //判断是否要滚动到最后一个cell位置
+            result = YES;
         }
     }
 }
@@ -260,8 +269,17 @@
     
     //下载完成后，重载数据
     [self.customTV reloadData];
-    
+    //停止指示动画
     [self hudWasHidden:self.progressHUD];
+    
+    //滚动到最后一行
+    if (result) {
+        NSInteger row = [self.contentArray count] - 1;
+        NSLog(@"row indexPath -- >%d",row);
+        //界面展现好之后如果客户这一栏有数据，则自动选中第一栏
+        NSIndexPath *first = [NSIndexPath indexPathForRow:row inSection:0];
+        [self.customTV selectRowAtIndexPath:first animated:YES scrollPosition:UITableViewScrollPositionTop];
+    }
 }
 
 - (void)downloadDidFail:(HTTPDownload *)hd
@@ -317,19 +335,72 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
+    UILabel *content = nil;
+    UILabel *date = nil;
     
-    ProductionCell *cell = (ProductionCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         
-        cell = [[[ProductionCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier]autorelease];
-        
+        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier]autorelease];
         //取消点击cell时候的效果
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        //评论内容
+        content = [[[UILabel alloc] initWithFrame:CGRectZero]autorelease];
+        [content setLineBreakMode:NSLineBreakByWordWrapping];
+//        content.textAlignment = NSTextAlignmentRight;
+        [content setMinimumScaleFactor:FONT_SIZE];
+        [content setNumberOfLines:0];
+        [content setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+        content.backgroundColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
+        [content setTag:1];
+//        [[content layer] setBorderWidth:2.0f]; //设置边框
+        [[cell contentView] addSubview:content];
+        
+        
+        //评论时间
+        date = [[[UILabel alloc]init]autorelease];
+        date.textColor = [UIColor lightGrayColor];
+        date.textAlignment = NSTextAlignmentRight;
+        [date setMinimumScaleFactor:FONT_SIZE];
+        [date setFont:[UIFont systemFontOfSize:FONT_SIZE]];
+        [date setTag:2];
+        [cell.contentView addSubview:date];
     }
     
-    cell.content.text = [self.contentArray objectAtIndex:indexPath.row];
-    cell.date.text = [self.dateArray objectAtIndex:indexPath.row];
+    NSString *text = [self.contentArray objectAtIndex:indexPath.row];
+    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH, 20000.0f);
+    
+    // NS_DEPRECATED_IOS(2_0, 7_0, "Use -boundingRectWithSize:options:attributes:context:")
+    CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
+    
+    
+//    //属性字符串1
+//    NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:text];
+//    content.attributedText = attrStr;
+//    NSRange range = NSMakeRange(0, attrStr.length);
+//    NSDictionary *dic = [attrStr attributesAtIndex:0 effectiveRange:&range];   // 获取该段attributedString的属性字典
+    
+//    //属性字符串2
+//    NSDictionary *tempDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica" size:[UIFont systemFontSize]],NSFontAttributeName,nil];
+    
+//    //通过属性字符串获取大小，用于计算文本绘制时占据的矩形块
+//    CGSize size = [text boundingRectWithSize:constraint options:NSStringDrawingUsesLineFragmentOrigin | NSStringDrawingUsesFontLeading attributes:dic context:nil].size;
+    
+    
+    //内容
+    if (!content){
+        
+        content = (UILabel*)[cell viewWithTag:1];
+    }
+    content.text = text;
+    [content setFrame:CGRectMake(CELL_CONTENT_MARGIN, 0, size.width, MAX(size.height, 44.0f))];
+    //日期
+    if (!date) {
+        date = (UILabel *)[cell viewWithTag:2];
+    }
+    [date setFrame:CGRectMake(CELL_CONTENT_MARGIN,  MAX(size.height, 44.0f), CELL_CONTENT_WIDTH, 20)];
+    date.text = [self.dateArray objectAtIndex:indexPath.row];
+    
     
     return cell;
 }
@@ -339,17 +410,20 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    return 100.0f;
     
 //    UITableViewCell *cell = [self tableView:tableView cellForRowAtIndexPath:indexPath];
 //    return cell.frame.size.height;
     
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+    NSString *text = [self.contentArray objectAtIndex:[indexPath row]];
     
+    CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH, 20000.0f);
     
+    //iOS7中，此方法被遗弃，暂时用着
+    CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
+    
+    CGFloat height = MAX(size.height, 44.0f);
+    
+    return height + (CELL_CONTENT_MARGIN * 2);
 }
 
 
@@ -370,12 +444,14 @@
     
     [UIView commitAnimations];
     
-   
-//    NSInteger count = [self.contentArray count] - 1;
-//    //界面展现好之后如果客户这一栏有数据，则自动选中第一栏
-//    NSIndexPath *first = [NSIndexPath indexPathForRow:count inSection:0];
-//    [self.customTV selectRowAtIndexPath:first animated:YES scrollPosition:UITableViewScrollPositionTop];
     
+    NSInteger rowCount = [self.contentArray count] - 1;
+    if (rowCount > 1) {
+        
+        //界面展现好之后如果客户这一栏有数据，则自动选中第一栏
+        NSIndexPath *first = [NSIndexPath indexPathForRow:rowCount inSection:0];
+        [self.customTV selectRowAtIndexPath:first animated:YES scrollPosition:UITableViewScrollPositionTop];
+    }
 }
 
 //输入框编辑完成以后，将视图恢复到原始状态

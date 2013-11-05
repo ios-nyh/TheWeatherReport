@@ -178,6 +178,8 @@
             [production release];
             
         }  else if (indexPath.row == 1) {
+            
+            //下载地址：https://itunes.apple.com/us/app/change-the-color-2/id706681892?ls=1&mt=8
             //App ID：728307762
             NSString * appstoreUrlString = @"itms-apps://ax.itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?mt=8&onlyLatestVersion=true&pageNumber=0&sortOrdering=1&type=Purple+Software&id=728307762";
             

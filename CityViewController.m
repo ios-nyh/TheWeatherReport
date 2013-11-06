@@ -203,9 +203,9 @@
     //http://192.168.11.10/josn.php              //测试
     //http://www.coolelife.com/weather/josn.php  //接口
     
-    NSString *strURL = [NSString stringWithFormat:@"http://www.coolelife.com/weather/josn.php"];
+    NSString *strURL = [NSString stringWithFormat:CITY_DATA];
     NSURL *url = [NSURL URLWithString:strURL];
-    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10.0f];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0f];
     [NSURLConnection connectionWithRequest:request delegate:self];
 }
 

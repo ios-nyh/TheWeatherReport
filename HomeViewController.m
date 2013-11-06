@@ -130,7 +130,7 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityNotification" object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"selectedCityCodeidNotification" object:nil];
-    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"closeLocation" object:nil];
     
     [super dealloc];
 }
@@ -146,7 +146,7 @@
     return self;
 }
 
-/////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 #pragma mark - 系统方法，用于拍照
 
 - (void)viewWillAppear:(BOOL)animated
@@ -159,15 +159,15 @@
     //开始实时取景
     [self.cameraHelper startRunning];
     
-    //视图刚出现时，隐藏刷新按钮
-    [_refreshBtn setHidden:YES];
+//    //视图刚出现时，隐藏刷新按钮
+//    [_refreshBtn setHidden:YES];
     
 //    //在右上角，加入加载视图
 //    [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
 //    [self startAnimating];
     
 }
-/////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
 - (void)viewWillDisappear:(BOOL)animated
 {   //停止取景
@@ -208,15 +208,15 @@
 - (void)customUIBtn
 {
     //前后摄像头切换按钮
-    UIButton *changeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [changeBtn setFrame:CGRectMake(WIDTH - 65, rHeignt - 20, 50, 38)];
-    [changeBtn setImage:[UIImage imageNamed:@"switchover.png"] forState:UIControlStateNormal];
-    [changeBtn addTarget:self action:@selector(selectFrontCamera) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:changeBtn];
+    _changeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [_changeBtn setFrame:CGRectMake(WIDTH - 65, rHeignt - 20, 50, 38)];
+    [_changeBtn setImage:[UIImage imageNamed:@"switchover.png"] forState:UIControlStateNormal];
+    [_changeBtn addTarget:self action:@selector(selectFrontCamera) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:_changeBtn];
     //给切换按钮加上阴影效果
-    changeBtn.layer.shadowOffset = CGSizeMake(0, 0);
-    changeBtn.layer.shadowOpacity = 0.6;
-    changeBtn.layer.shadowColor = [UIColor grayColor].CGColor;
+    _changeBtn.layer.shadowOffset = CGSizeMake(0, 0);
+    _changeBtn.layer.shadowOpacity = 0.6;
+    _changeBtn.layer.shadowColor = [UIColor grayColor].CGColor;
     
     //刷新按钮
     _refreshBtn = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -231,8 +231,8 @@
     
     
 /////////////////////////////////////////////////////
-    //视图加载完成后，显示刷新按钮
-    [_refreshBtn setHidden:NO];
+//    //视图加载完成后，显示刷新按钮
+//    [_refreshBtn setHidden:NO];
     //在右上角，加入加载视图
     [self activityIndicatorViewWithFrame:CGRectMake(WIDTH - 60, rHeignt, 20, 20)];
     [self startAnimating];
@@ -332,6 +332,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCity:) name:@"selectedCityNotification" object:nil];
     //选择接口城市
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCityCodeid:) name:@"selectedCityCodeidNotification" object:nil];
+    //监听拍照时的位置的通知
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeLocationShow) name:@"closeLocation" object:nil];
 }
 
 #pragma mark - 加入滚动视图
@@ -480,6 +482,7 @@
         [_cameraBtn setHidden:YES];
         [_infoBtn setHidden:YES];
         [_refreshBtn setHidden:YES];
+        [_changeBtn setHidden:YES];
         
         
         //提示，是否保存图片
@@ -490,13 +493,15 @@
         [alertView show];
         [alertView release];
         
-       
-        //获取当前位置信息
-        _curLocation.text = self.location;
-        _OcurLocation.text = self.location;
-        _TcurLocation.text = self.location;
-        _tHcurLocation.text = self.location;
+//        if (![self respondsToSelector:@selector(closeLocationShow)]) {
         
+            //获取当前位置信息
+            _curLocation.text = self.location;
+            _OcurLocation.text = self.location;
+            _TcurLocation.text = self.location;
+            _tHcurLocation.text = self.location;
+
+//        }
     }
     
     //取消拍摄动画
@@ -565,6 +570,7 @@
     [_cameraBtn setHidden:NO];
     [_infoBtn setHidden:NO];
     [_refreshBtn setHidden:NO];
+    [_changeBtn setHidden:NO];
     
     [self.preview setHidden:YES];
     
@@ -817,6 +823,15 @@
     [self JSONStartParse:_cityid];
 }
 
+
+#pragma mark - 控制拍照时位置显示的通知方法
+
+- (void)closeLocationShow
+{
+    NSLog(@"响应通知方法");
+}
+
+
 #pragma mark - 定义天气信息UI
 
 - (void)setBackgroundView1:(UIView *)view1
@@ -942,7 +957,6 @@
     _date3.backgroundColor = [UIColor clearColor];
     _date3.textColor = [UIColor whiteColor];
     _date3.shadowColor = [UIColor grayColor];
-//    _date3.font = [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
     _date3.font = [UIFont systemFontOfSize:font/2];
     [view1 addSubview:_date3];
     
@@ -993,11 +1007,9 @@
     [view2 addSubview:_Otemp];
     
     //中间细条图片
-    UIImageView *barImgView = [[[UIImageView alloc]init]autorelease];
-    [barImgView setBackgroundColor:[UIColor clearColor]];
-    UIImage *img = [UIImage imageNamed:@"bar.png"];
-    barImgView.image = img;
-    [view2 addSubview:barImgView];
+    _barImgView = [[[UIImageView alloc]init]autorelease];
+    [_barImgView setBackgroundColor:[UIColor clearColor]];
+    [view2 addSubview:_barImgView];
     
     //显示天气图片
     _OimgView1 = [[UIImageView alloc]init];
@@ -1024,19 +1036,9 @@
     _OcurLocation.font = [UIFont systemFontOfSize:14.0f];
     [view2 addSubview:_OcurLocation];
 
-
-    //设计UI界面Frame
-//    [_OcityName setFrame:CGRectMake(20, vHeight - 380, 100, 20)];
-//    [_Otemp setFrame:CGRectMake(20, vHeight - 360, 100, 20)];
-//    [barImgView setFrame:CGRectMake(20, vHeight - 330, img.size.width, img.size.height)];
-//    [_Odate setFrame:CGRectMake(20, vHeight - 320, WIDTH - 20, 20)];
-//    
-//    [_OimgView1 setFrame:CGRectMake(120, vHeight - 380, 40, 40)];
-//    [_OimgView2 setFrame:CGRectMake(160, vHeight - 380, 40, 40)];
-    
     [_OcityName setFrame:CGRectMake(20, rHeignt, 100, 20)];
     [_Otemp setFrame:CGRectMake(20, rHeignt + 20, 100, 20)];
-    [barImgView setFrame:CGRectMake(20, rHeignt + 50, img.size.width, img.size.height)];
+    [_barImgView setFrame:CGRectMake(20, rHeignt + 50, 141, 2)];
     [_Odate setFrame:CGRectMake(20, rHeignt + 60, WIDTH - 20, 20)];
     
     [_OimgView1 setFrame:CGRectMake(120, rHeignt, 40, 40)];
@@ -1158,35 +1160,6 @@
     _TcurLocation.font = [UIFont systemFontOfSize:14.0f];
     [view3 addSubview:_TcurLocation];
 
-    
-    
-    //设计UI界面Frame
-//    //当天
-//    [_Ttemp setFrame:CGRectMake(20, vHeight - 380, 100, 40)];
-//    [_Tdate setFrame:CGRectMake(20, vHeight - 340, WIDTH - 20, 20)];
-//    [_TcityName setFrame:CGRectMake(20, vHeight - 320, WIDTH - 20, 20)];
-//    [_Tcontent setFrame:CGRectMake(20, vHeight - 300, WIDTH - 20, 20)];
-//    [_Tweather setFrame:CGRectMake(20, vHeight - 280, 100, 20)];
-//    [_Twind setFrame:CGRectMake(120, vHeight - 280, WIDTH - 20, 20)];
-//    
-//    [_TimgView1 setFrame:CGRectMake(120, vHeight - 380, 40, 40)];
-//    [_TimgView2 setFrame:CGRectMake(160, vHeight - 380, 40, 40)];
-//    
-//    //明天
-//    [_Tdate2 setFrame:CGRectMake(30, vHeight - 240, 100, 20)];
-//    [_Tweather2 setFrame:CGRectMake(30, vHeight - 220, 100, 20)];
-//    [_TimgView21 setFrame:CGRectMake(120, vHeight - 240, 40, 40)];
-//    [_TimgView22 setFrame:CGRectMake(160, vHeight - 240, 40, 40)];
-//    [bg2 setFrame:CGRectMake(20, vHeight - 250, 180, 60)];
-//    
-//    //后天
-//    [_Tdate3 setFrame:CGRectMake(30, vHeight - 160, 100, 20)];
-//    [_Tweather3 setFrame:CGRectMake(30, vHeight - 140, 100, 20)];
-//
-//    [_TimgView31 setFrame:CGRectMake(120, vHeight - 160, 40, 40)];
-//    [_TimgView32 setFrame:CGRectMake(160, vHeight - 160, 40, 40)];
-//    [bg3 setFrame:CGRectMake(20, vHeight - 170, 180, 60)];
-    
     //当天
     [_Ttemp setFrame:CGRectMake(20, rHeignt, 100, 40)];
     [_Tdate setFrame:CGRectMake(20, rHeignt + 40, WIDTH - 20, 20)];
@@ -1315,7 +1288,7 @@
 
 - (void)JSONStartParse:(NSString *)cityid
 {
-    NSString *URLStr = [NSString stringWithFormat:@"http://m.weather.com.cn/data/%@.html",cityid];
+    NSString *URLStr = [NSString stringWithFormat:WEATHER_API,cityid];
     NSURL *url = [NSURL URLWithString:URLStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60.0f];
     [NSURLConnection connectionWithRequest:request delegate:self];
@@ -1413,6 +1386,10 @@
         NSLog(@" 当前时间 %@",currentDateStr);
         _Odate.text = [NSString stringWithFormat:@"%@    %@",currentDateStr,week];
         [formatter release];
+        
+        //中间细条图片
+        UIImage *img = [UIImage imageNamed:@"bar.png"];
+        _barImgView.image = img;
 
         //获取天气图片
         NSString *Ostr1 = [_subDic valueForKey:@"img1"];

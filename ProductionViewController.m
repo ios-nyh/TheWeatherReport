@@ -12,7 +12,6 @@
 #import "MBProgressHUD.h"
 
 
-
 #define FONT_SIZE 14.0f
 #define CELL_CONTENT_WIDTH 300.0f
 #define CELL_CONTENT_MARGIN 10.0f
@@ -344,12 +343,13 @@
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier]autorelease];
         //取消点击cell时候的效果
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+        
         //评论内容
         content = [[[UILabel alloc] initWithFrame:CGRectZero]autorelease];
         [content setLineBreakMode:NSLineBreakByWordWrapping];
+        [content setNumberOfLines:0];
 //        content.textAlignment = NSTextAlignmentRight;
         [content setMinimumScaleFactor:FONT_SIZE];
-        [content setNumberOfLines:0];
         [content setFont:[UIFont systemFontOfSize:FONT_SIZE]];
         content.backgroundColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0];
         [content setTag:1];
@@ -379,7 +379,7 @@
 //    content.attributedText = attrStr;
 //    NSRange range = NSMakeRange(0, attrStr.length);
 //    NSDictionary *dic = [attrStr attributesAtIndex:0 effectiveRange:&range];   // 获取该段attributedString的属性字典
-    
+
 //    //属性字符串2
 //    NSDictionary *tempDic = [NSDictionary dictionaryWithObjectsAndKeys:[UIFont fontWithName:@"Helvetica" size:[UIFont systemFontSize]],NSFontAttributeName,nil];
     
@@ -394,6 +394,7 @@
     }
     content.text = text;
     [content setFrame:CGRectMake(CELL_CONTENT_MARGIN, 0, size.width, MAX(size.height, 44.0f))];
+    
     //日期
     if (!date) {
         date = (UILabel *)[cell viewWithTag:2];
@@ -418,7 +419,7 @@
     
     CGSize constraint = CGSizeMake(CELL_CONTENT_WIDTH, 20000.0f);
     
-    //iOS7中，此方法被遗弃，暂时用着
+    //iOS7中，此方法被弃用，暂时用着
     CGSize size = [text sizeWithFont:[UIFont systemFontOfSize:FONT_SIZE] constrainedToSize:constraint lineBreakMode:NSLineBreakByWordWrapping];
     
     CGFloat height = MAX(size.height, 44.0f);

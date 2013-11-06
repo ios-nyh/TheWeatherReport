@@ -23,25 +23,29 @@
 
 
 
-//获取天气
-//
+/**
+ *  获取天气数据
+ */
+#define WEATHER_API @"http://m.weather.com.cn/data/%@.html"
 
 
-//获取城市数据
-//
+/**
+ *  获取城市数据
+ */
+#define CITY_DATA @"http://www.coolelife.com/weather/josn.php"
 
 
 /**
  *  发表建议
  */
-#define PUBLISH_COMMENT_API @"http://192.168.11.2/addComment_json.php"
+#define PUBLISH_COMMENT_API @"http://www.coolelife.com/weather/addComment_json.php"
 #define PUBLISH_COMMENT_ARGUMENT @"cont=%@"
 
 
 /**
  *  获取建议列表
  */
-#define GET_COMMENT_LIST_API @"http://192.168.11.2/getComment_json.php"
+#define GET_COMMENT_LIST_API @"http://www.coolelife.com/weather/getComment_json.php"
 
 
 

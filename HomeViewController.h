@@ -39,6 +39,7 @@
     UIButton *_cameraBtn;     //拍照
     UIButton *_infoBtn;       //详细信息
     UIButton *_refreshBtn;    //刷新按钮
+    UIButton *_changeBtn;     //前后摄像头切换按钮
     
  
     UILabel *_refreshDate;    //刷新日期
@@ -57,6 +58,8 @@
     UIImageView *_OimgView2;
     UILabel *_Odate;
     UILabel *_OcurLocation;     //当前位置
+    UIImageView *_barImgView;   //中间细条图片
+    
     //Two
     UILabel *_Ttemp;
     UILabel *_Tdate;

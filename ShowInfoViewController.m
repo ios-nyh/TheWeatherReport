@@ -17,6 +17,10 @@
 
 
 @interface ShowInfoViewController ()
+{
+    BOOL mySwitchBtn;
+}
+@property (retain,nonatomic) UISwitch *switchBtn;
 
 @end
 
@@ -37,6 +41,8 @@
     [_sectionArray release];
     
     [_imgArray release];
+    
+    [_switchBtn release];
     
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"showInfo" object:nil];
     
@@ -85,13 +91,15 @@
     
     //存放分组图片
     NSArray *infoOne = [NSArray arrayWithObjects:@"产品建议",@"给我们评分", nil];
+    NSArray *middle = [NSArray arrayWithObject:@"个人位置"];
     NSArray *infoTwo = [NSArray arrayWithObjects:@"关于我们",@"免责声明",@"版本信息", nil];
-    NSArray *sectionArray = [NSArray arrayWithObjects:infoOne,infoTwo, nil];
+    NSArray *sectionArray = [NSArray arrayWithObjects:infoOne,middle,infoTwo, nil];
     self.sectionArray = sectionArray;
     
     NSArray *imgArrayOne = [NSArray arrayWithObjects:@"suggestion.png",@"score.png", nil];
+    NSArray *midArray = [NSArray arrayWithObject:@"location.png"];
     NSArray *imgArrayTwo = [NSArray arrayWithObjects:@"about.png",@"disclaimer.png",@"version.png", nil];
-    NSArray *imgArray = [NSArray arrayWithObjects:imgArrayOne,imgArrayTwo, nil];
+    NSArray *imgArray = [NSArray arrayWithObjects:imgArrayOne,midArray,imgArrayTwo, nil];
     self.imgArray = imgArray;
    
     //自定义城市表格
@@ -159,9 +167,48 @@
     
     cell.imageView.image = [UIImage imageNamed:[[self.imgArray objectAtIndex:indexPath.section]objectAtIndex:indexPath.row]];
     
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if (indexPath.section == 1) {
+    
+        UISwitch *switchBtn = [[[UISwitch alloc]init]autorelease];
+        self.switchBtn = switchBtn;
+        [switchBtn setFrame:CGRectMake(WIDTH - 60, (cell.frame.size.height - switchBtn.frame.size.height)/2, 0, 0)];
+        [switchBtn setOnTintColor:[UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0]];
+        [switchBtn setOn:YES animated:YES];
+        [switchBtn addTarget:self action:@selector(closeLocation:) forControlEvents:UIControlEventValueChanged];
+        [cell.contentView addSubview:switchBtn];
+        
+        
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+        
+    } else {
+    
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
+    
     
     return cell;
+}
+
+//UISwitch 响应动作方法
+- (void)closeLocation:(UISwitch *)sender
+{
+    NSLog(@"开关");
+    
+    UISwitch *switchButton = (UISwitch*)sender;
+    BOOL isButtonOn = [switchButton isOn];
+    
+    if (isButtonOn) {
+        
+        NSLog(@"执行1");
+        mySwitchBtn = YES;
+        
+        
+    } else {
+        
+        NSLog(@"执行2");
+        mySwitchBtn = NO;
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"closeLocation" object:nil];
+    }
 }
 
 #pragma mark UITableViewDelegate 
@@ -195,9 +242,13 @@
                 NSLog(@"can not open!");
             }
             
-        } } else {
+        } } else if (indexPath.section == 1){
+            
+            NSLog(@"第二部分");
+            
+        } else {
         
-        if (indexPath.row == 0) {
+            if (indexPath.row == 0) {
             
             AboutViewController *about = [[AboutViewController alloc]init];
             about.title = @"关于我们";
@@ -205,33 +256,37 @@
             [self.navigationController pushViewController:about animated:YES];
             [about release];
             
-        } else if (indexPath.row == 1) {
+        
+            } else if (indexPath.row == 1) {
             
             DisclaimerViewController *disclaimer = [[DisclaimerViewController alloc]init];
             disclaimer.title = @"免责声明";
             [self.navigationController pushViewController:disclaimer animated:YES];
             [disclaimer release];
             
-        } else {
+       
+            } else {
             
             VersionViewController *version = [[VersionViewController alloc]init];
             version.title = @"版本信息";
             [self.navigationController pushViewController:version animated:YES];
             [version release];
+        
+            }
+    
         }
-    }
 }
 
 #pragma mark - section 之间的距离
 //section头部间距
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 40;//section头部高度
+    return 20;//section头部高度
 }
 //section头部视图
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
 {
-    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, 40)];
+    UIView *view=[[UIView alloc] initWithFrame:CGRectMake(0, 0, WIDTH, 20)];
     view.backgroundColor = [UIColor clearColor];
     return [view autorelease];
 }

@@ -77,7 +77,7 @@
     
     //点击拨打电话
     UIButton *telBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [telBtn setTitle:@"联系电话：010-62669813-0" forState:UIControlStateNormal];
+    [telBtn setTitle:@"联系电话：010-62669813" forState:UIControlStateNormal];
     [telBtn setTitleColor:[UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0] forState:UIControlStateNormal];
     [telBtn addTarget:self action:@selector(callTel) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:telBtn];
@@ -103,17 +103,17 @@
         
          txtView.text = @"       北京华信互动数码科技有限公司是一家集Internet网站建设，信息收集传播,宣传企业文化，软件开发为一体的信息技术开发公司。本公司致力于政府、企业、学校的系列解决方案。并承接各种软件、网站项目的制作和维护。同时也提供专业技术员、技术团队或技术顾问外包服务。\n\n\n服务宗旨：求实、创新、奋进 \n\n\n提供服务：网站制作/维护 系统/软件开发 网站优化 网站推广";
         
-        [address setFrame:CGRectMake(8, height - 120, WIDTH - 5, 60)];
-        [view setFrame:CGRectMake(8, height - 120, WIDTH - 5, 60)];
-        [telBtn setFrame:CGRectMake(0, height - 120 - 40, 240, 20)];
+        [address setFrame:CGRectMake(5, height - 120, WIDTH - 5, 60)];
+        [view setFrame:CGRectMake(5, height - 120, WIDTH - 5, 60)];
+        [telBtn setFrame:CGRectMake(0, height - 120 - 40, 220, 20)];
         
     } else {
         
          txtView.text = @"       北京华信互动数码科技有限公司是一家集Internet网站建设，信息收集传播,宣传企业文化，软件开发为一体的信息技术开发公司。本公司致力于政府、企业、学校的系列解决方案。并承接各种软件、网站项目的制作和维护。同时也提供专业技术员、技术团队或技术顾问外包服务。\n\n服务宗旨：求实、创新、奋进 \n\n提供服务：网站制作/维护 系统/软件开发 网站优化 网站推广";
         
-        [address setFrame:CGRectMake(7, height - 110, WIDTH - 7, 60)];
-        [view setFrame:CGRectMake(7, height - 110, WIDTH - 7, 60)];
-        [telBtn setFrame:CGRectMake(0, height - 60 - 80, 240, 20)];
+        [address setFrame:CGRectMake(5, height - 110, WIDTH - 5, 60)];
+        [view setFrame:CGRectMake(5, height - 110, WIDTH - 5, 60)];
+        [telBtn setFrame:CGRectMake(0, height - 60 - 80, 220, 20)];
     }
     
     [txtView release];

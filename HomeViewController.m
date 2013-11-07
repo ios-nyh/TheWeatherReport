@@ -23,9 +23,11 @@
     float vHeight;    // 系统高度
     float cHeight;    // 截屏高度
     BOOL isAlertTwo;  //判断alert响应的代理方法
+    BOOL isResponse;  //判断开关
 }
 
 @property (retain,nonatomic) CameraImageHelper *cameraHelper;
+@property (retain,nonatomic) UINavigationController *navi;
 
 @end
 
@@ -33,6 +35,8 @@
 
 - (void)dealloc
 {
+    [_navi release];
+    
     [_cityLabel release];
     
     [_temp release];
@@ -254,6 +258,8 @@
     [_infoBtn addTarget:self action:@selector(showInfo) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:_infoBtn];
     
+    //判断位置显示信息，默认是拍照时，显示当前位置
+    isResponse = YES;
 }
 
 #pragma mark -前置摄像头切换
@@ -333,7 +339,7 @@
     //选择接口城市
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(selectCityCodeid:) name:@"selectedCityCodeidNotification" object:nil];
     //监听拍照时的位置的通知
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeLocationShow) name:@"closeLocation" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(closeLocationShow:) name:@"closeLocation" object:nil];
 }
 
 #pragma mark - 加入滚动视图
@@ -493,15 +499,25 @@
         [alertView show];
         [alertView release];
         
-//        if (![self respondsToSelector:@selector(closeLocationShow)]) {
-        
+        //控制个人位置信息
+        //关闭位置信息
+        if (!isResponse) {
+            NSLog(@"关闭位置信息-->%d",isResponse);
+            //获取当前位置信息
+            _curLocation.text = @"";
+            _OcurLocation.text = @"";
+            _TcurLocation.text = @"";
+            _tHcurLocation.text = @"";
+
+        } else {
+            //开启位置信息
+            NSLog(@"开启位置信息-->%d",isResponse);
             //获取当前位置信息
             _curLocation.text = self.location;
             _OcurLocation.text = self.location;
             _TcurLocation.text = self.location;
             _tHcurLocation.text = self.location;
-
-//        }
+        }
     }
     
     //取消拍摄动画
@@ -781,20 +797,25 @@
 }
 
 
-#pragma mark - 显示天气相机信息
+#pragma mark - 设置页面信息
 
 - (void)showInfo
 {
-    ShowInfoViewController *info = [[ShowInfoViewController alloc]init];
+    //保证根视图只初始化一次
+    if (self.navi == nil) {
+        
+        ShowInfoViewController *setInfo = [[ShowInfoViewController alloc]init];
+        
+        UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:setInfo];
+        self.navi = navi;
+        
+        setInfo.providesPresentationContextTransitionStyle = YES;
+        
+        [setInfo release];
+        [navi release];
+    }
     
-    UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:info];
-    
-    info.providesPresentationContextTransitionStyle = YES;
-    
-    [self presentViewController:navi animated:YES completion:nil];
-    
-    [info release];
-    [navi release];
+    [self presentViewController:self.navi animated:YES completion:nil];
 }
 
 
@@ -826,9 +847,15 @@
 
 #pragma mark - 控制拍照时位置显示的通知方法
 
-- (void)closeLocationShow
+- (void)closeLocationShow:(NSNotification *)noti
 {
     NSLog(@"响应通知方法");
+    
+    NSNumber *info = [noti.userInfo objectForKey:@"infoDic"];
+    
+    isResponse = [info boolValue];
+    
+    NSLog(@"%d",[info boolValue]);
 }
 
 

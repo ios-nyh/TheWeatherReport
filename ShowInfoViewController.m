@@ -19,6 +19,7 @@
 @interface ShowInfoViewController ()
 {
     BOOL mySwitchBtn;
+    
 }
 @property (retain,nonatomic) UISwitch *switchBtn;
 
@@ -121,10 +122,11 @@
     //设置view背景颜色
     //R:0.741  G:0.937  B:0.996
     self.tableView.backgroundColor = [UIColor colorWithRed:0.741 green:0.937 blue:0.996 alpha:1.0];
+    
 }
 
 
-#pragma mark 按钮响应方法
+#pragma mark - 按钮响应方法
 
 - (void)backVC
 {
@@ -168,15 +170,15 @@
     cell.imageView.image = [UIImage imageNamed:[[self.imgArray objectAtIndex:indexPath.section]objectAtIndex:indexPath.row]];
     
     if (indexPath.section == 1) {
-    
+        
         UISwitch *switchBtn = [[[UISwitch alloc]init]autorelease];
         self.switchBtn = switchBtn;
         [switchBtn setFrame:CGRectMake(WIDTH - 60, (cell.frame.size.height - switchBtn.frame.size.height)/2, 0, 0)];
         [switchBtn setOnTintColor:[UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0]];
+        //默认开启位置显示
         [switchBtn setOn:YES animated:YES];
         [switchBtn addTarget:self action:@selector(closeLocation:) forControlEvents:UIControlEventValueChanged];
         [cell.contentView addSubview:switchBtn];
-        
         
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         
@@ -189,29 +191,31 @@
     return cell;
 }
 
-//UISwitch 响应动作方法
+#pragma mark - UISwitch 响应动作方法
+
 - (void)closeLocation:(UISwitch *)sender
 {
-    NSLog(@"开关");
-    
-    UISwitch *switchButton = (UISwitch*)sender;
+    UISwitch *switchButton = (UISwitch *)sender;
     BOOL isButtonOn = [switchButton isOn];
     
     if (isButtonOn) {
         
-        NSLog(@"执行1");
-        mySwitchBtn = YES;
+        mySwitchBtn = YES; // 1
+        NSLog(@"开启位置显示，%d代表开启",mySwitchBtn);
         
-        
+    
     } else {
         
-        NSLog(@"执行2");
-        mySwitchBtn = NO;
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"closeLocation" object:nil];
+        mySwitchBtn = NO; // 0
+        NSLog(@"关闭位置显示，%d代表关闭",mySwitchBtn);
     }
+    
+    NSDictionary *infoDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:mySwitchBtn],@"infoDic", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"closeLocation"object:nil userInfo:infoDic];
 }
 
-#pragma mark UITableViewDelegate 
+
+#pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -276,6 +280,7 @@
     
         }
 }
+
 
 #pragma mark - section 之间的距离
 //section头部间距

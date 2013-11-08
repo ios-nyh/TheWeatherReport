@@ -10,6 +10,8 @@
 
 #import "HomeViewController.h"
 #import "HelperViewController.h"
+#import <CoreTelephony/CTCallCenter.h>
+#import <CoreTelephony/CTCall.h>
 #import "Reachability.h"
 
 #import <ShareSDK/ShareSDK.h>
@@ -181,6 +183,34 @@
     [self.hostReach startNotifier];
 }
 
+//判断电话，如何监听电话 
+- (void)detectCall
+{
+    CTCallCenter *callCenter = [[[CTCallCenter alloc]init]autorelease];
+    
+    callCenter.callEventHandler=^(CTCall* call){
+        
+        if (call.callState == CTCallStateDialing){
+            
+            NSLog(@"Call Dialing");
+        }
+        
+        if (call.callState == CTCallStateConnected){
+            
+            NSLog(@"Call Connected");
+            
+//            [self performSelectorOnMainThread:@selector(closeTalk) withObject:nil waitUntilDone:YES];
+        }
+        
+        if (call.callState == CTCallStateDisconnected){
+            
+//            [self performSelectorOnMainThread:@selector(closeTalk) withObject:nil waitUntilDone:YES];
+            
+            NSLog(@"Call Disconnected");
+        }
+    };
+
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {

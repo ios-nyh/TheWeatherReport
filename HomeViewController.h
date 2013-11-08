@@ -87,7 +87,7 @@
     
     UILabel *_TcurLocation;      //当前位置
     
-    //three
+    //Three
     UILabel *_tHDate;
     UIImageView *_tHImgView1;
     UIImageView *_tHImgView2;
@@ -111,7 +111,7 @@
 
 @property (retain,nonatomic) ActivityIndicatorView *activity;
 
-@property (retain,nonatomic) UIImageView *panImgView;
+@property (retain,nonatomic) UIImageView *panImgView;                //响应手势的图片
 
 
 @end

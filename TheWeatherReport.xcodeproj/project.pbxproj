@@ -325,11 +325,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				812402FD1814DDB40072EF51 /* CoreTelephony.framework in Frameworks */,
 				812403051814DE980072EF51 /* libsqlite3.dylib in Frameworks */,
 				812403031814DE840072EF51 /* libstdc++.dylib in Frameworks */,
 				812403011814DDF50072EF51 /* libz.1.2.5.dylib in Frameworks */,
 				812402FF1814DDDA0072EF51 /* libicucore.dylib in Frameworks */,
-				812402FD1814DDB40072EF51 /* CoreTelephony.framework in Frameworks */,
 				812402E41814DD2F0072EF51 /* ShareSDKCoreService.framework in Frameworks */,
 				812402F21814DD300072EF51 /* ShareSDK.framework in Frameworks */,
 				8104C36C17E9511600A54475 /* MapKit.framework in Frameworks */,
@@ -471,9 +471,9 @@
 				814A9E821817C9D000CB2542 /* WeatherData.m */,
 				81B3C85E182388C10073D771 /* PostDataTools.h */,
 				81B3C85F182388C10073D771 /* PostDataTools.m */,
-				81B3C86118238A720073D771 /* InterfaceFile.h */,
 				811734D3182A4AE900750CA6 /* UIImage+fixOrientation.h */,
 				811734D4182A4AE900750CA6 /* UIImage+fixOrientation.m */,
+				81B3C86118238A720073D771 /* InterfaceFile.h */,
 			);
 			name = Models;
 			sourceTree = "<group>";

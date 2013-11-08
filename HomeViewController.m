@@ -262,7 +262,7 @@
     isResponse = YES;
 }
 
-#pragma mark -前置摄像头切换
+#pragma mark - 前置摄像头切换
 
 - (void)selectFrontCamera
 {
@@ -378,13 +378,6 @@
     [self.view addSubview:cycle];
     [cycle release];
     [picArray release];
-    
-    //创建长安手势
-    UILongPressGestureRecognizer *longPress  =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
-    longPress.delegate = self;
-    [cycle addGestureRecognizer:longPress];
-    [longPress release];
-
 }
 
 //- (UIImage *)convertViewToImage:(UIView *)v
@@ -801,12 +794,13 @@
 
 - (void)showInfo
 {
-    //保证根视图只初始化一次
+    //保证根视图控制器只初始化一次
     if (self.navi == nil) {
         
         ShowInfoViewController *setInfo = [[ShowInfoViewController alloc]init];
         
         UINavigationController *navi = [[UINavigationController alloc]initWithRootViewController:setInfo];
+        
         self.navi = navi;
         
         setInfo.providesPresentationContextTransitionStyle = YES;
@@ -1263,15 +1257,8 @@
     [_tHImgView2 setFrame:CGRectMake(60, rHeignt + 5 + 25, 40, 40)];
     [_tHArea setFrame:CGRectMake(20,rHeignt + 70, 80, 20)];
     [imgView setFrame:CGRectMake(10, rHeignt, 95, 100)];
-    [view4 setFrame:CGRectMake(10, 0, 95, 100)];
+    [view4 setFrame:CGRectMake(10, rHeignt, 95, 100)];
     
-    
-    //创建长安手势
-    UILongPressGestureRecognizer *longPress  =[[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressAction:)];
-    longPress.delegate = self;
-    [self.view addGestureRecognizer:longPress];
-    [longPress release];
-
     
     //创建拖拽手势
     UIPanGestureRecognizer *panGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
@@ -1281,34 +1268,51 @@
     panGestureRecognizer.minimumNumberOfTouches = 1;
     panGestureRecognizer.maximumNumberOfTouches = 1;
     [view4 addGestureRecognizer:panGestureRecognizer];
+    
+//    //当长按手势失败后，在执行拖拽手势
+//    [panGestureRecognizer requireGestureRecognizerToFail:longPress];
+    
     [panGestureRecognizer release];
 }
 
-- (void)longPressAction:(UIGestureRecognizer *)longPress
-{
-    self.panImgView.layer.borderColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0].CGColor;
-    self.panImgView.layer.borderWidth = 1.0;
 
-}
+#pragma mark - 拖拽手势响应方法
+
 - (void)handlePanGestures:(UIPanGestureRecognizer *)paramSender
 {
     NSLog(@"拖拽手势");
+    
     if (paramSender.state != UIGestureRecognizerStateEnded && paramSender.state != UIGestureRecognizerStateFailed) {
         
         //通过使用 locationInView 这个方法,来获取到手势的坐标
         CGPoint location = [paramSender locationInView:paramSender.view.superview]; //触摸在指定视图中的当前位置
         paramSender.view.center = location;
         
+    } else {
+    
+        //去除拖拽视图边框
+        self.panImgView.layer.borderWidth = 0.0;
     }
 }
 
 
-
-#pragma mark - 手势代理方法，同时触发手势
--(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+#pragma mark - 手势代理方法
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
 {
+    NSLog(@"接触");
+    
+    self.panImgView.layer.borderColor = [UIColor colorWithRed:0.004 green:0.671 blue:0.867 alpha:1.0].CGColor;
+    self.panImgView.layer.borderWidth = 1.0;
+    
     return YES;
 }
+
+//#pragma mark - 手势代理方法，同时触发手势
+//-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+//{
+//    return YES;
+//}
+
 
 #pragma mark
 #pragma mark - JSON 解析
